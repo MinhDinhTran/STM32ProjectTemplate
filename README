@@ -1,19 +1,38 @@
-https://lakehy.github.io/2017/09/17/develop-stm32-on-linux.html
+
+## Install stlink
+> https://freeelectron.ro/installing-st-link-v2-to-flash-stm32-targets-on-linux/
+> https://github.com/stlink-org/stlink
+> https://github.com/stlink-org/stlink/blob/develop/doc/tutorial.md
+> https://lakehy.github.io/2017/09/17/develop-stm32-on-linux.html
+> 
+
+sudo apt-get install git make cmake libusb-1.0-0-dev
+sudo apt-get install gcc build-essential
+
+git clone https://github.com/stlink-org/stlink
+cd stlink
+cmake .
+make
+
+sudo cp bin/st-* /usr/local/bin
+sudo cp etc/udev/rules.d/49-stlinkv* /etc/udev/rules.d/
+
+lsusb
+
+st-flash --debug read dummy.file 0 256
+st-flash read out.bin 0x8000000 4096
+st-flash --format ihex write LED.hex
 
 
-sudo apt install stm32flash
-stm32flash -w filename -v -g 0x0 /dev/ttyS0
 
-
-Refer to
-https://github.com/ertuil/stm32_template
-
+sudo apt-get remove gcc-arm-none-eabi gdb-arm-none-eabi binutils-arm-none-eabi
+sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa
+sudo apt-get update
+sudo apt-get install gcc-arm-embedded
 
 
 
-copy the case, only HARDWARE and USER folder
-#copy all of the files in HARDWARE/subdictionary to HARDWARE/
-change Line50 |BINPATH = /usr/bin| to custerm in the Makefile file
-make clean
+git clone https://github.com/lpodkalicki/stm32f401vct6u.git
+cd stm32f401vct6u/blinky
 make
 make flash

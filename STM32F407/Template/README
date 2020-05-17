@@ -1,0 +1,19 @@
+https://lakehy.github.io/2017/09/17/develop-stm32-on-linux.html
+
+
+sudo apt install stm32flash
+stm32flash -w filename -v -g 0x0 /dev/ttyS0
+
+
+Refer to
+https://github.com/ertuil/stm32_template
+
+
+
+
+copy the case, only HARDWARE and USER folder
+#copy all of the files in HARDWARE/subdictionary to HARDWARE/
+change Line50 |BINPATH = /usr/bin| to custerm in the Makefile file
+make clean
+make
+make flash
