@@ -1,0 +1,727 @@
+ARM GAS  /tmp/cchuRpXL.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32f4xx_exti.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.EXTI_DeInit,"ax",%progbits
+  18              		.align	1
+  19              		.global	EXTI_DeInit
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	EXTI_DeInit:
+  26              	.LFB112:
+  27              		.file 1 "./FWLIB/src/stm32f4xx_exti.c"
+   1:./FWLIB/src/stm32f4xx_exti.c **** /**
+   2:./FWLIB/src/stm32f4xx_exti.c ****   ******************************************************************************
+   3:./FWLIB/src/stm32f4xx_exti.c ****   * @file    stm32f4xx_exti.c
+   4:./FWLIB/src/stm32f4xx_exti.c ****   * @author  MCD Application Team
+   5:./FWLIB/src/stm32f4xx_exti.c ****   * @version V1.4.0
+   6:./FWLIB/src/stm32f4xx_exti.c ****   * @date    04-August-2014
+   7:./FWLIB/src/stm32f4xx_exti.c ****   * @brief   This file provides firmware functions to manage the following 
+   8:./FWLIB/src/stm32f4xx_exti.c ****   *          functionalities of the EXTI peripheral:           
+   9:./FWLIB/src/stm32f4xx_exti.c ****   *           + Initialization and Configuration
+  10:./FWLIB/src/stm32f4xx_exti.c ****   *           + Interrupts and flags management
+  11:./FWLIB/src/stm32f4xx_exti.c ****   *
+  12:./FWLIB/src/stm32f4xx_exti.c **** @verbatim  
+  13:./FWLIB/src/stm32f4xx_exti.c **** 
+  14:./FWLIB/src/stm32f4xx_exti.c ****  ===============================================================================
+  15:./FWLIB/src/stm32f4xx_exti.c ****                               ##### EXTI features #####
+  16:./FWLIB/src/stm32f4xx_exti.c ****  ===============================================================================
+  17:./FWLIB/src/stm32f4xx_exti.c **** 
+  18:./FWLIB/src/stm32f4xx_exti.c ****  [..] External interrupt/event lines are mapped as following:
+  19:./FWLIB/src/stm32f4xx_exti.c ****    (#) All available GPIO pins are connected to the 16 external 
+  20:./FWLIB/src/stm32f4xx_exti.c ****        interrupt/event lines from EXTI0 to EXTI15.
+  21:./FWLIB/src/stm32f4xx_exti.c ****    (#) EXTI line 16 is connected to the PVD Output
+  22:./FWLIB/src/stm32f4xx_exti.c ****    (#) EXTI line 17 is connected to the RTC Alarm event
+  23:./FWLIB/src/stm32f4xx_exti.c ****    (#) EXTI line 18 is connected to the USB OTG FS Wakeup from suspend event
+  24:./FWLIB/src/stm32f4xx_exti.c ****    (#) EXTI line 19 is connected to the Ethernet Wakeup event
+  25:./FWLIB/src/stm32f4xx_exti.c ****    (#) EXTI line 20 is connected to the USB OTG HS (configured in FS) Wakeup event 
+  26:./FWLIB/src/stm32f4xx_exti.c ****    (#) EXTI line 21 is connected to the RTC Tamper and Time Stamp events
+  27:./FWLIB/src/stm32f4xx_exti.c ****    (#) EXTI line 22 is connected to the RTC Wakeup event
+  28:./FWLIB/src/stm32f4xx_exti.c **** 
+  29:./FWLIB/src/stm32f4xx_exti.c ****                        ##### How to use this driver #####
+  30:./FWLIB/src/stm32f4xx_exti.c ****  ===============================================================================
+  31:./FWLIB/src/stm32f4xx_exti.c ****  
+ARM GAS  /tmp/cchuRpXL.s 			page 2
+
+
+  32:./FWLIB/src/stm32f4xx_exti.c ****  [..] In order to use an I/O pin as an external interrupt source, follow steps 
+  33:./FWLIB/src/stm32f4xx_exti.c ****       below:
+  34:./FWLIB/src/stm32f4xx_exti.c ****    (#) Configure the I/O in input mode using GPIO_Init()
+  35:./FWLIB/src/stm32f4xx_exti.c ****    (#) Select the input source pin for the EXTI line using SYSCFG_EXTILineConfig()
+  36:./FWLIB/src/stm32f4xx_exti.c ****    (#) Select the mode(interrupt, event) and configure the trigger 
+  37:./FWLIB/src/stm32f4xx_exti.c ****        selection (Rising, falling or both) using EXTI_Init()
+  38:./FWLIB/src/stm32f4xx_exti.c ****    (#) Configure NVIC IRQ channel mapped to the EXTI line using NVIC_Init()
+  39:./FWLIB/src/stm32f4xx_exti.c **** 
+  40:./FWLIB/src/stm32f4xx_exti.c ****  [..]     
+  41:./FWLIB/src/stm32f4xx_exti.c ****    (@) SYSCFG APB clock must be enabled to get write access to SYSCFG_EXTICRx
+  42:./FWLIB/src/stm32f4xx_exti.c ****        registers using RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+  43:./FWLIB/src/stm32f4xx_exti.c **** 
+  44:./FWLIB/src/stm32f4xx_exti.c **** @endverbatim
+  45:./FWLIB/src/stm32f4xx_exti.c ****   *
+  46:./FWLIB/src/stm32f4xx_exti.c ****   ******************************************************************************
+  47:./FWLIB/src/stm32f4xx_exti.c ****   * @attention
+  48:./FWLIB/src/stm32f4xx_exti.c ****   *
+  49:./FWLIB/src/stm32f4xx_exti.c ****   * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+  50:./FWLIB/src/stm32f4xx_exti.c ****   *
+  51:./FWLIB/src/stm32f4xx_exti.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  52:./FWLIB/src/stm32f4xx_exti.c ****   * You may not use this file except in compliance with the License.
+  53:./FWLIB/src/stm32f4xx_exti.c ****   * You may obtain a copy of the License at:
+  54:./FWLIB/src/stm32f4xx_exti.c ****   *
+  55:./FWLIB/src/stm32f4xx_exti.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  56:./FWLIB/src/stm32f4xx_exti.c ****   *
+  57:./FWLIB/src/stm32f4xx_exti.c ****   * Unless required by applicable law or agreed to in writing, software 
+  58:./FWLIB/src/stm32f4xx_exti.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  59:./FWLIB/src/stm32f4xx_exti.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  60:./FWLIB/src/stm32f4xx_exti.c ****   * See the License for the specific language governing permissions and
+  61:./FWLIB/src/stm32f4xx_exti.c ****   * limitations under the License.
+  62:./FWLIB/src/stm32f4xx_exti.c ****   *
+  63:./FWLIB/src/stm32f4xx_exti.c ****   ******************************************************************************
+  64:./FWLIB/src/stm32f4xx_exti.c ****   */
+  65:./FWLIB/src/stm32f4xx_exti.c **** 
+  66:./FWLIB/src/stm32f4xx_exti.c **** /* Includes ------------------------------------------------------------------*/
+  67:./FWLIB/src/stm32f4xx_exti.c **** #include "stm32f4xx_exti.h"
+  68:./FWLIB/src/stm32f4xx_exti.c **** 
+  69:./FWLIB/src/stm32f4xx_exti.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
+  70:./FWLIB/src/stm32f4xx_exti.c ****   * @{
+  71:./FWLIB/src/stm32f4xx_exti.c ****   */
+  72:./FWLIB/src/stm32f4xx_exti.c **** 
+  73:./FWLIB/src/stm32f4xx_exti.c **** /** @defgroup EXTI 
+  74:./FWLIB/src/stm32f4xx_exti.c ****   * @brief EXTI driver modules
+  75:./FWLIB/src/stm32f4xx_exti.c ****   * @{
+  76:./FWLIB/src/stm32f4xx_exti.c ****   */
+  77:./FWLIB/src/stm32f4xx_exti.c **** 
+  78:./FWLIB/src/stm32f4xx_exti.c **** /* Private typedef -----------------------------------------------------------*/
+  79:./FWLIB/src/stm32f4xx_exti.c **** /* Private define ------------------------------------------------------------*/
+  80:./FWLIB/src/stm32f4xx_exti.c **** 
+  81:./FWLIB/src/stm32f4xx_exti.c **** #define EXTI_LINENONE    ((uint32_t)0x00000)  /* No interrupt selected */
+  82:./FWLIB/src/stm32f4xx_exti.c **** 
+  83:./FWLIB/src/stm32f4xx_exti.c **** /* Private macro -------------------------------------------------------------*/
+  84:./FWLIB/src/stm32f4xx_exti.c **** /* Private variables ---------------------------------------------------------*/
+  85:./FWLIB/src/stm32f4xx_exti.c **** /* Private function prototypes -----------------------------------------------*/
+  86:./FWLIB/src/stm32f4xx_exti.c **** /* Private functions ---------------------------------------------------------*/
+  87:./FWLIB/src/stm32f4xx_exti.c **** 
+  88:./FWLIB/src/stm32f4xx_exti.c **** /** @defgroup EXTI_Private_Functions
+ARM GAS  /tmp/cchuRpXL.s 			page 3
+
+
+  89:./FWLIB/src/stm32f4xx_exti.c ****   * @{
+  90:./FWLIB/src/stm32f4xx_exti.c ****   */
+  91:./FWLIB/src/stm32f4xx_exti.c **** 
+  92:./FWLIB/src/stm32f4xx_exti.c **** /** @defgroup EXTI_Group1 Initialization and Configuration functions
+  93:./FWLIB/src/stm32f4xx_exti.c ****  *  @brief   Initialization and Configuration functions 
+  94:./FWLIB/src/stm32f4xx_exti.c ****  *
+  95:./FWLIB/src/stm32f4xx_exti.c **** @verbatim   
+  96:./FWLIB/src/stm32f4xx_exti.c ****  ===============================================================================
+  97:./FWLIB/src/stm32f4xx_exti.c ****              ##### Initialization and Configuration functions #####
+  98:./FWLIB/src/stm32f4xx_exti.c ****  ===============================================================================
+  99:./FWLIB/src/stm32f4xx_exti.c **** 
+ 100:./FWLIB/src/stm32f4xx_exti.c **** @endverbatim
+ 101:./FWLIB/src/stm32f4xx_exti.c ****   * @{
+ 102:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 103:./FWLIB/src/stm32f4xx_exti.c **** 
+ 104:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 105:./FWLIB/src/stm32f4xx_exti.c ****   * @brief  Deinitializes the EXTI peripheral registers to their default reset values.
+ 106:./FWLIB/src/stm32f4xx_exti.c ****   * @param  None
+ 107:./FWLIB/src/stm32f4xx_exti.c ****   * @retval None
+ 108:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 109:./FWLIB/src/stm32f4xx_exti.c **** void EXTI_DeInit(void)
+ 110:./FWLIB/src/stm32f4xx_exti.c **** {
+  28              		.loc 1 110 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 111:./FWLIB/src/stm32f4xx_exti.c ****   EXTI->IMR = 0x00000000;
+  33              		.loc 1 111 0
+  34 0000 044B     		ldr	r3, .L2
+  35 0002 0022     		movs	r2, #0
+  36 0004 1A60     		str	r2, [r3]
+ 112:./FWLIB/src/stm32f4xx_exti.c ****   EXTI->EMR = 0x00000000;
+  37              		.loc 1 112 0
+  38 0006 5A60     		str	r2, [r3, #4]
+ 113:./FWLIB/src/stm32f4xx_exti.c ****   EXTI->RTSR = 0x00000000;
+  39              		.loc 1 113 0
+  40 0008 9A60     		str	r2, [r3, #8]
+ 114:./FWLIB/src/stm32f4xx_exti.c ****   EXTI->FTSR = 0x00000000;
+  41              		.loc 1 114 0
+  42 000a DA60     		str	r2, [r3, #12]
+ 115:./FWLIB/src/stm32f4xx_exti.c ****   EXTI->PR = 0x007FFFFF;
+  43              		.loc 1 115 0
+  44 000c 024A     		ldr	r2, .L2+4
+  45 000e 5A61     		str	r2, [r3, #20]
+ 116:./FWLIB/src/stm32f4xx_exti.c **** }
+  46              		.loc 1 116 0
+  47 0010 7047     		bx	lr
+  48              	.L3:
+  49 0012 00BF     		.align	2
+  50              	.L2:
+  51 0014 003C0140 		.word	1073822720
+  52 0018 FFFF7F00 		.word	8388607
+  53              		.cfi_endproc
+  54              	.LFE112:
+  56              		.section	.text.EXTI_Init,"ax",%progbits
+  57              		.align	1
+ARM GAS  /tmp/cchuRpXL.s 			page 4
+
+
+  58              		.global	EXTI_Init
+  59              		.syntax unified
+  60              		.thumb
+  61              		.thumb_func
+  62              		.fpu fpv4-sp-d16
+  64              	EXTI_Init:
+  65              	.LFB113:
+ 117:./FWLIB/src/stm32f4xx_exti.c **** 
+ 118:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 119:./FWLIB/src/stm32f4xx_exti.c ****   * @brief  Initializes the EXTI peripheral according to the specified
+ 120:./FWLIB/src/stm32f4xx_exti.c ****   *         parameters in the EXTI_InitStruct.
+ 121:./FWLIB/src/stm32f4xx_exti.c ****   * @param  EXTI_InitStruct: pointer to a EXTI_InitTypeDef structure
+ 122:./FWLIB/src/stm32f4xx_exti.c ****   *         that contains the configuration information for the EXTI peripheral.
+ 123:./FWLIB/src/stm32f4xx_exti.c ****   * @retval None
+ 124:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 125:./FWLIB/src/stm32f4xx_exti.c **** void EXTI_Init(EXTI_InitTypeDef* EXTI_InitStruct)
+ 126:./FWLIB/src/stm32f4xx_exti.c **** {
+  66              		.loc 1 126 0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 0
+  69              		@ frame_needed = 0, uses_anonymous_args = 0
+  70              		@ link register save eliminated.
+  71              	.LVL0:
+ 127:./FWLIB/src/stm32f4xx_exti.c ****   uint32_t tmp = 0;
+ 128:./FWLIB/src/stm32f4xx_exti.c **** 
+ 129:./FWLIB/src/stm32f4xx_exti.c ****   /* Check the parameters */
+ 130:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_EXTI_MODE(EXTI_InitStruct->EXTI_Mode));
+ 131:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_EXTI_TRIGGER(EXTI_InitStruct->EXTI_Trigger));
+ 132:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_EXTI_LINE(EXTI_InitStruct->EXTI_Line));  
+ 133:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_FUNCTIONAL_STATE(EXTI_InitStruct->EXTI_LineCmd));
+ 134:./FWLIB/src/stm32f4xx_exti.c **** 
+ 135:./FWLIB/src/stm32f4xx_exti.c ****   tmp = (uint32_t)EXTI_BASE;
+ 136:./FWLIB/src/stm32f4xx_exti.c ****      
+ 137:./FWLIB/src/stm32f4xx_exti.c ****   if (EXTI_InitStruct->EXTI_LineCmd != DISABLE)
+  72              		.loc 1 137 0
+  73 0000 8379     		ldrb	r3, [r0, #6]	@ zero_extendqisi2
+  74 0002 002B     		cmp	r3, #0
+  75 0004 36D0     		beq	.L5
+ 126:./FWLIB/src/stm32f4xx_exti.c ****   uint32_t tmp = 0;
+  76              		.loc 1 126 0
+  77 0006 10B4     		push	{r4}
+  78              	.LCFI0:
+  79              		.cfi_def_cfa_offset 4
+  80              		.cfi_offset 4, -4
+ 138:./FWLIB/src/stm32f4xx_exti.c ****   {
+ 139:./FWLIB/src/stm32f4xx_exti.c ****     /* Clear EXTI line configuration */
+ 140:./FWLIB/src/stm32f4xx_exti.c ****     EXTI->IMR &= ~EXTI_InitStruct->EXTI_Line;
+  81              		.loc 1 140 0
+  82 0008 204B     		ldr	r3, .L13
+  83 000a 1A68     		ldr	r2, [r3]
+  84 000c 0168     		ldr	r1, [r0]
+  85 000e 22EA0102 		bic	r2, r2, r1
+  86 0012 1A60     		str	r2, [r3]
+ 141:./FWLIB/src/stm32f4xx_exti.c ****     EXTI->EMR &= ~EXTI_InitStruct->EXTI_Line;
+  87              		.loc 1 141 0
+  88 0014 5A68     		ldr	r2, [r3, #4]
+  89 0016 0168     		ldr	r1, [r0]
+ARM GAS  /tmp/cchuRpXL.s 			page 5
+
+
+  90 0018 22EA0102 		bic	r2, r2, r1
+  91 001c 5A60     		str	r2, [r3, #4]
+ 142:./FWLIB/src/stm32f4xx_exti.c ****     
+ 143:./FWLIB/src/stm32f4xx_exti.c ****     tmp += EXTI_InitStruct->EXTI_Mode;
+  92              		.loc 1 143 0
+  93 001e 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+  94 0020 02F18042 		add	r2, r2, #1073741824
+  95 0024 02F59E32 		add	r2, r2, #80896
+  96              	.LVL1:
+ 144:./FWLIB/src/stm32f4xx_exti.c **** 
+ 145:./FWLIB/src/stm32f4xx_exti.c ****     *(__IO uint32_t *) tmp |= EXTI_InitStruct->EXTI_Line;
+  97              		.loc 1 145 0
+  98 0028 1168     		ldr	r1, [r2]
+  99 002a 0468     		ldr	r4, [r0]
+ 100 002c 2143     		orrs	r1, r1, r4
+ 101 002e 1160     		str	r1, [r2]
+ 146:./FWLIB/src/stm32f4xx_exti.c **** 
+ 147:./FWLIB/src/stm32f4xx_exti.c ****     /* Clear Rising Falling edge configuration */
+ 148:./FWLIB/src/stm32f4xx_exti.c ****     EXTI->RTSR &= ~EXTI_InitStruct->EXTI_Line;
+ 102              		.loc 1 148 0
+ 103 0030 9A68     		ldr	r2, [r3, #8]
+ 104              	.LVL2:
+ 105 0032 0168     		ldr	r1, [r0]
+ 106 0034 22EA0102 		bic	r2, r2, r1
+ 107 0038 9A60     		str	r2, [r3, #8]
+ 149:./FWLIB/src/stm32f4xx_exti.c ****     EXTI->FTSR &= ~EXTI_InitStruct->EXTI_Line;
+ 108              		.loc 1 149 0
+ 109 003a DA68     		ldr	r2, [r3, #12]
+ 110 003c 0168     		ldr	r1, [r0]
+ 111 003e 22EA0102 		bic	r2, r2, r1
+ 112 0042 DA60     		str	r2, [r3, #12]
+ 150:./FWLIB/src/stm32f4xx_exti.c ****     
+ 151:./FWLIB/src/stm32f4xx_exti.c ****     /* Select the trigger for the selected external interrupts */
+ 152:./FWLIB/src/stm32f4xx_exti.c ****     if (EXTI_InitStruct->EXTI_Trigger == EXTI_Trigger_Rising_Falling)
+ 113              		.loc 1 152 0
+ 114 0044 4379     		ldrb	r3, [r0, #5]	@ zero_extendqisi2
+ 115 0046 102B     		cmp	r3, #16
+ 116 0048 0AD0     		beq	.L12
+ 117              	.LVL3:
+ 153:./FWLIB/src/stm32f4xx_exti.c ****     {
+ 154:./FWLIB/src/stm32f4xx_exti.c ****       /* Rising Falling edge */
+ 155:./FWLIB/src/stm32f4xx_exti.c ****       EXTI->RTSR |= EXTI_InitStruct->EXTI_Line;
+ 156:./FWLIB/src/stm32f4xx_exti.c ****       EXTI->FTSR |= EXTI_InitStruct->EXTI_Line;
+ 157:./FWLIB/src/stm32f4xx_exti.c ****     }
+ 158:./FWLIB/src/stm32f4xx_exti.c ****     else
+ 159:./FWLIB/src/stm32f4xx_exti.c ****     {
+ 160:./FWLIB/src/stm32f4xx_exti.c ****       tmp = (uint32_t)EXTI_BASE;
+ 161:./FWLIB/src/stm32f4xx_exti.c ****       tmp += EXTI_InitStruct->EXTI_Trigger;
+ 118              		.loc 1 161 0
+ 119 004a 03F18043 		add	r3, r3, #1073741824
+ 120 004e 03F59E33 		add	r3, r3, #80896
+ 121              	.LVL4:
+ 162:./FWLIB/src/stm32f4xx_exti.c **** 
+ 163:./FWLIB/src/stm32f4xx_exti.c ****       *(__IO uint32_t *) tmp |= EXTI_InitStruct->EXTI_Line;
+ 122              		.loc 1 163 0
+ 123 0052 1A68     		ldr	r2, [r3]
+ 124 0054 0168     		ldr	r1, [r0]
+ARM GAS  /tmp/cchuRpXL.s 			page 6
+
+
+ 125 0056 0A43     		orrs	r2, r2, r1
+ 126 0058 1A60     		str	r2, [r3]
+ 127              	.LVL5:
+ 128              	.L4:
+ 164:./FWLIB/src/stm32f4xx_exti.c ****     }
+ 165:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 166:./FWLIB/src/stm32f4xx_exti.c ****   else
+ 167:./FWLIB/src/stm32f4xx_exti.c ****   {
+ 168:./FWLIB/src/stm32f4xx_exti.c ****     tmp += EXTI_InitStruct->EXTI_Mode;
+ 169:./FWLIB/src/stm32f4xx_exti.c **** 
+ 170:./FWLIB/src/stm32f4xx_exti.c ****     /* Disable the selected external lines */
+ 171:./FWLIB/src/stm32f4xx_exti.c ****     *(__IO uint32_t *) tmp &= ~EXTI_InitStruct->EXTI_Line;
+ 172:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 173:./FWLIB/src/stm32f4xx_exti.c **** }
+ 129              		.loc 1 173 0
+ 130 005a 5DF8044B 		ldr	r4, [sp], #4
+ 131              	.LCFI1:
+ 132              		.cfi_remember_state
+ 133              		.cfi_restore 4
+ 134              		.cfi_def_cfa_offset 0
+ 135 005e 7047     		bx	lr
+ 136              	.L12:
+ 137              	.LCFI2:
+ 138              		.cfi_restore_state
+ 155:./FWLIB/src/stm32f4xx_exti.c ****       EXTI->FTSR |= EXTI_InitStruct->EXTI_Line;
+ 139              		.loc 1 155 0
+ 140 0060 0A4B     		ldr	r3, .L13
+ 141 0062 9A68     		ldr	r2, [r3, #8]
+ 142 0064 0168     		ldr	r1, [r0]
+ 143 0066 0A43     		orrs	r2, r2, r1
+ 144 0068 9A60     		str	r2, [r3, #8]
+ 156:./FWLIB/src/stm32f4xx_exti.c ****     }
+ 145              		.loc 1 156 0
+ 146 006a DA68     		ldr	r2, [r3, #12]
+ 147 006c 0168     		ldr	r1, [r0]
+ 148 006e 0A43     		orrs	r2, r2, r1
+ 149 0070 DA60     		str	r2, [r3, #12]
+ 150 0072 F2E7     		b	.L4
+ 151              	.LVL6:
+ 152              	.L5:
+ 153              	.LCFI3:
+ 154              		.cfi_def_cfa_offset 0
+ 155              		.cfi_restore 4
+ 168:./FWLIB/src/stm32f4xx_exti.c **** 
+ 156              		.loc 1 168 0
+ 157 0074 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 158 0076 03F18043 		add	r3, r3, #1073741824
+ 159 007a 03F59E33 		add	r3, r3, #80896
+ 160              	.LVL7:
+ 171:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 161              		.loc 1 171 0
+ 162 007e 1A68     		ldr	r2, [r3]
+ 163 0080 0168     		ldr	r1, [r0]
+ 164 0082 22EA0102 		bic	r2, r2, r1
+ 165 0086 1A60     		str	r2, [r3]
+ 166 0088 7047     		bx	lr
+ 167              	.L14:
+ARM GAS  /tmp/cchuRpXL.s 			page 7
+
+
+ 168 008a 00BF     		.align	2
+ 169              	.L13:
+ 170 008c 003C0140 		.word	1073822720
+ 171              		.cfi_endproc
+ 172              	.LFE113:
+ 174              		.section	.text.EXTI_StructInit,"ax",%progbits
+ 175              		.align	1
+ 176              		.global	EXTI_StructInit
+ 177              		.syntax unified
+ 178              		.thumb
+ 179              		.thumb_func
+ 180              		.fpu fpv4-sp-d16
+ 182              	EXTI_StructInit:
+ 183              	.LFB114:
+ 174:./FWLIB/src/stm32f4xx_exti.c **** 
+ 175:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 176:./FWLIB/src/stm32f4xx_exti.c ****   * @brief  Fills each EXTI_InitStruct member with its reset value.
+ 177:./FWLIB/src/stm32f4xx_exti.c ****   * @param  EXTI_InitStruct: pointer to a EXTI_InitTypeDef structure which will
+ 178:./FWLIB/src/stm32f4xx_exti.c ****   *         be initialized.
+ 179:./FWLIB/src/stm32f4xx_exti.c ****   * @retval None
+ 180:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 181:./FWLIB/src/stm32f4xx_exti.c **** void EXTI_StructInit(EXTI_InitTypeDef* EXTI_InitStruct)
+ 182:./FWLIB/src/stm32f4xx_exti.c **** {
+ 184              		.loc 1 182 0
+ 185              		.cfi_startproc
+ 186              		@ args = 0, pretend = 0, frame = 0
+ 187              		@ frame_needed = 0, uses_anonymous_args = 0
+ 188              		@ link register save eliminated.
+ 189              	.LVL8:
+ 183:./FWLIB/src/stm32f4xx_exti.c ****   EXTI_InitStruct->EXTI_Line = EXTI_LINENONE;
+ 190              		.loc 1 183 0
+ 191 0000 0023     		movs	r3, #0
+ 192 0002 0360     		str	r3, [r0]
+ 184:./FWLIB/src/stm32f4xx_exti.c ****   EXTI_InitStruct->EXTI_Mode = EXTI_Mode_Interrupt;
+ 193              		.loc 1 184 0
+ 194 0004 0371     		strb	r3, [r0, #4]
+ 185:./FWLIB/src/stm32f4xx_exti.c ****   EXTI_InitStruct->EXTI_Trigger = EXTI_Trigger_Falling;
+ 195              		.loc 1 185 0
+ 196 0006 0C22     		movs	r2, #12
+ 197 0008 4271     		strb	r2, [r0, #5]
+ 186:./FWLIB/src/stm32f4xx_exti.c ****   EXTI_InitStruct->EXTI_LineCmd = DISABLE;
+ 198              		.loc 1 186 0
+ 199 000a 8371     		strb	r3, [r0, #6]
+ 187:./FWLIB/src/stm32f4xx_exti.c **** }
+ 200              		.loc 1 187 0
+ 201 000c 7047     		bx	lr
+ 202              		.cfi_endproc
+ 203              	.LFE114:
+ 205              		.section	.text.EXTI_GenerateSWInterrupt,"ax",%progbits
+ 206              		.align	1
+ 207              		.global	EXTI_GenerateSWInterrupt
+ 208              		.syntax unified
+ 209              		.thumb
+ 210              		.thumb_func
+ 211              		.fpu fpv4-sp-d16
+ 213              	EXTI_GenerateSWInterrupt:
+ 214              	.LFB115:
+ARM GAS  /tmp/cchuRpXL.s 			page 8
+
+
+ 188:./FWLIB/src/stm32f4xx_exti.c **** 
+ 189:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 190:./FWLIB/src/stm32f4xx_exti.c ****   * @brief  Generates a Software interrupt on selected EXTI line.
+ 191:./FWLIB/src/stm32f4xx_exti.c ****   * @param  EXTI_Line: specifies the EXTI line on which the software interrupt
+ 192:./FWLIB/src/stm32f4xx_exti.c ****   *         will be generated.
+ 193:./FWLIB/src/stm32f4xx_exti.c ****   *         This parameter can be any combination of EXTI_Linex where x can be (0..22)
+ 194:./FWLIB/src/stm32f4xx_exti.c ****   * @retval None
+ 195:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 196:./FWLIB/src/stm32f4xx_exti.c **** void EXTI_GenerateSWInterrupt(uint32_t EXTI_Line)
+ 197:./FWLIB/src/stm32f4xx_exti.c **** {
+ 215              		.loc 1 197 0
+ 216              		.cfi_startproc
+ 217              		@ args = 0, pretend = 0, frame = 0
+ 218              		@ frame_needed = 0, uses_anonymous_args = 0
+ 219              		@ link register save eliminated.
+ 220              	.LVL9:
+ 198:./FWLIB/src/stm32f4xx_exti.c ****   /* Check the parameters */
+ 199:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_EXTI_LINE(EXTI_Line));
+ 200:./FWLIB/src/stm32f4xx_exti.c ****   
+ 201:./FWLIB/src/stm32f4xx_exti.c ****   EXTI->SWIER |= EXTI_Line;
+ 221              		.loc 1 201 0
+ 222 0000 024A     		ldr	r2, .L17
+ 223 0002 1369     		ldr	r3, [r2, #16]
+ 224 0004 1843     		orrs	r0, r0, r3
+ 225              	.LVL10:
+ 226 0006 1061     		str	r0, [r2, #16]
+ 202:./FWLIB/src/stm32f4xx_exti.c **** }
+ 227              		.loc 1 202 0
+ 228 0008 7047     		bx	lr
+ 229              	.L18:
+ 230 000a 00BF     		.align	2
+ 231              	.L17:
+ 232 000c 003C0140 		.word	1073822720
+ 233              		.cfi_endproc
+ 234              	.LFE115:
+ 236              		.section	.text.EXTI_GetFlagStatus,"ax",%progbits
+ 237              		.align	1
+ 238              		.global	EXTI_GetFlagStatus
+ 239              		.syntax unified
+ 240              		.thumb
+ 241              		.thumb_func
+ 242              		.fpu fpv4-sp-d16
+ 244              	EXTI_GetFlagStatus:
+ 245              	.LFB116:
+ 203:./FWLIB/src/stm32f4xx_exti.c **** 
+ 204:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 205:./FWLIB/src/stm32f4xx_exti.c ****   * @}
+ 206:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 207:./FWLIB/src/stm32f4xx_exti.c **** 
+ 208:./FWLIB/src/stm32f4xx_exti.c **** /** @defgroup EXTI_Group2 Interrupts and flags management functions
+ 209:./FWLIB/src/stm32f4xx_exti.c ****  *  @brief   Interrupts and flags management functions 
+ 210:./FWLIB/src/stm32f4xx_exti.c ****  *
+ 211:./FWLIB/src/stm32f4xx_exti.c **** @verbatim   
+ 212:./FWLIB/src/stm32f4xx_exti.c ****  ===============================================================================
+ 213:./FWLIB/src/stm32f4xx_exti.c ****              ##### Interrupts and flags management functions #####
+ 214:./FWLIB/src/stm32f4xx_exti.c ****  ===============================================================================
+ 215:./FWLIB/src/stm32f4xx_exti.c **** 
+ARM GAS  /tmp/cchuRpXL.s 			page 9
+
+
+ 216:./FWLIB/src/stm32f4xx_exti.c **** @endverbatim
+ 217:./FWLIB/src/stm32f4xx_exti.c ****   * @{
+ 218:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 219:./FWLIB/src/stm32f4xx_exti.c **** 
+ 220:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 221:./FWLIB/src/stm32f4xx_exti.c ****   * @brief  Checks whether the specified EXTI line flag is set or not.
+ 222:./FWLIB/src/stm32f4xx_exti.c ****   * @param  EXTI_Line: specifies the EXTI line flag to check.
+ 223:./FWLIB/src/stm32f4xx_exti.c ****   *          This parameter can be EXTI_Linex where x can be(0..22)
+ 224:./FWLIB/src/stm32f4xx_exti.c ****   * @retval The new state of EXTI_Line (SET or RESET).
+ 225:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 226:./FWLIB/src/stm32f4xx_exti.c **** FlagStatus EXTI_GetFlagStatus(uint32_t EXTI_Line)
+ 227:./FWLIB/src/stm32f4xx_exti.c **** {
+ 246              		.loc 1 227 0
+ 247              		.cfi_startproc
+ 248              		@ args = 0, pretend = 0, frame = 0
+ 249              		@ frame_needed = 0, uses_anonymous_args = 0
+ 250              		@ link register save eliminated.
+ 251              	.LVL11:
+ 228:./FWLIB/src/stm32f4xx_exti.c ****   FlagStatus bitstatus = RESET;
+ 229:./FWLIB/src/stm32f4xx_exti.c ****   /* Check the parameters */
+ 230:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_GET_EXTI_LINE(EXTI_Line));
+ 231:./FWLIB/src/stm32f4xx_exti.c ****   
+ 232:./FWLIB/src/stm32f4xx_exti.c ****   if ((EXTI->PR & EXTI_Line) != (uint32_t)RESET)
+ 252              		.loc 1 232 0
+ 253 0000 034B     		ldr	r3, .L23
+ 254 0002 5B69     		ldr	r3, [r3, #20]
+ 255 0004 0342     		tst	r3, r0
+ 256 0006 01D1     		bne	.L22
+ 233:./FWLIB/src/stm32f4xx_exti.c ****   {
+ 234:./FWLIB/src/stm32f4xx_exti.c ****     bitstatus = SET;
+ 235:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 236:./FWLIB/src/stm32f4xx_exti.c ****   else
+ 237:./FWLIB/src/stm32f4xx_exti.c ****   {
+ 238:./FWLIB/src/stm32f4xx_exti.c ****     bitstatus = RESET;
+ 257              		.loc 1 238 0
+ 258 0008 0020     		movs	r0, #0
+ 259              	.LVL12:
+ 239:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 240:./FWLIB/src/stm32f4xx_exti.c ****   return bitstatus;
+ 241:./FWLIB/src/stm32f4xx_exti.c **** }
+ 260              		.loc 1 241 0
+ 261 000a 7047     		bx	lr
+ 262              	.LVL13:
+ 263              	.L22:
+ 234:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 264              		.loc 1 234 0
+ 265 000c 0120     		movs	r0, #1
+ 266              	.LVL14:
+ 267 000e 7047     		bx	lr
+ 268              	.L24:
+ 269              		.align	2
+ 270              	.L23:
+ 271 0010 003C0140 		.word	1073822720
+ 272              		.cfi_endproc
+ 273              	.LFE116:
+ 275              		.section	.text.EXTI_ClearFlag,"ax",%progbits
+ 276              		.align	1
+ARM GAS  /tmp/cchuRpXL.s 			page 10
+
+
+ 277              		.global	EXTI_ClearFlag
+ 278              		.syntax unified
+ 279              		.thumb
+ 280              		.thumb_func
+ 281              		.fpu fpv4-sp-d16
+ 283              	EXTI_ClearFlag:
+ 284              	.LFB117:
+ 242:./FWLIB/src/stm32f4xx_exti.c **** 
+ 243:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 244:./FWLIB/src/stm32f4xx_exti.c ****   * @brief  Clears the EXTI's line pending flags.
+ 245:./FWLIB/src/stm32f4xx_exti.c ****   * @param  EXTI_Line: specifies the EXTI lines flags to clear.
+ 246:./FWLIB/src/stm32f4xx_exti.c ****   *          This parameter can be any combination of EXTI_Linex where x can be (0..22)
+ 247:./FWLIB/src/stm32f4xx_exti.c ****   * @retval None
+ 248:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 249:./FWLIB/src/stm32f4xx_exti.c **** void EXTI_ClearFlag(uint32_t EXTI_Line)
+ 250:./FWLIB/src/stm32f4xx_exti.c **** {
+ 285              		.loc 1 250 0
+ 286              		.cfi_startproc
+ 287              		@ args = 0, pretend = 0, frame = 0
+ 288              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289              		@ link register save eliminated.
+ 290              	.LVL15:
+ 251:./FWLIB/src/stm32f4xx_exti.c ****   /* Check the parameters */
+ 252:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_EXTI_LINE(EXTI_Line));
+ 253:./FWLIB/src/stm32f4xx_exti.c ****   
+ 254:./FWLIB/src/stm32f4xx_exti.c ****   EXTI->PR = EXTI_Line;
+ 291              		.loc 1 254 0
+ 292 0000 014B     		ldr	r3, .L26
+ 293 0002 5861     		str	r0, [r3, #20]
+ 255:./FWLIB/src/stm32f4xx_exti.c **** }
+ 294              		.loc 1 255 0
+ 295 0004 7047     		bx	lr
+ 296              	.L27:
+ 297 0006 00BF     		.align	2
+ 298              	.L26:
+ 299 0008 003C0140 		.word	1073822720
+ 300              		.cfi_endproc
+ 301              	.LFE117:
+ 303              		.section	.text.EXTI_GetITStatus,"ax",%progbits
+ 304              		.align	1
+ 305              		.global	EXTI_GetITStatus
+ 306              		.syntax unified
+ 307              		.thumb
+ 308              		.thumb_func
+ 309              		.fpu fpv4-sp-d16
+ 311              	EXTI_GetITStatus:
+ 312              	.LFB118:
+ 256:./FWLIB/src/stm32f4xx_exti.c **** 
+ 257:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 258:./FWLIB/src/stm32f4xx_exti.c ****   * @brief  Checks whether the specified EXTI line is asserted or not.
+ 259:./FWLIB/src/stm32f4xx_exti.c ****   * @param  EXTI_Line: specifies the EXTI line to check.
+ 260:./FWLIB/src/stm32f4xx_exti.c ****   *          This parameter can be EXTI_Linex where x can be(0..22)
+ 261:./FWLIB/src/stm32f4xx_exti.c ****   * @retval The new state of EXTI_Line (SET or RESET).
+ 262:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 263:./FWLIB/src/stm32f4xx_exti.c **** ITStatus EXTI_GetITStatus(uint32_t EXTI_Line)
+ 264:./FWLIB/src/stm32f4xx_exti.c **** {
+ 313              		.loc 1 264 0
+ARM GAS  /tmp/cchuRpXL.s 			page 11
+
+
+ 314              		.cfi_startproc
+ 315              		@ args = 0, pretend = 0, frame = 0
+ 316              		@ frame_needed = 0, uses_anonymous_args = 0
+ 317              		@ link register save eliminated.
+ 318              	.LVL16:
+ 265:./FWLIB/src/stm32f4xx_exti.c ****   FlagStatus bitstatus = RESET;
+ 266:./FWLIB/src/stm32f4xx_exti.c ****   /* Check the parameters */
+ 267:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_GET_EXTI_LINE(EXTI_Line));
+ 268:./FWLIB/src/stm32f4xx_exti.c ****   
+ 269:./FWLIB/src/stm32f4xx_exti.c ****   if ((EXTI->PR & EXTI_Line) != (uint32_t)RESET)
+ 319              		.loc 1 269 0
+ 320 0000 034B     		ldr	r3, .L32
+ 321 0002 5B69     		ldr	r3, [r3, #20]
+ 322 0004 0342     		tst	r3, r0
+ 323 0006 01D1     		bne	.L31
+ 270:./FWLIB/src/stm32f4xx_exti.c ****   {
+ 271:./FWLIB/src/stm32f4xx_exti.c ****     bitstatus = SET;
+ 272:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 273:./FWLIB/src/stm32f4xx_exti.c ****   else
+ 274:./FWLIB/src/stm32f4xx_exti.c ****   {
+ 275:./FWLIB/src/stm32f4xx_exti.c ****     bitstatus = RESET;
+ 324              		.loc 1 275 0
+ 325 0008 0020     		movs	r0, #0
+ 326              	.LVL17:
+ 276:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 277:./FWLIB/src/stm32f4xx_exti.c ****   return bitstatus;
+ 278:./FWLIB/src/stm32f4xx_exti.c ****   
+ 279:./FWLIB/src/stm32f4xx_exti.c **** }
+ 327              		.loc 1 279 0
+ 328 000a 7047     		bx	lr
+ 329              	.LVL18:
+ 330              	.L31:
+ 271:./FWLIB/src/stm32f4xx_exti.c ****   }
+ 331              		.loc 1 271 0
+ 332 000c 0120     		movs	r0, #1
+ 333              	.LVL19:
+ 334 000e 7047     		bx	lr
+ 335              	.L33:
+ 336              		.align	2
+ 337              	.L32:
+ 338 0010 003C0140 		.word	1073822720
+ 339              		.cfi_endproc
+ 340              	.LFE118:
+ 342              		.section	.text.EXTI_ClearITPendingBit,"ax",%progbits
+ 343              		.align	1
+ 344              		.global	EXTI_ClearITPendingBit
+ 345              		.syntax unified
+ 346              		.thumb
+ 347              		.thumb_func
+ 348              		.fpu fpv4-sp-d16
+ 350              	EXTI_ClearITPendingBit:
+ 351              	.LFB119:
+ 280:./FWLIB/src/stm32f4xx_exti.c **** 
+ 281:./FWLIB/src/stm32f4xx_exti.c **** /**
+ 282:./FWLIB/src/stm32f4xx_exti.c ****   * @brief  Clears the EXTI's line pending bits.
+ 283:./FWLIB/src/stm32f4xx_exti.c ****   * @param  EXTI_Line: specifies the EXTI lines to clear.
+ 284:./FWLIB/src/stm32f4xx_exti.c ****   *          This parameter can be any combination of EXTI_Linex where x can be (0..22)
+ARM GAS  /tmp/cchuRpXL.s 			page 12
+
+
+ 285:./FWLIB/src/stm32f4xx_exti.c ****   * @retval None
+ 286:./FWLIB/src/stm32f4xx_exti.c ****   */
+ 287:./FWLIB/src/stm32f4xx_exti.c **** void EXTI_ClearITPendingBit(uint32_t EXTI_Line)
+ 288:./FWLIB/src/stm32f4xx_exti.c **** {
+ 352              		.loc 1 288 0
+ 353              		.cfi_startproc
+ 354              		@ args = 0, pretend = 0, frame = 0
+ 355              		@ frame_needed = 0, uses_anonymous_args = 0
+ 356              		@ link register save eliminated.
+ 357              	.LVL20:
+ 289:./FWLIB/src/stm32f4xx_exti.c ****   /* Check the parameters */
+ 290:./FWLIB/src/stm32f4xx_exti.c ****   assert_param(IS_EXTI_LINE(EXTI_Line));
+ 291:./FWLIB/src/stm32f4xx_exti.c ****   
+ 292:./FWLIB/src/stm32f4xx_exti.c ****   EXTI->PR = EXTI_Line;
+ 358              		.loc 1 292 0
+ 359 0000 014B     		ldr	r3, .L35
+ 360 0002 5861     		str	r0, [r3, #20]
+ 293:./FWLIB/src/stm32f4xx_exti.c **** }
+ 361              		.loc 1 293 0
+ 362 0004 7047     		bx	lr
+ 363              	.L36:
+ 364 0006 00BF     		.align	2
+ 365              	.L35:
+ 366 0008 003C0140 		.word	1073822720
+ 367              		.cfi_endproc
+ 368              	.LFE119:
+ 370              		.text
+ 371              	.Letext0:
+ 372              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 373              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 374              		.file 4 "build/lnInclude/core_cm4.h"
+ 375              		.file 5 "build/lnInclude/system_stm32f4xx.h"
+ 376              		.file 6 "build/lnInclude/stm32f4xx.h"
+ 377              		.file 7 "build/lnInclude/stm32f4xx_exti.h"
+ARM GAS  /tmp/cchuRpXL.s 			page 13
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32f4xx_exti.c
+     /tmp/cchuRpXL.s:18     .text.EXTI_DeInit:0000000000000000 $t
+     /tmp/cchuRpXL.s:25     .text.EXTI_DeInit:0000000000000000 EXTI_DeInit
+     /tmp/cchuRpXL.s:51     .text.EXTI_DeInit:0000000000000014 $d
+     /tmp/cchuRpXL.s:57     .text.EXTI_Init:0000000000000000 $t
+     /tmp/cchuRpXL.s:64     .text.EXTI_Init:0000000000000000 EXTI_Init
+     /tmp/cchuRpXL.s:170    .text.EXTI_Init:000000000000008c $d
+     /tmp/cchuRpXL.s:175    .text.EXTI_StructInit:0000000000000000 $t
+     /tmp/cchuRpXL.s:182    .text.EXTI_StructInit:0000000000000000 EXTI_StructInit
+     /tmp/cchuRpXL.s:206    .text.EXTI_GenerateSWInterrupt:0000000000000000 $t
+     /tmp/cchuRpXL.s:213    .text.EXTI_GenerateSWInterrupt:0000000000000000 EXTI_GenerateSWInterrupt
+     /tmp/cchuRpXL.s:232    .text.EXTI_GenerateSWInterrupt:000000000000000c $d
+     /tmp/cchuRpXL.s:237    .text.EXTI_GetFlagStatus:0000000000000000 $t
+     /tmp/cchuRpXL.s:244    .text.EXTI_GetFlagStatus:0000000000000000 EXTI_GetFlagStatus
+     /tmp/cchuRpXL.s:271    .text.EXTI_GetFlagStatus:0000000000000010 $d
+     /tmp/cchuRpXL.s:276    .text.EXTI_ClearFlag:0000000000000000 $t
+     /tmp/cchuRpXL.s:283    .text.EXTI_ClearFlag:0000000000000000 EXTI_ClearFlag
+     /tmp/cchuRpXL.s:299    .text.EXTI_ClearFlag:0000000000000008 $d
+     /tmp/cchuRpXL.s:304    .text.EXTI_GetITStatus:0000000000000000 $t
+     /tmp/cchuRpXL.s:311    .text.EXTI_GetITStatus:0000000000000000 EXTI_GetITStatus
+     /tmp/cchuRpXL.s:338    .text.EXTI_GetITStatus:0000000000000010 $d
+     /tmp/cchuRpXL.s:343    .text.EXTI_ClearITPendingBit:0000000000000000 $t
+     /tmp/cchuRpXL.s:350    .text.EXTI_ClearITPendingBit:0000000000000000 EXTI_ClearITPendingBit
+     /tmp/cchuRpXL.s:366    .text.EXTI_ClearITPendingBit:0000000000000008 $d
+
+NO UNDEFINED SYMBOLS

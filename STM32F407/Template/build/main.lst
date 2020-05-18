@@ -1,0 +1,145 @@
+ARM GAS  /tmp/cckUlOcd.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"main.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.main,"ax",%progbits
+  18              		.align	1
+  19              		.global	main
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	main:
+  26              	.LFB115:
+  27              		.file 1 "./USER/main.c"
+   1:./USER/main.c **** #include "sys.h"
+   2:./USER/main.c **** #include "delay.h"
+   3:./USER/main.c **** #include "usart.h"
+   4:./USER/main.c **** #include "led.h"
+   5:./USER/main.c **** 
+   6:./USER/main.c **** 
+   7:./USER/main.c **** //跑马灯实验 -库函数版本
+   8:./USER/main.c **** //STM32F4工程模板-库函数版本
+   9:./USER/main.c **** //淘宝店铺：http://mcudev.taobao.com
+  10:./USER/main.c **** 
+  11:./USER/main.c **** int main(void)
+  12:./USER/main.c **** { 
+  28              		.loc 1 12 0
+  29              		.cfi_startproc
+  30              		@ Volatile: function does not return.
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  13:./USER/main.c ****  
+  14:./USER/main.c **** 	delay_init(168);		  //初始化延时函数
+  38              		.loc 1 14 0
+  39 0002 A820     		movs	r0, #168
+  40 0004 FFF7FEFF 		bl	delay_init
+  41              	.LVL0:
+  15:./USER/main.c **** 	LED_Init();		        //初始化LED端口
+  42              		.loc 1 15 0
+  43 0008 FFF7FEFF 		bl	LED_Init
+ARM GAS  /tmp/cckUlOcd.s 			page 2
+
+
+  44              	.LVL1:
+  45              	.L2:
+  16:./USER/main.c **** 	
+  17:./USER/main.c ****   /**下面是通过直接操作库函数的方式实现IO控制**/	
+  18:./USER/main.c **** 	
+  19:./USER/main.c **** 	while(1)
+  20:./USER/main.c **** 	{
+  21:./USER/main.c **** 	GPIO_ResetBits(GPIOA,GPIO_Pin_6);  //LED0对应引脚GPIOA.6拉低，亮  等同LED0=0;
+  46              		.loc 1 21 0 discriminator 1
+  47 000c 0C4C     		ldr	r4, .L4
+  48 000e 4021     		movs	r1, #64
+  49 0010 2046     		mov	r0, r4
+  50 0012 FFF7FEFF 		bl	GPIO_ResetBits
+  51              	.LVL2:
+  22:./USER/main.c **** 	GPIO_SetBits(GPIOA,GPIO_Pin_7);   //LED1对应引脚GPIOA.7拉高，灭 等同LED1=1;
+  52              		.loc 1 22 0 discriminator 1
+  53 0016 8021     		movs	r1, #128
+  54 0018 2046     		mov	r0, r4
+  55 001a FFF7FEFF 		bl	GPIO_SetBits
+  56              	.LVL3:
+  23:./USER/main.c **** 	delay_ms(500);  		   //延时300ms
+  57              		.loc 1 23 0 discriminator 1
+  58 001e 4FF4FA70 		mov	r0, #500
+  59 0022 FFF7FEFF 		bl	delay_ms
+  60              	.LVL4:
+  24:./USER/main.c **** 	GPIO_SetBits(GPIOA,GPIO_Pin_6);	   //LED0对应引脚GPIOA.6拉高，灭  等同LED0=1;
+  61              		.loc 1 24 0 discriminator 1
+  62 0026 4021     		movs	r1, #64
+  63 0028 2046     		mov	r0, r4
+  64 002a FFF7FEFF 		bl	GPIO_SetBits
+  65              	.LVL5:
+  25:./USER/main.c **** 	GPIO_ResetBits(GPIOA,GPIO_Pin_7); //LED1对应引脚GPIOA.7拉低，亮 等同LED1=0;
+  66              		.loc 1 25 0 discriminator 1
+  67 002e 8021     		movs	r1, #128
+  68 0030 2046     		mov	r0, r4
+  69 0032 FFF7FEFF 		bl	GPIO_ResetBits
+  70              	.LVL6:
+  26:./USER/main.c **** 	delay_ms(500);                     //延时300ms
+  71              		.loc 1 26 0 discriminator 1
+  72 0036 4FF4FA70 		mov	r0, #500
+  73 003a FFF7FEFF 		bl	delay_ms
+  74              	.LVL7:
+  75 003e E5E7     		b	.L2
+  76              	.L5:
+  77              		.align	2
+  78              	.L4:
+  79 0040 00000240 		.word	1073872896
+  80              		.cfi_endproc
+  81              	.LFE115:
+  83              		.text
+  84              	.Letext0:
+  85              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+  86              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+  87              		.file 4 "build/lnInclude/core_cm4.h"
+  88              		.file 5 "build/lnInclude/system_stm32f4xx.h"
+  89              		.file 6 "build/lnInclude/stm32f4xx.h"
+  90              		.file 7 "/usr/arm-none-eabi/include/sys/lock.h"
+ARM GAS  /tmp/cckUlOcd.s 			page 3
+
+
+  91              		.file 8 "/usr/arm-none-eabi/include/sys/_types.h"
+  92              		.file 9 "/usr/lib/gcc/arm-none-eabi/7.3.1/include/stddef.h"
+  93              		.file 10 "/usr/arm-none-eabi/include/sys/reent.h"
+  94              		.file 11 "build/lnInclude/usart.h"
+  95              		.file 12 "build/lnInclude/delay.h"
+  96              		.file 13 "build/lnInclude/led.h"
+  97              		.file 14 "build/lnInclude/stm32f4xx_gpio.h"
+ARM GAS  /tmp/cckUlOcd.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/cckUlOcd.s:18     .text.main:0000000000000000 $t
+     /tmp/cckUlOcd.s:25     .text.main:0000000000000000 main
+     /tmp/cckUlOcd.s:79     .text.main:0000000000000040 $d
+
+UNDEFINED SYMBOLS
+delay_init
+LED_Init
+GPIO_ResetBits
+GPIO_SetBits
+delay_ms

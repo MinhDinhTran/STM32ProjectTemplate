@@ -1,0 +1,1362 @@
+ARM GAS  /tmp/ccrZJTjE.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32f4xx_hash_md5.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.HASH_MD5,"ax",%progbits
+  18              		.align	1
+  19              		.global	HASH_MD5
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	HASH_MD5:
+  26              	.LFB112:
+  27              		.file 1 "./FWLIB/src/stm32f4xx_hash_md5.c"
+   1:./FWLIB/src/stm32f4xx_hash_md5.c **** /**
+   2:./FWLIB/src/stm32f4xx_hash_md5.c ****   ******************************************************************************
+   3:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @file    stm32f4xx_hash_md5.c
+   4:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @author  MCD Application Team
+   5:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @version V1.4.0
+   6:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @date    04-August-2014
+   7:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @brief   This file provides high level functions to compute the HASH MD5 and
+   8:./FWLIB/src/stm32f4xx_hash_md5.c ****   *          HMAC MD5 Digest of an input message.
+   9:./FWLIB/src/stm32f4xx_hash_md5.c ****   *          It uses the stm32f4xx_hash.c/.h drivers to access the STM32F4xx HASH
+  10:./FWLIB/src/stm32f4xx_hash_md5.c ****   *          peripheral.
+  11:./FWLIB/src/stm32f4xx_hash_md5.c ****   *
+  12:./FWLIB/src/stm32f4xx_hash_md5.c **** @verbatim
+  13:./FWLIB/src/stm32f4xx_hash_md5.c ****  ===================================================================
+  14:./FWLIB/src/stm32f4xx_hash_md5.c ****                   ##### How to use this driver #####
+  15:./FWLIB/src/stm32f4xx_hash_md5.c ****  ===================================================================
+  16:./FWLIB/src/stm32f4xx_hash_md5.c ****  [..]
+  17:./FWLIB/src/stm32f4xx_hash_md5.c ****    (#) Enable The HASH controller clock using 
+  18:./FWLIB/src/stm32f4xx_hash_md5.c ****        RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_HASH, ENABLE); function.
+  19:./FWLIB/src/stm32f4xx_hash_md5.c ****   
+  20:./FWLIB/src/stm32f4xx_hash_md5.c ****    (#) Calculate the HASH MD5 Digest using HASH_MD5() function.
+  21:./FWLIB/src/stm32f4xx_hash_md5.c ****   
+  22:./FWLIB/src/stm32f4xx_hash_md5.c ****    (#) Calculate the HMAC MD5 Digest using HMAC_MD5() function.
+  23:./FWLIB/src/stm32f4xx_hash_md5.c ****   
+  24:./FWLIB/src/stm32f4xx_hash_md5.c **** @endverbatim
+  25:./FWLIB/src/stm32f4xx_hash_md5.c ****   *
+  26:./FWLIB/src/stm32f4xx_hash_md5.c ****   ******************************************************************************
+  27:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @attention
+  28:./FWLIB/src/stm32f4xx_hash_md5.c ****   *
+  29:./FWLIB/src/stm32f4xx_hash_md5.c ****   * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+  30:./FWLIB/src/stm32f4xx_hash_md5.c ****   *
+  31:./FWLIB/src/stm32f4xx_hash_md5.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+ARM GAS  /tmp/ccrZJTjE.s 			page 2
+
+
+  32:./FWLIB/src/stm32f4xx_hash_md5.c ****   * You may not use this file except in compliance with the License.
+  33:./FWLIB/src/stm32f4xx_hash_md5.c ****   * You may obtain a copy of the License at:
+  34:./FWLIB/src/stm32f4xx_hash_md5.c ****   *
+  35:./FWLIB/src/stm32f4xx_hash_md5.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  36:./FWLIB/src/stm32f4xx_hash_md5.c ****   *
+  37:./FWLIB/src/stm32f4xx_hash_md5.c ****   * Unless required by applicable law or agreed to in writing, software 
+  38:./FWLIB/src/stm32f4xx_hash_md5.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  39:./FWLIB/src/stm32f4xx_hash_md5.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  40:./FWLIB/src/stm32f4xx_hash_md5.c ****   * See the License for the specific language governing permissions and
+  41:./FWLIB/src/stm32f4xx_hash_md5.c ****   * limitations under the License.
+  42:./FWLIB/src/stm32f4xx_hash_md5.c ****   *
+  43:./FWLIB/src/stm32f4xx_hash_md5.c ****   ******************************************************************************
+  44:./FWLIB/src/stm32f4xx_hash_md5.c ****   */
+  45:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  46:./FWLIB/src/stm32f4xx_hash_md5.c **** /* Includes ------------------------------------------------------------------*/
+  47:./FWLIB/src/stm32f4xx_hash_md5.c **** #include "stm32f4xx_hash.h"
+  48:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  49:./FWLIB/src/stm32f4xx_hash_md5.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
+  50:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @{
+  51:./FWLIB/src/stm32f4xx_hash_md5.c ****   */
+  52:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  53:./FWLIB/src/stm32f4xx_hash_md5.c **** /** @defgroup HASH 
+  54:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @brief HASH driver modules
+  55:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @{
+  56:./FWLIB/src/stm32f4xx_hash_md5.c ****   */
+  57:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  58:./FWLIB/src/stm32f4xx_hash_md5.c **** /* Private typedef -----------------------------------------------------------*/
+  59:./FWLIB/src/stm32f4xx_hash_md5.c **** /* Private define ------------------------------------------------------------*/
+  60:./FWLIB/src/stm32f4xx_hash_md5.c **** #define MD5BUSY_TIMEOUT    ((uint32_t) 0x00010000)
+  61:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  62:./FWLIB/src/stm32f4xx_hash_md5.c **** /* Private macro -------------------------------------------------------------*/
+  63:./FWLIB/src/stm32f4xx_hash_md5.c **** /* Private variables ---------------------------------------------------------*/
+  64:./FWLIB/src/stm32f4xx_hash_md5.c **** /* Private function prototypes -----------------------------------------------*/
+  65:./FWLIB/src/stm32f4xx_hash_md5.c **** /* Private functions ---------------------------------------------------------*/
+  66:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  67:./FWLIB/src/stm32f4xx_hash_md5.c **** /** @defgroup HASH_Private_Functions
+  68:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @{
+  69:./FWLIB/src/stm32f4xx_hash_md5.c ****   */ 
+  70:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  71:./FWLIB/src/stm32f4xx_hash_md5.c **** /** @defgroup HASH_Group7 High Level MD5 functions
+  72:./FWLIB/src/stm32f4xx_hash_md5.c ****  *  @brief   High Level MD5 Hash and HMAC functions 
+  73:./FWLIB/src/stm32f4xx_hash_md5.c ****  *
+  74:./FWLIB/src/stm32f4xx_hash_md5.c **** @verbatim   
+  75:./FWLIB/src/stm32f4xx_hash_md5.c ****  ===============================================================================
+  76:./FWLIB/src/stm32f4xx_hash_md5.c ****               ##### High Level MD5 Hash and HMAC functions #####
+  77:./FWLIB/src/stm32f4xx_hash_md5.c ****  ===============================================================================
+  78:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  79:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  80:./FWLIB/src/stm32f4xx_hash_md5.c **** @endverbatim
+  81:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @{
+  82:./FWLIB/src/stm32f4xx_hash_md5.c ****   */
+  83:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+  84:./FWLIB/src/stm32f4xx_hash_md5.c **** /**
+  85:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @brief  Compute the HASH MD5 digest.
+  86:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @param  Input: pointer to the Input buffer to be treated.
+  87:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @param  Ilen: length of the Input buffer.
+  88:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @param  Output: the returned digest
+ARM GAS  /tmp/ccrZJTjE.s 			page 3
+
+
+  89:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @retval An ErrorStatus enumeration value:
+  90:./FWLIB/src/stm32f4xx_hash_md5.c ****   *          - SUCCESS: digest computation done
+  91:./FWLIB/src/stm32f4xx_hash_md5.c ****   *          - ERROR: digest computation failed
+  92:./FWLIB/src/stm32f4xx_hash_md5.c ****   */
+  93:./FWLIB/src/stm32f4xx_hash_md5.c **** ErrorStatus HASH_MD5(uint8_t *Input, uint32_t Ilen, uint8_t Output[16])
+  94:./FWLIB/src/stm32f4xx_hash_md5.c **** {
+  28              		.loc 1 94 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 56
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 20
+  36              		.cfi_offset 4, -20
+  37              		.cfi_offset 5, -16
+  38              		.cfi_offset 6, -12
+  39              		.cfi_offset 7, -8
+  40              		.cfi_offset 14, -4
+  41 0002 8FB0     		sub	sp, sp, #60
+  42              	.LCFI1:
+  43              		.cfi_def_cfa_offset 80
+  44 0004 0F46     		mov	r7, r1
+  45 0006 1646     		mov	r6, r2
+  95:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_InitTypeDef MD5_HASH_InitStructure;
+  96:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_MsgDigest MD5_MessageDigest;
+  97:./FWLIB/src/stm32f4xx_hash_md5.c ****   __IO uint16_t nbvalidbitsdata = 0;
+  46              		.loc 1 97 0
+  47 0008 0024     		movs	r4, #0
+  48 000a ADF80640 		strh	r4, [sp, #6]	@ movhi
+  49              	.LVL1:
+  98:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t i = 0;
+  99:./FWLIB/src/stm32f4xx_hash_md5.c ****   __IO uint32_t counter = 0;
+  50              		.loc 1 99 0
+  51 000e 0094     		str	r4, [sp]
+  52              	.LVL2:
+ 100:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t busystatus = 0;
+ 101:./FWLIB/src/stm32f4xx_hash_md5.c ****   ErrorStatus status = SUCCESS;
+ 102:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t inputaddr  = (uint32_t)Input;
+  53              		.loc 1 102 0
+  54 0010 0546     		mov	r5, r0
+  55              	.LVL3:
+ 103:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t outputaddr = (uint32_t)Output;
+ 104:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 105:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 106:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Number of valid bits in last word of the Input data */
+ 107:./FWLIB/src/stm32f4xx_hash_md5.c ****   nbvalidbitsdata = 8 * (Ilen % 4);
+  56              		.loc 1 107 0
+  57 0012 01F00303 		and	r3, r1, #3
+  58 0016 DB00     		lsls	r3, r3, #3
+  59 0018 ADF80630 		strh	r3, [sp, #6]	@ movhi
+ 108:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 109:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* HASH peripheral initialization */
+ 110:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_DeInit();
+  60              		.loc 1 110 0
+  61 001c FFF7FEFF 		bl	HASH_DeInit
+  62              	.LVL4:
+ARM GAS  /tmp/ccrZJTjE.s 			page 4
+
+
+ 111:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 112:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* HASH Configuration */
+ 113:./FWLIB/src/stm32f4xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_AlgoSelection = HASH_AlgoSelection_MD5;
+  63              		.loc 1 113 0
+  64 0020 8023     		movs	r3, #128
+  65 0022 0A93     		str	r3, [sp, #40]
+ 114:./FWLIB/src/stm32f4xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_AlgoMode = HASH_AlgoMode_HASH;
+  66              		.loc 1 114 0
+  67 0024 0B94     		str	r4, [sp, #44]
+ 115:./FWLIB/src/stm32f4xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_DataType = HASH_DataType_8b;
+  68              		.loc 1 115 0
+  69 0026 2023     		movs	r3, #32
+  70 0028 0C93     		str	r3, [sp, #48]
+ 116:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_Init(&MD5_HASH_InitStructure);
+  71              		.loc 1 116 0
+  72 002a 0AA8     		add	r0, sp, #40
+  73 002c FFF7FEFF 		bl	HASH_Init
+  74              	.LVL5:
+ 117:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 118:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Configure the number of valid bits in last word of the data */
+ 119:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_SetLastWordValidBitsNbr(nbvalidbitsdata);
+  75              		.loc 1 119 0
+  76 0030 BDF80600 		ldrh	r0, [sp, #6]
+  77 0034 FFF7FEFF 		bl	HASH_SetLastWordValidBitsNbr
+  78              	.LVL6:
+ 120:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 121:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Write the Input block in the IN FIFO */
+ 122:./FWLIB/src/stm32f4xx_hash_md5.c ****   for(i=0; i<Ilen; i+=4)
+  79              		.loc 1 122 0
+  80 0038 04E0     		b	.L2
+  81              	.LVL7:
+  82              	.L3:
+ 123:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 124:./FWLIB/src/stm32f4xx_hash_md5.c ****     HASH_DataIn(*(uint32_t*)inputaddr);
+  83              		.loc 1 124 0 discriminator 3
+  84 003a 55F8040B 		ldr	r0, [r5], #4
+  85              	.LVL8:
+  86 003e FFF7FEFF 		bl	HASH_DataIn
+  87              	.LVL9:
+ 122:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+  88              		.loc 1 122 0 discriminator 3
+  89 0042 0434     		adds	r4, r4, #4
+  90              	.LVL10:
+  91              	.L2:
+ 122:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+  92              		.loc 1 122 0 is_stmt 0 discriminator 1
+  93 0044 BC42     		cmp	r4, r7
+  94 0046 F8D3     		bcc	.L3
+ 125:./FWLIB/src/stm32f4xx_hash_md5.c ****     inputaddr+=4;
+ 126:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 127:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 128:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Start the HASH processor */
+ 129:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_StartDigest();
+  95              		.loc 1 129 0 is_stmt 1
+  96 0048 FFF7FEFF 		bl	HASH_StartDigest
+  97              	.LVL11:
+  98              	.L5:
+ARM GAS  /tmp/ccrZJTjE.s 			page 5
+
+
+ 130:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 131:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* wait until the Busy flag is RESET */
+ 132:./FWLIB/src/stm32f4xx_hash_md5.c ****   do
+ 133:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 134:./FWLIB/src/stm32f4xx_hash_md5.c ****     busystatus = HASH_GetFlagStatus(HASH_FLAG_BUSY);
+  99              		.loc 1 134 0 discriminator 2
+ 100 004c 0820     		movs	r0, #8
+ 101 004e FFF7FEFF 		bl	HASH_GetFlagStatus
+ 102              	.LVL12:
+ 103 0052 0246     		mov	r2, r0
+ 104              	.LVL13:
+ 135:./FWLIB/src/stm32f4xx_hash_md5.c ****     counter++;
+ 105              		.loc 1 135 0 discriminator 2
+ 106 0054 009B     		ldr	r3, [sp]
+ 107 0056 0133     		adds	r3, r3, #1
+ 108 0058 0093     		str	r3, [sp]
+ 136:./FWLIB/src/stm32f4xx_hash_md5.c ****   }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 109              		.loc 1 136 0 discriminator 2
+ 110 005a 009B     		ldr	r3, [sp]
+ 111 005c B3F5803F 		cmp	r3, #65536
+ 112 0060 01D0     		beq	.L4
+ 113              		.loc 1 136 0 is_stmt 0 discriminator 1
+ 114 0062 0028     		cmp	r0, #0
+ 115 0064 F2D1     		bne	.L5
+ 116              	.L4:
+ 137:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 138:./FWLIB/src/stm32f4xx_hash_md5.c ****   if (busystatus != RESET)
+ 117              		.loc 1 138 0 is_stmt 1
+ 118 0066 12B1     		cbz	r2, .L9
+ 139:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 140:./FWLIB/src/stm32f4xx_hash_md5.c ****      status = ERROR;
+ 119              		.loc 1 140 0
+ 120 0068 0020     		movs	r0, #0
+ 121              	.LVL14:
+ 122              	.L6:
+ 141:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 142:./FWLIB/src/stm32f4xx_hash_md5.c ****   else
+ 143:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 144:./FWLIB/src/stm32f4xx_hash_md5.c ****     /* Read the message digest */
+ 145:./FWLIB/src/stm32f4xx_hash_md5.c ****     HASH_GetDigest(&MD5_MessageDigest);
+ 146:./FWLIB/src/stm32f4xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[0]);
+ 147:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 148:./FWLIB/src/stm32f4xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[1]);
+ 149:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 150:./FWLIB/src/stm32f4xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[2]);
+ 151:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 152:./FWLIB/src/stm32f4xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[3]);
+ 153:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 154:./FWLIB/src/stm32f4xx_hash_md5.c ****   return status; 
+ 155:./FWLIB/src/stm32f4xx_hash_md5.c **** }
+ 123              		.loc 1 155 0
+ 124 006a 0FB0     		add	sp, sp, #60
+ 125              	.LCFI2:
+ 126              		.cfi_remember_state
+ 127              		.cfi_def_cfa_offset 20
+ 128              		@ sp needed
+ 129 006c F0BD     		pop	{r4, r5, r6, r7, pc}
+ARM GAS  /tmp/ccrZJTjE.s 			page 6
+
+
+ 130              	.LVL15:
+ 131              	.L9:
+ 132              	.LCFI3:
+ 133              		.cfi_restore_state
+ 145:./FWLIB/src/stm32f4xx_hash_md5.c ****     *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[0]);
+ 134              		.loc 1 145 0
+ 135 006e 02A8     		add	r0, sp, #8
+ 136              	.LVL16:
+ 137 0070 FFF7FEFF 		bl	HASH_GetDigest
+ 138              	.LVL17:
+ 146:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 139              		.loc 1 146 0
+ 140 0074 029B     		ldr	r3, [sp, #8]
+ 141              	.LVL18:
+ 142              	.LBB18:
+ 143              	.LBB19:
+ 144              		.file 2 "build/lnInclude/core_cmInstr.h"
+   1:build/lnInclude/core_cmInstr.h **** /**************************************************************************//**
+   2:build/lnInclude/core_cmInstr.h ****  * @file     core_cmInstr.h
+   3:build/lnInclude/core_cmInstr.h ****  * @brief    CMSIS Cortex-M Core Instruction Access Header File
+   4:build/lnInclude/core_cmInstr.h ****  * @version  V3.20
+   5:build/lnInclude/core_cmInstr.h ****  * @date     05. March 2013
+   6:build/lnInclude/core_cmInstr.h ****  *
+   7:build/lnInclude/core_cmInstr.h ****  * @note
+   8:build/lnInclude/core_cmInstr.h ****  *
+   9:build/lnInclude/core_cmInstr.h ****  ******************************************************************************/
+  10:build/lnInclude/core_cmInstr.h **** /* Copyright (c) 2009 - 2013 ARM LIMITED
+  11:build/lnInclude/core_cmInstr.h **** 
+  12:build/lnInclude/core_cmInstr.h ****    All rights reserved.
+  13:build/lnInclude/core_cmInstr.h ****    Redistribution and use in source and binary forms, with or without
+  14:build/lnInclude/core_cmInstr.h ****    modification, are permitted provided that the following conditions are met:
+  15:build/lnInclude/core_cmInstr.h ****    - Redistributions of source code must retain the above copyright
+  16:build/lnInclude/core_cmInstr.h ****      notice, this list of conditions and the following disclaimer.
+  17:build/lnInclude/core_cmInstr.h ****    - Redistributions in binary form must reproduce the above copyright
+  18:build/lnInclude/core_cmInstr.h ****      notice, this list of conditions and the following disclaimer in the
+  19:build/lnInclude/core_cmInstr.h ****      documentation and/or other materials provided with the distribution.
+  20:build/lnInclude/core_cmInstr.h ****    - Neither the name of ARM nor the names of its contributors may be used
+  21:build/lnInclude/core_cmInstr.h ****      to endorse or promote products derived from this software without
+  22:build/lnInclude/core_cmInstr.h ****      specific prior written permission.
+  23:build/lnInclude/core_cmInstr.h ****    *
+  24:build/lnInclude/core_cmInstr.h ****    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  25:build/lnInclude/core_cmInstr.h ****    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  26:build/lnInclude/core_cmInstr.h ****    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  27:build/lnInclude/core_cmInstr.h ****    ARE DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+  28:build/lnInclude/core_cmInstr.h ****    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  29:build/lnInclude/core_cmInstr.h ****    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  30:build/lnInclude/core_cmInstr.h ****    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  31:build/lnInclude/core_cmInstr.h ****    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  32:build/lnInclude/core_cmInstr.h ****    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  33:build/lnInclude/core_cmInstr.h ****    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  34:build/lnInclude/core_cmInstr.h ****    POSSIBILITY OF SUCH DAMAGE.
+  35:build/lnInclude/core_cmInstr.h ****    ---------------------------------------------------------------------------*/
+  36:build/lnInclude/core_cmInstr.h **** 
+  37:build/lnInclude/core_cmInstr.h **** 
+  38:build/lnInclude/core_cmInstr.h **** #ifndef __CORE_CMINSTR_H
+  39:build/lnInclude/core_cmInstr.h **** #define __CORE_CMINSTR_H
+  40:build/lnInclude/core_cmInstr.h **** 
+ARM GAS  /tmp/ccrZJTjE.s 			page 7
+
+
+  41:build/lnInclude/core_cmInstr.h **** 
+  42:build/lnInclude/core_cmInstr.h **** /* ##########################  Core Instruction Access  ######################### */
+  43:build/lnInclude/core_cmInstr.h **** /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
+  44:build/lnInclude/core_cmInstr.h ****   Access to dedicated instructions
+  45:build/lnInclude/core_cmInstr.h ****   @{
+  46:build/lnInclude/core_cmInstr.h **** */
+  47:build/lnInclude/core_cmInstr.h **** 
+  48:build/lnInclude/core_cmInstr.h **** #if   defined ( __CC_ARM ) /*------------------RealView Compiler -----------------*/
+  49:build/lnInclude/core_cmInstr.h **** /* ARM armcc specific functions */
+  50:build/lnInclude/core_cmInstr.h **** 
+  51:build/lnInclude/core_cmInstr.h **** #if (__ARMCC_VERSION < 400677)
+  52:build/lnInclude/core_cmInstr.h ****   #error "Please use ARM Compiler Toolchain V4.0.677 or later!"
+  53:build/lnInclude/core_cmInstr.h **** #endif
+  54:build/lnInclude/core_cmInstr.h **** 
+  55:build/lnInclude/core_cmInstr.h **** 
+  56:build/lnInclude/core_cmInstr.h **** /** \brief  No Operation
+  57:build/lnInclude/core_cmInstr.h **** 
+  58:build/lnInclude/core_cmInstr.h ****     No Operation does nothing. This instruction can be used for code alignment purposes.
+  59:build/lnInclude/core_cmInstr.h ****  */
+  60:build/lnInclude/core_cmInstr.h **** #define __NOP                             __nop
+  61:build/lnInclude/core_cmInstr.h **** 
+  62:build/lnInclude/core_cmInstr.h **** 
+  63:build/lnInclude/core_cmInstr.h **** /** \brief  Wait For Interrupt
+  64:build/lnInclude/core_cmInstr.h **** 
+  65:build/lnInclude/core_cmInstr.h ****     Wait For Interrupt is a hint instruction that suspends execution
+  66:build/lnInclude/core_cmInstr.h ****     until one of a number of events occurs.
+  67:build/lnInclude/core_cmInstr.h ****  */
+  68:build/lnInclude/core_cmInstr.h **** #define __WFI                             __wfi
+  69:build/lnInclude/core_cmInstr.h **** 
+  70:build/lnInclude/core_cmInstr.h **** 
+  71:build/lnInclude/core_cmInstr.h **** /** \brief  Wait For Event
+  72:build/lnInclude/core_cmInstr.h **** 
+  73:build/lnInclude/core_cmInstr.h ****     Wait For Event is a hint instruction that permits the processor to enter
+  74:build/lnInclude/core_cmInstr.h ****     a low-power state until one of a number of events occurs.
+  75:build/lnInclude/core_cmInstr.h ****  */
+  76:build/lnInclude/core_cmInstr.h **** #define __WFE                             __wfe
+  77:build/lnInclude/core_cmInstr.h **** 
+  78:build/lnInclude/core_cmInstr.h **** 
+  79:build/lnInclude/core_cmInstr.h **** /** \brief  Send Event
+  80:build/lnInclude/core_cmInstr.h **** 
+  81:build/lnInclude/core_cmInstr.h ****     Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+  82:build/lnInclude/core_cmInstr.h ****  */
+  83:build/lnInclude/core_cmInstr.h **** #define __SEV                             __sev
+  84:build/lnInclude/core_cmInstr.h **** 
+  85:build/lnInclude/core_cmInstr.h **** 
+  86:build/lnInclude/core_cmInstr.h **** /** \brief  Instruction Synchronization Barrier
+  87:build/lnInclude/core_cmInstr.h **** 
+  88:build/lnInclude/core_cmInstr.h ****     Instruction Synchronization Barrier flushes the pipeline in the processor,
+  89:build/lnInclude/core_cmInstr.h ****     so that all instructions following the ISB are fetched from cache or
+  90:build/lnInclude/core_cmInstr.h ****     memory, after the instruction has been completed.
+  91:build/lnInclude/core_cmInstr.h ****  */
+  92:build/lnInclude/core_cmInstr.h **** #define __ISB()                           __isb(0xF)
+  93:build/lnInclude/core_cmInstr.h **** 
+  94:build/lnInclude/core_cmInstr.h **** 
+  95:build/lnInclude/core_cmInstr.h **** /** \brief  Data Synchronization Barrier
+  96:build/lnInclude/core_cmInstr.h **** 
+  97:build/lnInclude/core_cmInstr.h ****     This function acts as a special kind of Data Memory Barrier.
+ARM GAS  /tmp/ccrZJTjE.s 			page 8
+
+
+  98:build/lnInclude/core_cmInstr.h ****     It completes when all explicit memory accesses before this instruction complete.
+  99:build/lnInclude/core_cmInstr.h ****  */
+ 100:build/lnInclude/core_cmInstr.h **** #define __DSB()                           __dsb(0xF)
+ 101:build/lnInclude/core_cmInstr.h **** 
+ 102:build/lnInclude/core_cmInstr.h **** 
+ 103:build/lnInclude/core_cmInstr.h **** /** \brief  Data Memory Barrier
+ 104:build/lnInclude/core_cmInstr.h **** 
+ 105:build/lnInclude/core_cmInstr.h ****     This function ensures the apparent order of the explicit memory operations before
+ 106:build/lnInclude/core_cmInstr.h ****     and after the instruction, without ensuring their completion.
+ 107:build/lnInclude/core_cmInstr.h ****  */
+ 108:build/lnInclude/core_cmInstr.h **** #define __DMB()                           __dmb(0xF)
+ 109:build/lnInclude/core_cmInstr.h **** 
+ 110:build/lnInclude/core_cmInstr.h **** 
+ 111:build/lnInclude/core_cmInstr.h **** /** \brief  Reverse byte order (32 bit)
+ 112:build/lnInclude/core_cmInstr.h **** 
+ 113:build/lnInclude/core_cmInstr.h ****     This function reverses the byte order in integer value.
+ 114:build/lnInclude/core_cmInstr.h **** 
+ 115:build/lnInclude/core_cmInstr.h ****     \param [in]    value  Value to reverse
+ 116:build/lnInclude/core_cmInstr.h ****     \return               Reversed value
+ 117:build/lnInclude/core_cmInstr.h ****  */
+ 118:build/lnInclude/core_cmInstr.h **** #define __REV                             __rev
+ 119:build/lnInclude/core_cmInstr.h **** 
+ 120:build/lnInclude/core_cmInstr.h **** 
+ 121:build/lnInclude/core_cmInstr.h **** /** \brief  Reverse byte order (16 bit)
+ 122:build/lnInclude/core_cmInstr.h **** 
+ 123:build/lnInclude/core_cmInstr.h ****     This function reverses the byte order in two unsigned short values.
+ 124:build/lnInclude/core_cmInstr.h **** 
+ 125:build/lnInclude/core_cmInstr.h ****     \param [in]    value  Value to reverse
+ 126:build/lnInclude/core_cmInstr.h ****     \return               Reversed value
+ 127:build/lnInclude/core_cmInstr.h ****  */
+ 128:build/lnInclude/core_cmInstr.h **** #ifndef __NO_EMBEDDED_ASM
+ 129:build/lnInclude/core_cmInstr.h **** __attribute__((section(".rev16_text"))) __STATIC_INLINE __ASM uint32_t __REV16(uint32_t value)
+ 130:build/lnInclude/core_cmInstr.h **** {
+ 131:build/lnInclude/core_cmInstr.h ****   rev16 r0, r0
+ 132:build/lnInclude/core_cmInstr.h ****   bx lr
+ 133:build/lnInclude/core_cmInstr.h **** }
+ 134:build/lnInclude/core_cmInstr.h **** #endif
+ 135:build/lnInclude/core_cmInstr.h **** 
+ 136:build/lnInclude/core_cmInstr.h **** /** \brief  Reverse byte order in signed short value
+ 137:build/lnInclude/core_cmInstr.h **** 
+ 138:build/lnInclude/core_cmInstr.h ****     This function reverses the byte order in a signed short value with sign extension to integer.
+ 139:build/lnInclude/core_cmInstr.h **** 
+ 140:build/lnInclude/core_cmInstr.h ****     \param [in]    value  Value to reverse
+ 141:build/lnInclude/core_cmInstr.h ****     \return               Reversed value
+ 142:build/lnInclude/core_cmInstr.h ****  */
+ 143:build/lnInclude/core_cmInstr.h **** #ifndef __NO_EMBEDDED_ASM
+ 144:build/lnInclude/core_cmInstr.h **** __attribute__((section(".revsh_text"))) __STATIC_INLINE __ASM int32_t __REVSH(int32_t value)
+ 145:build/lnInclude/core_cmInstr.h **** {
+ 146:build/lnInclude/core_cmInstr.h ****   revsh r0, r0
+ 147:build/lnInclude/core_cmInstr.h ****   bx lr
+ 148:build/lnInclude/core_cmInstr.h **** }
+ 149:build/lnInclude/core_cmInstr.h **** #endif
+ 150:build/lnInclude/core_cmInstr.h **** 
+ 151:build/lnInclude/core_cmInstr.h **** 
+ 152:build/lnInclude/core_cmInstr.h **** /** \brief  Rotate Right in unsigned value (32 bit)
+ 153:build/lnInclude/core_cmInstr.h **** 
+ 154:build/lnInclude/core_cmInstr.h ****     This function Rotate Right (immediate) provides the value of the contents of a register rotated
+ARM GAS  /tmp/ccrZJTjE.s 			page 9
+
+
+ 155:build/lnInclude/core_cmInstr.h **** 
+ 156:build/lnInclude/core_cmInstr.h ****     \param [in]    value  Value to rotate
+ 157:build/lnInclude/core_cmInstr.h ****     \param [in]    value  Number of Bits to rotate
+ 158:build/lnInclude/core_cmInstr.h ****     \return               Rotated value
+ 159:build/lnInclude/core_cmInstr.h ****  */
+ 160:build/lnInclude/core_cmInstr.h **** #define __ROR                             __ror
+ 161:build/lnInclude/core_cmInstr.h **** 
+ 162:build/lnInclude/core_cmInstr.h **** 
+ 163:build/lnInclude/core_cmInstr.h **** /** \brief  Breakpoint
+ 164:build/lnInclude/core_cmInstr.h **** 
+ 165:build/lnInclude/core_cmInstr.h ****     This function causes the processor to enter Debug state.
+ 166:build/lnInclude/core_cmInstr.h ****     Debug tools can use this to investigate system state when the instruction at a particular addre
+ 167:build/lnInclude/core_cmInstr.h **** 
+ 168:build/lnInclude/core_cmInstr.h ****     \param [in]    value  is ignored by the processor.
+ 169:build/lnInclude/core_cmInstr.h ****                    If required, a debugger can use it to store additional information about the bre
+ 170:build/lnInclude/core_cmInstr.h ****  */
+ 171:build/lnInclude/core_cmInstr.h **** #define __BKPT(value)                       __breakpoint(value)
+ 172:build/lnInclude/core_cmInstr.h **** 
+ 173:build/lnInclude/core_cmInstr.h **** 
+ 174:build/lnInclude/core_cmInstr.h **** #if       (__CORTEX_M >= 0x03)
+ 175:build/lnInclude/core_cmInstr.h **** 
+ 176:build/lnInclude/core_cmInstr.h **** /** \brief  Reverse bit order of value
+ 177:build/lnInclude/core_cmInstr.h **** 
+ 178:build/lnInclude/core_cmInstr.h ****     This function reverses the bit order of the given value.
+ 179:build/lnInclude/core_cmInstr.h **** 
+ 180:build/lnInclude/core_cmInstr.h ****     \param [in]    value  Value to reverse
+ 181:build/lnInclude/core_cmInstr.h ****     \return               Reversed value
+ 182:build/lnInclude/core_cmInstr.h ****  */
+ 183:build/lnInclude/core_cmInstr.h **** #define __RBIT                            __rbit
+ 184:build/lnInclude/core_cmInstr.h **** 
+ 185:build/lnInclude/core_cmInstr.h **** 
+ 186:build/lnInclude/core_cmInstr.h **** /** \brief  LDR Exclusive (8 bit)
+ 187:build/lnInclude/core_cmInstr.h **** 
+ 188:build/lnInclude/core_cmInstr.h ****     This function performs a exclusive LDR command for 8 bit value.
+ 189:build/lnInclude/core_cmInstr.h **** 
+ 190:build/lnInclude/core_cmInstr.h ****     \param [in]    ptr  Pointer to data
+ 191:build/lnInclude/core_cmInstr.h ****     \return             value of type uint8_t at (*ptr)
+ 192:build/lnInclude/core_cmInstr.h ****  */
+ 193:build/lnInclude/core_cmInstr.h **** #define __LDREXB(ptr)                     ((uint8_t ) __ldrex(ptr))
+ 194:build/lnInclude/core_cmInstr.h **** 
+ 195:build/lnInclude/core_cmInstr.h **** 
+ 196:build/lnInclude/core_cmInstr.h **** /** \brief  LDR Exclusive (16 bit)
+ 197:build/lnInclude/core_cmInstr.h **** 
+ 198:build/lnInclude/core_cmInstr.h ****     This function performs a exclusive LDR command for 16 bit values.
+ 199:build/lnInclude/core_cmInstr.h **** 
+ 200:build/lnInclude/core_cmInstr.h ****     \param [in]    ptr  Pointer to data
+ 201:build/lnInclude/core_cmInstr.h ****     \return        value of type uint16_t at (*ptr)
+ 202:build/lnInclude/core_cmInstr.h ****  */
+ 203:build/lnInclude/core_cmInstr.h **** #define __LDREXH(ptr)                     ((uint16_t) __ldrex(ptr))
+ 204:build/lnInclude/core_cmInstr.h **** 
+ 205:build/lnInclude/core_cmInstr.h **** 
+ 206:build/lnInclude/core_cmInstr.h **** /** \brief  LDR Exclusive (32 bit)
+ 207:build/lnInclude/core_cmInstr.h **** 
+ 208:build/lnInclude/core_cmInstr.h ****     This function performs a exclusive LDR command for 32 bit values.
+ 209:build/lnInclude/core_cmInstr.h **** 
+ 210:build/lnInclude/core_cmInstr.h ****     \param [in]    ptr  Pointer to data
+ 211:build/lnInclude/core_cmInstr.h ****     \return        value of type uint32_t at (*ptr)
+ARM GAS  /tmp/ccrZJTjE.s 			page 10
+
+
+ 212:build/lnInclude/core_cmInstr.h ****  */
+ 213:build/lnInclude/core_cmInstr.h **** #define __LDREXW(ptr)                     ((uint32_t ) __ldrex(ptr))
+ 214:build/lnInclude/core_cmInstr.h **** 
+ 215:build/lnInclude/core_cmInstr.h **** 
+ 216:build/lnInclude/core_cmInstr.h **** /** \brief  STR Exclusive (8 bit)
+ 217:build/lnInclude/core_cmInstr.h **** 
+ 218:build/lnInclude/core_cmInstr.h ****     This function performs a exclusive STR command for 8 bit values.
+ 219:build/lnInclude/core_cmInstr.h **** 
+ 220:build/lnInclude/core_cmInstr.h ****     \param [in]  value  Value to store
+ 221:build/lnInclude/core_cmInstr.h ****     \param [in]    ptr  Pointer to location
+ 222:build/lnInclude/core_cmInstr.h ****     \return          0  Function succeeded
+ 223:build/lnInclude/core_cmInstr.h ****     \return          1  Function failed
+ 224:build/lnInclude/core_cmInstr.h ****  */
+ 225:build/lnInclude/core_cmInstr.h **** #define __STREXB(value, ptr)              __strex(value, ptr)
+ 226:build/lnInclude/core_cmInstr.h **** 
+ 227:build/lnInclude/core_cmInstr.h **** 
+ 228:build/lnInclude/core_cmInstr.h **** /** \brief  STR Exclusive (16 bit)
+ 229:build/lnInclude/core_cmInstr.h **** 
+ 230:build/lnInclude/core_cmInstr.h ****     This function performs a exclusive STR command for 16 bit values.
+ 231:build/lnInclude/core_cmInstr.h **** 
+ 232:build/lnInclude/core_cmInstr.h ****     \param [in]  value  Value to store
+ 233:build/lnInclude/core_cmInstr.h ****     \param [in]    ptr  Pointer to location
+ 234:build/lnInclude/core_cmInstr.h ****     \return          0  Function succeeded
+ 235:build/lnInclude/core_cmInstr.h ****     \return          1  Function failed
+ 236:build/lnInclude/core_cmInstr.h ****  */
+ 237:build/lnInclude/core_cmInstr.h **** #define __STREXH(value, ptr)              __strex(value, ptr)
+ 238:build/lnInclude/core_cmInstr.h **** 
+ 239:build/lnInclude/core_cmInstr.h **** 
+ 240:build/lnInclude/core_cmInstr.h **** /** \brief  STR Exclusive (32 bit)
+ 241:build/lnInclude/core_cmInstr.h **** 
+ 242:build/lnInclude/core_cmInstr.h ****     This function performs a exclusive STR command for 32 bit values.
+ 243:build/lnInclude/core_cmInstr.h **** 
+ 244:build/lnInclude/core_cmInstr.h ****     \param [in]  value  Value to store
+ 245:build/lnInclude/core_cmInstr.h ****     \param [in]    ptr  Pointer to location
+ 246:build/lnInclude/core_cmInstr.h ****     \return          0  Function succeeded
+ 247:build/lnInclude/core_cmInstr.h ****     \return          1  Function failed
+ 248:build/lnInclude/core_cmInstr.h ****  */
+ 249:build/lnInclude/core_cmInstr.h **** #define __STREXW(value, ptr)              __strex(value, ptr)
+ 250:build/lnInclude/core_cmInstr.h **** 
+ 251:build/lnInclude/core_cmInstr.h **** 
+ 252:build/lnInclude/core_cmInstr.h **** /** \brief  Remove the exclusive lock
+ 253:build/lnInclude/core_cmInstr.h **** 
+ 254:build/lnInclude/core_cmInstr.h ****     This function removes the exclusive lock which is created by LDREX.
+ 255:build/lnInclude/core_cmInstr.h **** 
+ 256:build/lnInclude/core_cmInstr.h ****  */
+ 257:build/lnInclude/core_cmInstr.h **** #define __CLREX                           __clrex
+ 258:build/lnInclude/core_cmInstr.h **** 
+ 259:build/lnInclude/core_cmInstr.h **** 
+ 260:build/lnInclude/core_cmInstr.h **** /** \brief  Signed Saturate
+ 261:build/lnInclude/core_cmInstr.h **** 
+ 262:build/lnInclude/core_cmInstr.h ****     This function saturates a signed value.
+ 263:build/lnInclude/core_cmInstr.h **** 
+ 264:build/lnInclude/core_cmInstr.h ****     \param [in]  value  Value to be saturated
+ 265:build/lnInclude/core_cmInstr.h ****     \param [in]    sat  Bit position to saturate to (1..32)
+ 266:build/lnInclude/core_cmInstr.h ****     \return             Saturated value
+ 267:build/lnInclude/core_cmInstr.h ****  */
+ 268:build/lnInclude/core_cmInstr.h **** #define __SSAT                            __ssat
+ARM GAS  /tmp/ccrZJTjE.s 			page 11
+
+
+ 269:build/lnInclude/core_cmInstr.h **** 
+ 270:build/lnInclude/core_cmInstr.h **** 
+ 271:build/lnInclude/core_cmInstr.h **** /** \brief  Unsigned Saturate
+ 272:build/lnInclude/core_cmInstr.h **** 
+ 273:build/lnInclude/core_cmInstr.h ****     This function saturates an unsigned value.
+ 274:build/lnInclude/core_cmInstr.h **** 
+ 275:build/lnInclude/core_cmInstr.h ****     \param [in]  value  Value to be saturated
+ 276:build/lnInclude/core_cmInstr.h ****     \param [in]    sat  Bit position to saturate to (0..31)
+ 277:build/lnInclude/core_cmInstr.h ****     \return             Saturated value
+ 278:build/lnInclude/core_cmInstr.h ****  */
+ 279:build/lnInclude/core_cmInstr.h **** #define __USAT                            __usat
+ 280:build/lnInclude/core_cmInstr.h **** 
+ 281:build/lnInclude/core_cmInstr.h **** 
+ 282:build/lnInclude/core_cmInstr.h **** /** \brief  Count leading zeros
+ 283:build/lnInclude/core_cmInstr.h **** 
+ 284:build/lnInclude/core_cmInstr.h ****     This function counts the number of leading zeros of a data value.
+ 285:build/lnInclude/core_cmInstr.h **** 
+ 286:build/lnInclude/core_cmInstr.h ****     \param [in]  value  Value to count the leading zeros
+ 287:build/lnInclude/core_cmInstr.h ****     \return             number of leading zeros in value
+ 288:build/lnInclude/core_cmInstr.h ****  */
+ 289:build/lnInclude/core_cmInstr.h **** #define __CLZ                             __clz
+ 290:build/lnInclude/core_cmInstr.h **** 
+ 291:build/lnInclude/core_cmInstr.h **** #endif /* (__CORTEX_M >= 0x03) */
+ 292:build/lnInclude/core_cmInstr.h **** 
+ 293:build/lnInclude/core_cmInstr.h **** 
+ 294:build/lnInclude/core_cmInstr.h **** 
+ 295:build/lnInclude/core_cmInstr.h **** #elif defined ( __ICCARM__ ) /*------------------ ICC Compiler -------------------*/
+ 296:build/lnInclude/core_cmInstr.h **** /* IAR iccarm specific functions */
+ 297:build/lnInclude/core_cmInstr.h **** 
+ 298:build/lnInclude/core_cmInstr.h **** #include <cmsis_iar.h>
+ 299:build/lnInclude/core_cmInstr.h **** 
+ 300:build/lnInclude/core_cmInstr.h **** 
+ 301:build/lnInclude/core_cmInstr.h **** #elif defined ( __TMS470__ ) /*---------------- TI CCS Compiler ------------------*/
+ 302:build/lnInclude/core_cmInstr.h **** /* TI CCS specific functions */
+ 303:build/lnInclude/core_cmInstr.h **** 
+ 304:build/lnInclude/core_cmInstr.h **** #include <cmsis_ccs.h>
+ 305:build/lnInclude/core_cmInstr.h **** 
+ 306:build/lnInclude/core_cmInstr.h **** 
+ 307:build/lnInclude/core_cmInstr.h **** #elif defined ( __GNUC__ ) /*------------------ GNU Compiler ---------------------*/
+ 308:build/lnInclude/core_cmInstr.h **** /* GNU gcc specific functions */
+ 309:build/lnInclude/core_cmInstr.h **** 
+ 310:build/lnInclude/core_cmInstr.h **** /* Define macros for porting to both thumb1 and thumb2.
+ 311:build/lnInclude/core_cmInstr.h ****  * For thumb1, use low register (r0-r7), specified by constrant "l"
+ 312:build/lnInclude/core_cmInstr.h ****  * Otherwise, use general registers, specified by constrant "r" */
+ 313:build/lnInclude/core_cmInstr.h **** #if defined (__thumb__) && !defined (__thumb2__)
+ 314:build/lnInclude/core_cmInstr.h **** #define __CMSIS_GCC_OUT_REG(r) "=l" (r)
+ 315:build/lnInclude/core_cmInstr.h **** #define __CMSIS_GCC_USE_REG(r) "l" (r)
+ 316:build/lnInclude/core_cmInstr.h **** #else
+ 317:build/lnInclude/core_cmInstr.h **** #define __CMSIS_GCC_OUT_REG(r) "=r" (r)
+ 318:build/lnInclude/core_cmInstr.h **** #define __CMSIS_GCC_USE_REG(r) "r" (r)
+ 319:build/lnInclude/core_cmInstr.h **** #endif
+ 320:build/lnInclude/core_cmInstr.h **** 
+ 321:build/lnInclude/core_cmInstr.h **** /** \brief  No Operation
+ 322:build/lnInclude/core_cmInstr.h **** 
+ 323:build/lnInclude/core_cmInstr.h ****     No Operation does nothing. This instruction can be used for code alignment purposes.
+ 324:build/lnInclude/core_cmInstr.h ****  */
+ 325:build/lnInclude/core_cmInstr.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __NOP(void)
+ARM GAS  /tmp/ccrZJTjE.s 			page 12
+
+
+ 326:build/lnInclude/core_cmInstr.h **** {
+ 327:build/lnInclude/core_cmInstr.h ****   __ASM volatile ("nop");
+ 328:build/lnInclude/core_cmInstr.h **** }
+ 329:build/lnInclude/core_cmInstr.h **** 
+ 330:build/lnInclude/core_cmInstr.h **** 
+ 331:build/lnInclude/core_cmInstr.h **** /** \brief  Wait For Interrupt
+ 332:build/lnInclude/core_cmInstr.h **** 
+ 333:build/lnInclude/core_cmInstr.h ****     Wait For Interrupt is a hint instruction that suspends execution
+ 334:build/lnInclude/core_cmInstr.h ****     until one of a number of events occurs.
+ 335:build/lnInclude/core_cmInstr.h ****  */
+ 336:build/lnInclude/core_cmInstr.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __WFI(void)
+ 337:build/lnInclude/core_cmInstr.h **** {
+ 338:build/lnInclude/core_cmInstr.h ****   __ASM volatile ("wfi");
+ 339:build/lnInclude/core_cmInstr.h **** }
+ 340:build/lnInclude/core_cmInstr.h **** 
+ 341:build/lnInclude/core_cmInstr.h **** 
+ 342:build/lnInclude/core_cmInstr.h **** /** \brief  Wait For Event
+ 343:build/lnInclude/core_cmInstr.h **** 
+ 344:build/lnInclude/core_cmInstr.h ****     Wait For Event is a hint instruction that permits the processor to enter
+ 345:build/lnInclude/core_cmInstr.h ****     a low-power state until one of a number of events occurs.
+ 346:build/lnInclude/core_cmInstr.h ****  */
+ 347:build/lnInclude/core_cmInstr.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __WFE(void)
+ 348:build/lnInclude/core_cmInstr.h **** {
+ 349:build/lnInclude/core_cmInstr.h ****   __ASM volatile ("wfe");
+ 350:build/lnInclude/core_cmInstr.h **** }
+ 351:build/lnInclude/core_cmInstr.h **** 
+ 352:build/lnInclude/core_cmInstr.h **** 
+ 353:build/lnInclude/core_cmInstr.h **** /** \brief  Send Event
+ 354:build/lnInclude/core_cmInstr.h **** 
+ 355:build/lnInclude/core_cmInstr.h ****     Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+ 356:build/lnInclude/core_cmInstr.h ****  */
+ 357:build/lnInclude/core_cmInstr.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __SEV(void)
+ 358:build/lnInclude/core_cmInstr.h **** {
+ 359:build/lnInclude/core_cmInstr.h ****   __ASM volatile ("sev");
+ 360:build/lnInclude/core_cmInstr.h **** }
+ 361:build/lnInclude/core_cmInstr.h **** 
+ 362:build/lnInclude/core_cmInstr.h **** 
+ 363:build/lnInclude/core_cmInstr.h **** /** \brief  Instruction Synchronization Barrier
+ 364:build/lnInclude/core_cmInstr.h **** 
+ 365:build/lnInclude/core_cmInstr.h ****     Instruction Synchronization Barrier flushes the pipeline in the processor,
+ 366:build/lnInclude/core_cmInstr.h ****     so that all instructions following the ISB are fetched from cache or
+ 367:build/lnInclude/core_cmInstr.h ****     memory, after the instruction has been completed.
+ 368:build/lnInclude/core_cmInstr.h ****  */
+ 369:build/lnInclude/core_cmInstr.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __ISB(void)
+ 370:build/lnInclude/core_cmInstr.h **** {
+ 371:build/lnInclude/core_cmInstr.h ****   __ASM volatile ("isb");
+ 372:build/lnInclude/core_cmInstr.h **** }
+ 373:build/lnInclude/core_cmInstr.h **** 
+ 374:build/lnInclude/core_cmInstr.h **** 
+ 375:build/lnInclude/core_cmInstr.h **** /** \brief  Data Synchronization Barrier
+ 376:build/lnInclude/core_cmInstr.h **** 
+ 377:build/lnInclude/core_cmInstr.h ****     This function acts as a special kind of Data Memory Barrier.
+ 378:build/lnInclude/core_cmInstr.h ****     It completes when all explicit memory accesses before this instruction complete.
+ 379:build/lnInclude/core_cmInstr.h ****  */
+ 380:build/lnInclude/core_cmInstr.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __DSB(void)
+ 381:build/lnInclude/core_cmInstr.h **** {
+ 382:build/lnInclude/core_cmInstr.h ****   __ASM volatile ("dsb");
+ARM GAS  /tmp/ccrZJTjE.s 			page 13
+
+
+ 383:build/lnInclude/core_cmInstr.h **** }
+ 384:build/lnInclude/core_cmInstr.h **** 
+ 385:build/lnInclude/core_cmInstr.h **** 
+ 386:build/lnInclude/core_cmInstr.h **** /** \brief  Data Memory Barrier
+ 387:build/lnInclude/core_cmInstr.h **** 
+ 388:build/lnInclude/core_cmInstr.h ****     This function ensures the apparent order of the explicit memory operations before
+ 389:build/lnInclude/core_cmInstr.h ****     and after the instruction, without ensuring their completion.
+ 390:build/lnInclude/core_cmInstr.h ****  */
+ 391:build/lnInclude/core_cmInstr.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE void __DMB(void)
+ 392:build/lnInclude/core_cmInstr.h **** {
+ 393:build/lnInclude/core_cmInstr.h ****   __ASM volatile ("dmb");
+ 394:build/lnInclude/core_cmInstr.h **** }
+ 395:build/lnInclude/core_cmInstr.h **** 
+ 396:build/lnInclude/core_cmInstr.h **** 
+ 397:build/lnInclude/core_cmInstr.h **** /** \brief  Reverse byte order (32 bit)
+ 398:build/lnInclude/core_cmInstr.h **** 
+ 399:build/lnInclude/core_cmInstr.h ****     This function reverses the byte order in integer value.
+ 400:build/lnInclude/core_cmInstr.h **** 
+ 401:build/lnInclude/core_cmInstr.h ****     \param [in]    value  Value to reverse
+ 402:build/lnInclude/core_cmInstr.h ****     \return               Reversed value
+ 403:build/lnInclude/core_cmInstr.h ****  */
+ 404:build/lnInclude/core_cmInstr.h **** __attribute__( ( always_inline ) ) __STATIC_INLINE uint32_t __REV(uint32_t value)
+ 405:build/lnInclude/core_cmInstr.h **** {
+ 406:build/lnInclude/core_cmInstr.h **** #if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+ 407:build/lnInclude/core_cmInstr.h ****   return __builtin_bswap32(value);
+ 145              		.loc 2 407 0
+ 146 0076 1BBA     		rev	r3, r3
+ 147              	.LVL19:
+ 148              	.LBE19:
+ 149              	.LBE18:
+ 146:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 150              		.loc 1 146 0
+ 151 0078 3360     		str	r3, [r6]
+ 152              	.LVL20:
+ 148:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 153              		.loc 1 148 0
+ 154 007a 039B     		ldr	r3, [sp, #12]
+ 155              	.LVL21:
+ 156              	.LBB20:
+ 157              	.LBB21:
+ 158              		.loc 2 407 0
+ 159 007c 1BBA     		rev	r3, r3
+ 160              	.LVL22:
+ 161              	.LBE21:
+ 162              	.LBE20:
+ 148:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 163              		.loc 1 148 0
+ 164 007e 7360     		str	r3, [r6, #4]
+ 165              	.LVL23:
+ 150:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 166              		.loc 1 150 0
+ 167 0080 049B     		ldr	r3, [sp, #16]
+ 168              	.LVL24:
+ 169              	.LBB22:
+ 170              	.LBB23:
+ 171              		.loc 2 407 0
+ 172 0082 1BBA     		rev	r3, r3
+ARM GAS  /tmp/ccrZJTjE.s 			page 14
+
+
+ 173              	.LVL25:
+ 174              	.LBE23:
+ 175              	.LBE22:
+ 150:./FWLIB/src/stm32f4xx_hash_md5.c ****     outputaddr+=4;
+ 176              		.loc 1 150 0
+ 177 0084 B360     		str	r3, [r6, #8]
+ 178              	.LVL26:
+ 152:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 179              		.loc 1 152 0
+ 180 0086 059B     		ldr	r3, [sp, #20]
+ 181              	.LVL27:
+ 182              	.LBB24:
+ 183              	.LBB25:
+ 184              		.loc 2 407 0
+ 185 0088 1BBA     		rev	r3, r3
+ 186              	.LVL28:
+ 187              	.LBE25:
+ 188              	.LBE24:
+ 152:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 189              		.loc 1 152 0
+ 190 008a F360     		str	r3, [r6, #12]
+ 101:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t inputaddr  = (uint32_t)Input;
+ 191              		.loc 1 101 0
+ 192 008c 0120     		movs	r0, #1
+ 193 008e ECE7     		b	.L6
+ 194              		.cfi_endproc
+ 195              	.LFE112:
+ 197              		.section	.text.HMAC_MD5,"ax",%progbits
+ 198              		.align	1
+ 199              		.global	HMAC_MD5
+ 200              		.syntax unified
+ 201              		.thumb
+ 202              		.thumb_func
+ 203              		.fpu fpv4-sp-d16
+ 205              	HMAC_MD5:
+ 206              	.LFB113:
+ 156:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 157:./FWLIB/src/stm32f4xx_hash_md5.c **** /**
+ 158:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @brief  Compute the HMAC MD5 digest.
+ 159:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @param  Key: pointer to the Key used for HMAC.
+ 160:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @param  Keylen: length of the Key used for HMAC.
+ 161:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @param  Input: pointer to the Input buffer to be treated.
+ 162:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @param  Ilen: length of the Input buffer.
+ 163:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @param  Output: the returned digest  
+ 164:./FWLIB/src/stm32f4xx_hash_md5.c ****   * @retval An ErrorStatus enumeration value:
+ 165:./FWLIB/src/stm32f4xx_hash_md5.c ****   *          - SUCCESS: digest computation done
+ 166:./FWLIB/src/stm32f4xx_hash_md5.c ****   *          - ERROR: digest computation failed
+ 167:./FWLIB/src/stm32f4xx_hash_md5.c ****   */
+ 168:./FWLIB/src/stm32f4xx_hash_md5.c **** ErrorStatus HMAC_MD5(uint8_t *Key, uint32_t Keylen, uint8_t *Input, 
+ 169:./FWLIB/src/stm32f4xx_hash_md5.c ****                      uint32_t Ilen, uint8_t Output[16])
+ 170:./FWLIB/src/stm32f4xx_hash_md5.c **** {
+ 207              		.loc 1 170 0
+ 208              		.cfi_startproc
+ 209              		@ args = 4, pretend = 0, frame = 56
+ 210              		@ frame_needed = 0, uses_anonymous_args = 0
+ 211              	.LVL29:
+ 212 0000 2DE9F043 		push	{r4, r5, r6, r7, r8, r9, lr}
+ARM GAS  /tmp/ccrZJTjE.s 			page 15
+
+
+ 213              	.LCFI4:
+ 214              		.cfi_def_cfa_offset 28
+ 215              		.cfi_offset 4, -28
+ 216              		.cfi_offset 5, -24
+ 217              		.cfi_offset 6, -20
+ 218              		.cfi_offset 7, -16
+ 219              		.cfi_offset 8, -12
+ 220              		.cfi_offset 9, -8
+ 221              		.cfi_offset 14, -4
+ 222 0004 8FB0     		sub	sp, sp, #60
+ 223              	.LCFI5:
+ 224              		.cfi_def_cfa_offset 88
+ 225 0006 8146     		mov	r9, r0
+ 226 0008 0D46     		mov	r5, r1
+ 227 000a 1F46     		mov	r7, r3
+ 171:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_InitTypeDef MD5_HASH_InitStructure;
+ 172:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_MsgDigest MD5_MessageDigest;
+ 173:./FWLIB/src/stm32f4xx_hash_md5.c ****   __IO uint16_t nbvalidbitsdata = 0;
+ 228              		.loc 1 173 0
+ 229 000c 0023     		movs	r3, #0
+ 230              	.LVL30:
+ 231 000e ADF80630 		strh	r3, [sp, #6]	@ movhi
+ 174:./FWLIB/src/stm32f4xx_hash_md5.c ****   __IO uint16_t nbvalidbitskey = 0;
+ 232              		.loc 1 174 0
+ 233 0012 ADF80430 		strh	r3, [sp, #4]	@ movhi
+ 234              	.LVL31:
+ 175:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t i = 0;
+ 176:./FWLIB/src/stm32f4xx_hash_md5.c ****   __IO uint32_t counter = 0;
+ 235              		.loc 1 176 0
+ 236 0016 0093     		str	r3, [sp]
+ 237              	.LVL32:
+ 177:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t busystatus = 0;
+ 178:./FWLIB/src/stm32f4xx_hash_md5.c ****   ErrorStatus status = SUCCESS;
+ 179:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t keyaddr    = (uint32_t)Key;
+ 238              		.loc 1 179 0
+ 239 0018 8046     		mov	r8, r0
+ 240              	.LVL33:
+ 180:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t inputaddr  = (uint32_t)Input;
+ 241              		.loc 1 180 0
+ 242 001a 1646     		mov	r6, r2
+ 243              	.LVL34:
+ 181:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t outputaddr = (uint32_t)Output;
+ 182:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 183:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Number of valid bits in last word of the Input data */
+ 184:./FWLIB/src/stm32f4xx_hash_md5.c ****   nbvalidbitsdata = 8 * (Ilen % 4);
+ 244              		.loc 1 184 0
+ 245 001c 07F00303 		and	r3, r7, #3
+ 246 0020 DB00     		lsls	r3, r3, #3
+ 247 0022 ADF80630 		strh	r3, [sp, #6]	@ movhi
+ 185:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 186:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Number of valid bits in last word of the Key */
+ 187:./FWLIB/src/stm32f4xx_hash_md5.c ****   nbvalidbitskey = 8 * (Keylen % 4);
+ 248              		.loc 1 187 0
+ 249 0026 01F00303 		and	r3, r1, #3
+ 250 002a DB00     		lsls	r3, r3, #3
+ 251 002c ADF80430 		strh	r3, [sp, #4]	@ movhi
+ 188:./FWLIB/src/stm32f4xx_hash_md5.c ****    
+ARM GAS  /tmp/ccrZJTjE.s 			page 16
+
+
+ 189:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* HASH peripheral initialization */
+ 190:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_DeInit();
+ 252              		.loc 1 190 0
+ 253 0030 FFF7FEFF 		bl	HASH_DeInit
+ 254              	.LVL35:
+ 191:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 192:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* HASH Configuration */
+ 193:./FWLIB/src/stm32f4xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_AlgoSelection = HASH_AlgoSelection_MD5;
+ 255              		.loc 1 193 0
+ 256 0034 8023     		movs	r3, #128
+ 257 0036 0A93     		str	r3, [sp, #40]
+ 194:./FWLIB/src/stm32f4xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_AlgoMode = HASH_AlgoMode_HMAC;
+ 258              		.loc 1 194 0
+ 259 0038 4023     		movs	r3, #64
+ 260 003a 0B93     		str	r3, [sp, #44]
+ 195:./FWLIB/src/stm32f4xx_hash_md5.c ****   MD5_HASH_InitStructure.HASH_DataType = HASH_DataType_8b;
+ 261              		.loc 1 195 0
+ 262 003c 2023     		movs	r3, #32
+ 263 003e 0C93     		str	r3, [sp, #48]
+ 196:./FWLIB/src/stm32f4xx_hash_md5.c ****   if(Keylen > 64)
+ 264              		.loc 1 196 0
+ 265 0040 402D     		cmp	r5, #64
+ 266 0042 0BD9     		bls	.L11
+ 197:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 198:./FWLIB/src/stm32f4xx_hash_md5.c ****     /* HMAC long Key */
+ 199:./FWLIB/src/stm32f4xx_hash_md5.c ****     MD5_HASH_InitStructure.HASH_HMACKeyType = HASH_HMACKeyType_LongKey;
+ 267              		.loc 1 199 0
+ 268 0044 4FF48033 		mov	r3, #65536
+ 269 0048 0D93     		str	r3, [sp, #52]
+ 270              	.L12:
+ 200:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 201:./FWLIB/src/stm32f4xx_hash_md5.c ****   else
+ 202:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 203:./FWLIB/src/stm32f4xx_hash_md5.c ****     /* HMAC short Key */
+ 204:./FWLIB/src/stm32f4xx_hash_md5.c ****     MD5_HASH_InitStructure.HASH_HMACKeyType = HASH_HMACKeyType_ShortKey;
+ 205:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 206:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_Init(&MD5_HASH_InitStructure);
+ 271              		.loc 1 206 0
+ 272 004a 0AA8     		add	r0, sp, #40
+ 273 004c FFF7FEFF 		bl	HASH_Init
+ 274              	.LVL36:
+ 207:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 208:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Configure the number of valid bits in last word of the Key */
+ 209:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_SetLastWordValidBitsNbr(nbvalidbitskey);
+ 275              		.loc 1 209 0
+ 276 0050 BDF80400 		ldrh	r0, [sp, #4]
+ 277 0054 FFF7FEFF 		bl	HASH_SetLastWordValidBitsNbr
+ 278              	.LVL37:
+ 210:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 211:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Write the Key */
+ 212:./FWLIB/src/stm32f4xx_hash_md5.c ****   for(i=0; i<Keylen; i+=4)
+ 279              		.loc 1 212 0
+ 280 0058 0024     		movs	r4, #0
+ 281 005a 07E0     		b	.L13
+ 282              	.L11:
+ 204:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 283              		.loc 1 204 0
+ARM GAS  /tmp/ccrZJTjE.s 			page 17
+
+
+ 284 005c 0023     		movs	r3, #0
+ 285 005e 0D93     		str	r3, [sp, #52]
+ 286 0060 F3E7     		b	.L12
+ 287              	.LVL38:
+ 288              	.L14:
+ 213:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 214:./FWLIB/src/stm32f4xx_hash_md5.c ****     HASH_DataIn(*(uint32_t*)keyaddr);
+ 289              		.loc 1 214 0 discriminator 3
+ 290 0062 59F8040B 		ldr	r0, [r9], #4
+ 291              	.LVL39:
+ 292 0066 FFF7FEFF 		bl	HASH_DataIn
+ 293              	.LVL40:
+ 212:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 294              		.loc 1 212 0 discriminator 3
+ 295 006a 0434     		adds	r4, r4, #4
+ 296              	.LVL41:
+ 297              	.L13:
+ 212:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 298              		.loc 1 212 0 is_stmt 0 discriminator 1
+ 299 006c AC42     		cmp	r4, r5
+ 300 006e F8D3     		bcc	.L14
+ 215:./FWLIB/src/stm32f4xx_hash_md5.c ****     keyaddr+=4;
+ 216:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 217:./FWLIB/src/stm32f4xx_hash_md5.c ****   
+ 218:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* Start the HASH processor */
+ 219:./FWLIB/src/stm32f4xx_hash_md5.c ****   HASH_StartDigest();
+ 301              		.loc 1 219 0 is_stmt 1
+ 302 0070 FFF7FEFF 		bl	HASH_StartDigest
+ 303              	.LVL42:
+ 304              	.L16:
+ 220:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 221:./FWLIB/src/stm32f4xx_hash_md5.c ****   /* wait until the Busy flag is RESET */
+ 222:./FWLIB/src/stm32f4xx_hash_md5.c ****   do
+ 223:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 224:./FWLIB/src/stm32f4xx_hash_md5.c ****     busystatus = HASH_GetFlagStatus(HASH_FLAG_BUSY);
+ 305              		.loc 1 224 0 discriminator 2
+ 306 0074 0820     		movs	r0, #8
+ 307 0076 FFF7FEFF 		bl	HASH_GetFlagStatus
+ 308              	.LVL43:
+ 309 007a 0446     		mov	r4, r0
+ 310              	.LVL44:
+ 225:./FWLIB/src/stm32f4xx_hash_md5.c ****     counter++;
+ 311              		.loc 1 225 0 discriminator 2
+ 312 007c 009B     		ldr	r3, [sp]
+ 313 007e 0133     		adds	r3, r3, #1
+ 314 0080 0093     		str	r3, [sp]
+ 226:./FWLIB/src/stm32f4xx_hash_md5.c ****   }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 315              		.loc 1 226 0 discriminator 2
+ 316 0082 009B     		ldr	r3, [sp]
+ 317 0084 B3F5803F 		cmp	r3, #65536
+ 318 0088 01D0     		beq	.L15
+ 319              		.loc 1 226 0 is_stmt 0 discriminator 1
+ 320 008a 0028     		cmp	r0, #0
+ 321 008c F2D1     		bne	.L16
+ 322              	.L15:
+ 227:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 228:./FWLIB/src/stm32f4xx_hash_md5.c ****   if (busystatus != RESET)
+ARM GAS  /tmp/ccrZJTjE.s 			page 18
+
+
+ 323              		.loc 1 228 0 is_stmt 1
+ 324 008e 1CB1     		cbz	r4, .L30
+ 229:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 230:./FWLIB/src/stm32f4xx_hash_md5.c ****      status = ERROR;
+ 325              		.loc 1 230 0
+ 326 0090 0020     		movs	r0, #0
+ 327              	.LVL45:
+ 328              	.L17:
+ 231:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 232:./FWLIB/src/stm32f4xx_hash_md5.c ****   else
+ 233:./FWLIB/src/stm32f4xx_hash_md5.c ****   {
+ 234:./FWLIB/src/stm32f4xx_hash_md5.c ****     /* Configure the number of valid bits in last word of the Input data */
+ 235:./FWLIB/src/stm32f4xx_hash_md5.c ****     HASH_SetLastWordValidBitsNbr(nbvalidbitsdata);
+ 236:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 237:./FWLIB/src/stm32f4xx_hash_md5.c ****     /* Write the Input block in the IN FIFO */
+ 238:./FWLIB/src/stm32f4xx_hash_md5.c ****     for(i=0; i<Ilen; i+=4)
+ 239:./FWLIB/src/stm32f4xx_hash_md5.c ****     {
+ 240:./FWLIB/src/stm32f4xx_hash_md5.c ****       HASH_DataIn(*(uint32_t*)inputaddr);
+ 241:./FWLIB/src/stm32f4xx_hash_md5.c ****       inputaddr+=4;
+ 242:./FWLIB/src/stm32f4xx_hash_md5.c ****     }
+ 243:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 244:./FWLIB/src/stm32f4xx_hash_md5.c ****     /* Start the HASH processor */
+ 245:./FWLIB/src/stm32f4xx_hash_md5.c ****     HASH_StartDigest();
+ 246:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 247:./FWLIB/src/stm32f4xx_hash_md5.c ****     /* wait until the Busy flag is RESET */
+ 248:./FWLIB/src/stm32f4xx_hash_md5.c ****     counter =0;
+ 249:./FWLIB/src/stm32f4xx_hash_md5.c ****     do
+ 250:./FWLIB/src/stm32f4xx_hash_md5.c ****     {
+ 251:./FWLIB/src/stm32f4xx_hash_md5.c ****        busystatus = HASH_GetFlagStatus(HASH_FLAG_BUSY);
+ 252:./FWLIB/src/stm32f4xx_hash_md5.c ****        counter++;
+ 253:./FWLIB/src/stm32f4xx_hash_md5.c ****     }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 254:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 255:./FWLIB/src/stm32f4xx_hash_md5.c ****     if (busystatus != RESET)
+ 256:./FWLIB/src/stm32f4xx_hash_md5.c ****     {
+ 257:./FWLIB/src/stm32f4xx_hash_md5.c ****       status = ERROR;
+ 258:./FWLIB/src/stm32f4xx_hash_md5.c ****     }
+ 259:./FWLIB/src/stm32f4xx_hash_md5.c ****     else
+ 260:./FWLIB/src/stm32f4xx_hash_md5.c ****     {  
+ 261:./FWLIB/src/stm32f4xx_hash_md5.c ****       /* Configure the number of valid bits in last word of the Key */
+ 262:./FWLIB/src/stm32f4xx_hash_md5.c ****       HASH_SetLastWordValidBitsNbr(nbvalidbitskey);
+ 263:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 264:./FWLIB/src/stm32f4xx_hash_md5.c ****       /* Write the Key */
+ 265:./FWLIB/src/stm32f4xx_hash_md5.c ****       keyaddr = (uint32_t)Key;
+ 266:./FWLIB/src/stm32f4xx_hash_md5.c ****       for(i=0; i<Keylen; i+=4)
+ 267:./FWLIB/src/stm32f4xx_hash_md5.c ****       {
+ 268:./FWLIB/src/stm32f4xx_hash_md5.c ****         HASH_DataIn(*(uint32_t*)keyaddr);
+ 269:./FWLIB/src/stm32f4xx_hash_md5.c ****         keyaddr+=4;
+ 270:./FWLIB/src/stm32f4xx_hash_md5.c ****       }
+ 271:./FWLIB/src/stm32f4xx_hash_md5.c ****   
+ 272:./FWLIB/src/stm32f4xx_hash_md5.c ****        /* Start the HASH processor */
+ 273:./FWLIB/src/stm32f4xx_hash_md5.c ****        HASH_StartDigest();
+ 274:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 275:./FWLIB/src/stm32f4xx_hash_md5.c ****        /* wait until the Busy flag is RESET */
+ 276:./FWLIB/src/stm32f4xx_hash_md5.c ****        counter =0;
+ 277:./FWLIB/src/stm32f4xx_hash_md5.c ****        do
+ 278:./FWLIB/src/stm32f4xx_hash_md5.c ****        {
+ 279:./FWLIB/src/stm32f4xx_hash_md5.c ****           busystatus = HASH_GetFlagStatus(HASH_FLAG_BUSY);
+ARM GAS  /tmp/ccrZJTjE.s 			page 19
+
+
+ 280:./FWLIB/src/stm32f4xx_hash_md5.c ****           counter++;
+ 281:./FWLIB/src/stm32f4xx_hash_md5.c ****       }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 282:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 283:./FWLIB/src/stm32f4xx_hash_md5.c ****       if (busystatus != RESET)
+ 284:./FWLIB/src/stm32f4xx_hash_md5.c ****       {
+ 285:./FWLIB/src/stm32f4xx_hash_md5.c ****          status = ERROR;
+ 286:./FWLIB/src/stm32f4xx_hash_md5.c ****       }
+ 287:./FWLIB/src/stm32f4xx_hash_md5.c ****       else
+ 288:./FWLIB/src/stm32f4xx_hash_md5.c ****       {
+ 289:./FWLIB/src/stm32f4xx_hash_md5.c ****          /* Read the message digest */
+ 290:./FWLIB/src/stm32f4xx_hash_md5.c ****          HASH_GetDigest(&MD5_MessageDigest);
+ 291:./FWLIB/src/stm32f4xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[0]);
+ 292:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 293:./FWLIB/src/stm32f4xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[1]);
+ 294:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 295:./FWLIB/src/stm32f4xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[2]);
+ 296:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 297:./FWLIB/src/stm32f4xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[3]);
+ 298:./FWLIB/src/stm32f4xx_hash_md5.c ****       }
+ 299:./FWLIB/src/stm32f4xx_hash_md5.c ****     }
+ 300:./FWLIB/src/stm32f4xx_hash_md5.c ****   }
+ 301:./FWLIB/src/stm32f4xx_hash_md5.c ****   return status;  
+ 302:./FWLIB/src/stm32f4xx_hash_md5.c **** }
+ 329              		.loc 1 302 0
+ 330 0092 0FB0     		add	sp, sp, #60
+ 331              	.LCFI6:
+ 332              		.cfi_remember_state
+ 333              		.cfi_def_cfa_offset 28
+ 334              		@ sp needed
+ 335 0094 BDE8F083 		pop	{r4, r5, r6, r7, r8, r9, pc}
+ 336              	.LVL46:
+ 337              	.L30:
+ 338              	.LCFI7:
+ 339              		.cfi_restore_state
+ 235:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 340              		.loc 1 235 0
+ 341 0098 BDF80600 		ldrh	r0, [sp, #6]
+ 342              	.LVL47:
+ 343 009c FFF7FEFF 		bl	HASH_SetLastWordValidBitsNbr
+ 344              	.LVL48:
+ 238:./FWLIB/src/stm32f4xx_hash_md5.c ****     {
+ 345              		.loc 1 238 0
+ 346 00a0 04E0     		b	.L18
+ 347              	.LVL49:
+ 348              	.L19:
+ 240:./FWLIB/src/stm32f4xx_hash_md5.c ****       inputaddr+=4;
+ 349              		.loc 1 240 0 discriminator 3
+ 350 00a2 56F8040B 		ldr	r0, [r6], #4
+ 351              	.LVL50:
+ 352 00a6 FFF7FEFF 		bl	HASH_DataIn
+ 353              	.LVL51:
+ 238:./FWLIB/src/stm32f4xx_hash_md5.c ****     {
+ 354              		.loc 1 238 0 discriminator 3
+ 355 00aa 0434     		adds	r4, r4, #4
+ 356              	.LVL52:
+ 357              	.L18:
+ 238:./FWLIB/src/stm32f4xx_hash_md5.c ****     {
+ARM GAS  /tmp/ccrZJTjE.s 			page 20
+
+
+ 358              		.loc 1 238 0 is_stmt 0 discriminator 1
+ 359 00ac BC42     		cmp	r4, r7
+ 360 00ae F8D3     		bcc	.L19
+ 245:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 361              		.loc 1 245 0 is_stmt 1
+ 362 00b0 FFF7FEFF 		bl	HASH_StartDigest
+ 363              	.LVL53:
+ 248:./FWLIB/src/stm32f4xx_hash_md5.c ****     do
+ 364              		.loc 1 248 0
+ 365 00b4 0023     		movs	r3, #0
+ 366 00b6 0093     		str	r3, [sp]
+ 367              	.LVL54:
+ 368              	.L21:
+ 251:./FWLIB/src/stm32f4xx_hash_md5.c ****        counter++;
+ 369              		.loc 1 251 0 discriminator 2
+ 370 00b8 0820     		movs	r0, #8
+ 371 00ba FFF7FEFF 		bl	HASH_GetFlagStatus
+ 372              	.LVL55:
+ 373 00be 0446     		mov	r4, r0
+ 374              	.LVL56:
+ 252:./FWLIB/src/stm32f4xx_hash_md5.c ****     }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 375              		.loc 1 252 0 discriminator 2
+ 376 00c0 009B     		ldr	r3, [sp]
+ 377 00c2 0133     		adds	r3, r3, #1
+ 378 00c4 0093     		str	r3, [sp]
+ 253:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 379              		.loc 1 253 0 discriminator 2
+ 380 00c6 009B     		ldr	r3, [sp]
+ 381 00c8 B3F5803F 		cmp	r3, #65536
+ 382 00cc 01D0     		beq	.L20
+ 253:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 383              		.loc 1 253 0 is_stmt 0 discriminator 1
+ 384 00ce 0028     		cmp	r0, #0
+ 385 00d0 F2D1     		bne	.L21
+ 386              	.L20:
+ 255:./FWLIB/src/stm32f4xx_hash_md5.c ****     {
+ 387              		.loc 1 255 0 is_stmt 1
+ 388 00d2 0CB1     		cbz	r4, .L31
+ 257:./FWLIB/src/stm32f4xx_hash_md5.c ****     }
+ 389              		.loc 1 257 0
+ 390 00d4 0020     		movs	r0, #0
+ 391              	.LVL57:
+ 392 00d6 DCE7     		b	.L17
+ 393              	.LVL58:
+ 394              	.L31:
+ 262:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 395              		.loc 1 262 0
+ 396 00d8 BDF80400 		ldrh	r0, [sp, #4]
+ 397              	.LVL59:
+ 398 00dc FFF7FEFF 		bl	HASH_SetLastWordValidBitsNbr
+ 399              	.LVL60:
+ 266:./FWLIB/src/stm32f4xx_hash_md5.c ****       {
+ 400              		.loc 1 266 0
+ 401 00e0 04E0     		b	.L22
+ 402              	.LVL61:
+ 403              	.L23:
+ 268:./FWLIB/src/stm32f4xx_hash_md5.c ****         keyaddr+=4;
+ARM GAS  /tmp/ccrZJTjE.s 			page 21
+
+
+ 404              		.loc 1 268 0 discriminator 3
+ 405 00e2 58F8040B 		ldr	r0, [r8], #4
+ 406              	.LVL62:
+ 407 00e6 FFF7FEFF 		bl	HASH_DataIn
+ 408              	.LVL63:
+ 266:./FWLIB/src/stm32f4xx_hash_md5.c ****       {
+ 409              		.loc 1 266 0 discriminator 3
+ 410 00ea 0434     		adds	r4, r4, #4
+ 411              	.LVL64:
+ 412              	.L22:
+ 266:./FWLIB/src/stm32f4xx_hash_md5.c ****       {
+ 413              		.loc 1 266 0 is_stmt 0 discriminator 1
+ 414 00ec AC42     		cmp	r4, r5
+ 415 00ee F8D3     		bcc	.L23
+ 273:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 416              		.loc 1 273 0 is_stmt 1
+ 417 00f0 FFF7FEFF 		bl	HASH_StartDigest
+ 418              	.LVL65:
+ 276:./FWLIB/src/stm32f4xx_hash_md5.c ****        do
+ 419              		.loc 1 276 0
+ 420 00f4 0023     		movs	r3, #0
+ 421 00f6 0093     		str	r3, [sp]
+ 422              	.L25:
+ 279:./FWLIB/src/stm32f4xx_hash_md5.c ****           counter++;
+ 423              		.loc 1 279 0 discriminator 2
+ 424 00f8 0820     		movs	r0, #8
+ 425 00fa FFF7FEFF 		bl	HASH_GetFlagStatus
+ 426              	.LVL66:
+ 427 00fe 0246     		mov	r2, r0
+ 428              	.LVL67:
+ 280:./FWLIB/src/stm32f4xx_hash_md5.c ****       }while ((counter != MD5BUSY_TIMEOUT) && (busystatus != RESET));
+ 429              		.loc 1 280 0 discriminator 2
+ 430 0100 009B     		ldr	r3, [sp]
+ 431 0102 0133     		adds	r3, r3, #1
+ 432 0104 0093     		str	r3, [sp]
+ 281:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 433              		.loc 1 281 0 discriminator 2
+ 434 0106 009B     		ldr	r3, [sp]
+ 435 0108 B3F5803F 		cmp	r3, #65536
+ 436 010c 01D0     		beq	.L24
+ 281:./FWLIB/src/stm32f4xx_hash_md5.c **** 
+ 437              		.loc 1 281 0 is_stmt 0 discriminator 1
+ 438 010e 0028     		cmp	r0, #0
+ 439 0110 F2D1     		bne	.L25
+ 440              	.L24:
+ 283:./FWLIB/src/stm32f4xx_hash_md5.c ****       {
+ 441              		.loc 1 283 0 is_stmt 1
+ 442 0112 0AB1     		cbz	r2, .L32
+ 285:./FWLIB/src/stm32f4xx_hash_md5.c ****       }
+ 443              		.loc 1 285 0
+ 444 0114 0020     		movs	r0, #0
+ 445              	.LVL68:
+ 446 0116 BCE7     		b	.L17
+ 447              	.LVL69:
+ 448              	.L32:
+ 290:./FWLIB/src/stm32f4xx_hash_md5.c ****          *(uint32_t*)(outputaddr)  = __REV(MD5_MessageDigest.Data[0]);
+ 449              		.loc 1 290 0
+ARM GAS  /tmp/ccrZJTjE.s 			page 22
+
+
+ 450 0118 02A8     		add	r0, sp, #8
+ 451              	.LVL70:
+ 452 011a FFF7FEFF 		bl	HASH_GetDigest
+ 453              	.LVL71:
+ 291:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 454              		.loc 1 291 0
+ 455 011e 029B     		ldr	r3, [sp, #8]
+ 456              	.LVL72:
+ 457              	.LBB26:
+ 458              	.LBB27:
+ 459              		.loc 2 407 0
+ 460 0120 1BBA     		rev	r3, r3
+ 461              	.LVL73:
+ 462              	.LBE27:
+ 463              	.LBE26:
+ 291:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 464              		.loc 1 291 0
+ 465 0122 169A     		ldr	r2, [sp, #88]
+ 466 0124 1360     		str	r3, [r2]
+ 467              	.LVL74:
+ 293:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 468              		.loc 1 293 0
+ 469 0126 039B     		ldr	r3, [sp, #12]
+ 470              	.LVL75:
+ 471              	.LBB28:
+ 472              	.LBB29:
+ 473              		.loc 2 407 0
+ 474 0128 1BBA     		rev	r3, r3
+ 475              	.LVL76:
+ 476              	.LBE29:
+ 477              	.LBE28:
+ 293:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 478              		.loc 1 293 0
+ 479 012a 5360     		str	r3, [r2, #4]
+ 480              	.LVL77:
+ 295:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 481              		.loc 1 295 0
+ 482 012c 049B     		ldr	r3, [sp, #16]
+ 483              	.LVL78:
+ 484              	.LBB30:
+ 485              	.LBB31:
+ 486              		.loc 2 407 0
+ 487 012e 1BBA     		rev	r3, r3
+ 488              	.LVL79:
+ 489              	.LBE31:
+ 490              	.LBE30:
+ 295:./FWLIB/src/stm32f4xx_hash_md5.c ****          outputaddr+=4;
+ 491              		.loc 1 295 0
+ 492 0130 9360     		str	r3, [r2, #8]
+ 493              	.LVL80:
+ 297:./FWLIB/src/stm32f4xx_hash_md5.c ****       }
+ 494              		.loc 1 297 0
+ 495 0132 059B     		ldr	r3, [sp, #20]
+ 496              	.LVL81:
+ 497              	.LBB32:
+ 498              	.LBB33:
+ 499              		.loc 2 407 0
+ARM GAS  /tmp/ccrZJTjE.s 			page 23
+
+
+ 500 0134 1BBA     		rev	r3, r3
+ 501              	.LVL82:
+ 502              	.LBE33:
+ 503              	.LBE32:
+ 297:./FWLIB/src/stm32f4xx_hash_md5.c ****       }
+ 504              		.loc 1 297 0
+ 505 0136 D360     		str	r3, [r2, #12]
+ 178:./FWLIB/src/stm32f4xx_hash_md5.c ****   uint32_t keyaddr    = (uint32_t)Key;
+ 506              		.loc 1 178 0
+ 507 0138 0120     		movs	r0, #1
+ 508 013a AAE7     		b	.L17
+ 509              		.cfi_endproc
+ 510              	.LFE113:
+ 512              		.text
+ 513              	.Letext0:
+ 514              		.file 3 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 515              		.file 4 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 516              		.file 5 "build/lnInclude/core_cm4.h"
+ 517              		.file 6 "build/lnInclude/system_stm32f4xx.h"
+ 518              		.file 7 "build/lnInclude/stm32f4xx.h"
+ 519              		.file 8 "build/lnInclude/stm32f4xx_hash.h"
+ARM GAS  /tmp/ccrZJTjE.s 			page 24
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32f4xx_hash_md5.c
+     /tmp/ccrZJTjE.s:18     .text.HASH_MD5:0000000000000000 $t
+     /tmp/ccrZJTjE.s:25     .text.HASH_MD5:0000000000000000 HASH_MD5
+     /tmp/ccrZJTjE.s:198    .text.HMAC_MD5:0000000000000000 $t
+     /tmp/ccrZJTjE.s:205    .text.HMAC_MD5:0000000000000000 HMAC_MD5
+
+UNDEFINED SYMBOLS
+HASH_DeInit
+HASH_Init
+HASH_SetLastWordValidBitsNbr
+HASH_DataIn
+HASH_StartDigest
+HASH_GetFlagStatus
+HASH_GetDigest

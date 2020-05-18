@@ -1,0 +1,462 @@
+ARM GAS  /tmp/ccsfK3fz.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"delay.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.delay_init,"ax",%progbits
+  18              		.align	1
+  19              		.global	delay_init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	delay_init:
+  26              	.LFB112:
+  27              		.file 1 "./SYSTEM/delay.c"
+   1:./SYSTEM/delay.c **** #include "delay.h"
+   2:./SYSTEM/delay.c **** #include "sys.h"
+   3:./SYSTEM/delay.c **** ////////////////////////////////////////////////////////////////////////////////// 	 
+   4:./SYSTEM/delay.c **** //如果使用ucos,则包括下面的头文件即可.
+   5:./SYSTEM/delay.c **** #if SYSTEM_SUPPORT_UCOS
+   6:./SYSTEM/delay.c **** #include "includes.h"					//ucos 使用	  
+   7:./SYSTEM/delay.c **** #endif
+   8:./SYSTEM/delay.c **** //////////////////////////////////////////////////////////////////////////////////  
+   9:./SYSTEM/delay.c **** //本程序只供学习使用，未经作者许可，不得用于其它任何用途
+  10:./SYSTEM/delay.c **** //ALIENTEK STM32F407开发板
+  11:./SYSTEM/delay.c **** //使用SysTick的普通计数模式对延迟进行管理(支持ucosii)
+  12:./SYSTEM/delay.c **** //包括delay_us,delay_ms
+  13:./SYSTEM/delay.c **** //正点原子@ALIENTEK
+  14:./SYSTEM/delay.c **** //技术论坛:www.openedv.com
+  15:./SYSTEM/delay.c **** //修改日期:2014/5/2
+  16:./SYSTEM/delay.c **** //版本：V1.0
+  17:./SYSTEM/delay.c **** //版权所有，盗版必究。
+  18:./SYSTEM/delay.c **** //Copyright(C) 广州市星翼电子科技有限公司 2014-2024
+  19:./SYSTEM/delay.c **** //All rights reserved
+  20:./SYSTEM/delay.c **** //********************************************************************************
+  21:./SYSTEM/delay.c **** //修改说明
+  22:./SYSTEM/delay.c **** //无
+  23:./SYSTEM/delay.c **** ////////////////////////////////////////////////////////////////////////////////// 
+  24:./SYSTEM/delay.c ****  
+  25:./SYSTEM/delay.c **** static u8  fac_us=0;//us延时倍乘数			   
+  26:./SYSTEM/delay.c **** static u16 fac_ms=0;//ms延时倍乘数,在ucos下,代表每个节拍的ms数
+  27:./SYSTEM/delay.c **** 
+  28:./SYSTEM/delay.c **** #ifdef OS_CRITICAL_METHOD 	//如果OS_CRITICAL_METHOD定义了,说明使用ucosII了.
+  29:./SYSTEM/delay.c **** //systick中断服务函数,使用ucos时用到
+  30:./SYSTEM/delay.c **** void SysTick_Handler(void)
+  31:./SYSTEM/delay.c **** {				   
+ARM GAS  /tmp/ccsfK3fz.s 			page 2
+
+
+  32:./SYSTEM/delay.c **** 	OSIntEnter();		//进入中断
+  33:./SYSTEM/delay.c ****     OSTimeTick();       //调用ucos的时钟服务程序               
+  34:./SYSTEM/delay.c ****     OSIntExit();        //触发任务切换软中断
+  35:./SYSTEM/delay.c **** }
+  36:./SYSTEM/delay.c **** #endif
+  37:./SYSTEM/delay.c **** 			   
+  38:./SYSTEM/delay.c **** //初始化延迟函数
+  39:./SYSTEM/delay.c **** //当使用ucos的时候,此函数会初始化ucos的时钟节拍
+  40:./SYSTEM/delay.c **** //SYSTICK的时钟固定为HCLK时钟的1/8
+  41:./SYSTEM/delay.c **** //SYSCLK:系统时钟
+  42:./SYSTEM/delay.c **** void delay_init(u8 SYSCLK)
+  43:./SYSTEM/delay.c **** {
+  28              		.loc 1 43 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              	.LVL0:
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38 0002 0446     		mov	r4, r0
+  44:./SYSTEM/delay.c **** #ifdef OS_CRITICAL_METHOD 	//如果OS_CRITICAL_METHOD定义了,说明使用ucosII了.
+  45:./SYSTEM/delay.c **** 	u32 reload;
+  46:./SYSTEM/delay.c **** #endif
+  47:./SYSTEM/delay.c ****  	SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK_Div8);
+  39              		.loc 1 47 0
+  40 0004 6FF00400 		mvn	r0, #4
+  41              	.LVL1:
+  42 0008 FFF7FEFF 		bl	SysTick_CLKSourceConfig
+  43              	.LVL2:
+  48:./SYSTEM/delay.c **** 	fac_us=SYSCLK/8;		//不论是否使用ucos,fac_us都需要使用
+  44              		.loc 1 48 0
+  45 000c E008     		lsrs	r0, r4, #3
+  46 000e 054B     		ldr	r3, .L3
+  47 0010 1870     		strb	r0, [r3]
+  49:./SYSTEM/delay.c **** 	    
+  50:./SYSTEM/delay.c **** #ifdef OS_CRITICAL_METHOD 	//如果OS_CRITICAL_METHOD定义了,说明使用ucosII了.
+  51:./SYSTEM/delay.c **** 	reload=SYSCLK/8;		//每秒钟的计数次数 单位为K	   
+  52:./SYSTEM/delay.c **** 	reload*=1000000/OS_TICKS_PER_SEC;//根据OS_TICKS_PER_SEC设定溢出时间
+  53:./SYSTEM/delay.c **** 							//reload为24位寄存器,最大值:16777216,在168M下,约合0.7989s左右	
+  54:./SYSTEM/delay.c **** 	fac_ms=1000/OS_TICKS_PER_SEC;//代表ucos可以延时的最少单位	   
+  55:./SYSTEM/delay.c **** 	SysTick->CTRL|=SysTick_CTRL_TICKINT_Msk;   	//开启SYSTICK中断
+  56:./SYSTEM/delay.c **** 	SysTick->LOAD=reload; 	//每1/OS_TICKS_PER_SEC秒中断一次	
+  57:./SYSTEM/delay.c **** 	SysTick->CTRL|=SysTick_CTRL_ENABLE_Msk;   	//开启SYSTICK
+  58:./SYSTEM/delay.c **** #else
+  59:./SYSTEM/delay.c **** 	fac_ms=(u16)fac_us*1000;//非ucos下,代表每个ms需要的systick时钟数   
+  48              		.loc 1 59 0
+  49 0012 C0EB4013 		rsb	r3, r0, r0, lsl #5
+  50 0016 00EB8300 		add	r0, r0, r3, lsl #2
+  51 001a C300     		lsls	r3, r0, #3
+  52 001c 024A     		ldr	r2, .L3+4
+  53 001e 1380     		strh	r3, [r2]	@ movhi
+  60:./SYSTEM/delay.c **** #endif
+  61:./SYSTEM/delay.c **** }								    
+  54              		.loc 1 61 0
+ARM GAS  /tmp/ccsfK3fz.s 			page 3
+
+
+  55 0020 10BD     		pop	{r4, pc}
+  56              	.L4:
+  57 0022 00BF     		.align	2
+  58              	.L3:
+  59 0024 00000000 		.word	.LANCHOR0
+  60 0028 00000000 		.word	.LANCHOR1
+  61              		.cfi_endproc
+  62              	.LFE112:
+  64              		.section	.text.delay_us,"ax",%progbits
+  65              		.align	1
+  66              		.global	delay_us
+  67              		.syntax unified
+  68              		.thumb
+  69              		.thumb_func
+  70              		.fpu fpv4-sp-d16
+  72              	delay_us:
+  73              	.LFB113:
+  62:./SYSTEM/delay.c **** 
+  63:./SYSTEM/delay.c **** #ifdef OS_CRITICAL_METHOD 	//如果OS_CRITICAL_METHOD定义了,说明使用ucosII了.
+  64:./SYSTEM/delay.c **** //延时nus
+  65:./SYSTEM/delay.c **** //nus:要延时的us数.		    								   
+  66:./SYSTEM/delay.c **** void delay_us(u32 nus)
+  67:./SYSTEM/delay.c **** {		
+  68:./SYSTEM/delay.c **** 	u32 ticks;
+  69:./SYSTEM/delay.c **** 	u32 told,tnow,tcnt=0;
+  70:./SYSTEM/delay.c **** 	u32 reload=SysTick->LOAD;	//LOAD的值	    	 
+  71:./SYSTEM/delay.c **** 	ticks=nus*fac_us; 			//需要的节拍数	  		 
+  72:./SYSTEM/delay.c **** 	tcnt=0;
+  73:./SYSTEM/delay.c **** 	OSSchedLock();				//阻止ucos调度，防止打断us延时
+  74:./SYSTEM/delay.c **** 	told=SysTick->VAL;        	//刚进入时的计数器值
+  75:./SYSTEM/delay.c **** 	while(1)
+  76:./SYSTEM/delay.c **** 	{
+  77:./SYSTEM/delay.c **** 		tnow=SysTick->VAL;	
+  78:./SYSTEM/delay.c **** 		if(tnow!=told)
+  79:./SYSTEM/delay.c **** 		{	    
+  80:./SYSTEM/delay.c **** 			if(tnow<told)tcnt+=told-tnow;//这里注意一下SYSTICK是一个递减的计数器就可以了.
+  81:./SYSTEM/delay.c **** 			else tcnt+=reload-tnow+told;	    
+  82:./SYSTEM/delay.c **** 			told=tnow;
+  83:./SYSTEM/delay.c **** 			if(tcnt>=ticks)break;//时间超过/等于要延迟的时间,则退出.
+  84:./SYSTEM/delay.c **** 		}  
+  85:./SYSTEM/delay.c **** 	};
+  86:./SYSTEM/delay.c **** 	OSSchedUnlock();			//开启ucos调度 									    
+  87:./SYSTEM/delay.c **** }
+  88:./SYSTEM/delay.c **** //延时nms
+  89:./SYSTEM/delay.c **** //nms:要延时的ms数
+  90:./SYSTEM/delay.c **** void delay_ms(u16 nms)
+  91:./SYSTEM/delay.c **** {	
+  92:./SYSTEM/delay.c **** 		if(OSRunning==OS_TRUE&&OSLockNesting==0)//如果os已经在跑了	   
+  93:./SYSTEM/delay.c **** 	{		  
+  94:./SYSTEM/delay.c **** 		if(nms>=fac_ms)//延时的时间大于ucos的最少时间周期 
+  95:./SYSTEM/delay.c **** 		{
+  96:./SYSTEM/delay.c ****    			OSTimeDly(nms/fac_ms);	//ucos延时
+  97:./SYSTEM/delay.c **** 		}
+  98:./SYSTEM/delay.c **** 		nms%=fac_ms;				//ucos已经无法提供这么小的延时了,采用普通方式延时    
+  99:./SYSTEM/delay.c **** 	}
+ 100:./SYSTEM/delay.c **** 	delay_us((u32)(nms*1000));		//普通方式延时 
+ 101:./SYSTEM/delay.c **** }
+ARM GAS  /tmp/ccsfK3fz.s 			page 4
+
+
+ 102:./SYSTEM/delay.c **** #else  //不用ucos时
+ 103:./SYSTEM/delay.c **** //延时nus
+ 104:./SYSTEM/delay.c **** //nus为要延时的us数.	
+ 105:./SYSTEM/delay.c **** //注意:nus的值,不要大于798915us
+ 106:./SYSTEM/delay.c **** void delay_us(u32 nus)
+ 107:./SYSTEM/delay.c **** {		
+  74              		.loc 1 107 0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 0
+  77              		@ frame_needed = 0, uses_anonymous_args = 0
+  78              		@ link register save eliminated.
+  79              	.LVL3:
+ 108:./SYSTEM/delay.c **** 	u32 temp;	    	 
+ 109:./SYSTEM/delay.c **** 	SysTick->LOAD=nus*fac_us; //时间加载	  		 
+  80              		.loc 1 109 0
+  81 0000 0C4B     		ldr	r3, .L7
+  82 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  83 0004 00FB03F0 		mul	r0, r0, r3
+  84              	.LVL4:
+  85 0008 0B4B     		ldr	r3, .L7+4
+  86 000a 5860     		str	r0, [r3, #4]
+ 110:./SYSTEM/delay.c **** 	SysTick->VAL=0x00;        //清空计数器
+  87              		.loc 1 110 0
+  88 000c 0022     		movs	r2, #0
+  89 000e 9A60     		str	r2, [r3, #8]
+ 111:./SYSTEM/delay.c **** 	SysTick->CTRL|=SysTick_CTRL_ENABLE_Msk ;          //开始倒数 
+  90              		.loc 1 111 0
+  91 0010 1A68     		ldr	r2, [r3]
+  92 0012 42F00102 		orr	r2, r2, #1
+  93 0016 1A60     		str	r2, [r3]
+  94              	.L6:
+ 112:./SYSTEM/delay.c **** 	do
+ 113:./SYSTEM/delay.c **** 	{
+ 114:./SYSTEM/delay.c **** 		temp=SysTick->CTRL;
+  95              		.loc 1 114 0 discriminator 1
+  96 0018 074B     		ldr	r3, .L7+4
+  97 001a 1B68     		ldr	r3, [r3]
+  98              	.LVL5:
+ 115:./SYSTEM/delay.c **** 	}
+ 116:./SYSTEM/delay.c **** 	while((temp&0x01)&&!(temp&(1<<16)));//等待时间到达   
+  99              		.loc 1 116 0 discriminator 1
+ 100 001c 03F00113 		and	r3, r3, #65537
+ 101              	.LVL6:
+ 102 0020 012B     		cmp	r3, #1
+ 103 0022 F9D0     		beq	.L6
+ 117:./SYSTEM/delay.c **** 	SysTick->CTRL&=~SysTick_CTRL_ENABLE_Msk;       //关闭计数器
+ 104              		.loc 1 117 0
+ 105 0024 044B     		ldr	r3, .L7+4
+ 106 0026 1A68     		ldr	r2, [r3]
+ 107 0028 22F00102 		bic	r2, r2, #1
+ 108 002c 1A60     		str	r2, [r3]
+ 118:./SYSTEM/delay.c **** 	SysTick->VAL =0X00;       //清空计数器	 
+ 109              		.loc 1 118 0
+ 110 002e 0022     		movs	r2, #0
+ 111 0030 9A60     		str	r2, [r3, #8]
+ 119:./SYSTEM/delay.c **** }
+ 112              		.loc 1 119 0
+ARM GAS  /tmp/ccsfK3fz.s 			page 5
+
+
+ 113 0032 7047     		bx	lr
+ 114              	.L8:
+ 115              		.align	2
+ 116              	.L7:
+ 117 0034 00000000 		.word	.LANCHOR0
+ 118 0038 10E000E0 		.word	-536813552
+ 119              		.cfi_endproc
+ 120              	.LFE113:
+ 122              		.section	.text.delay_xms,"ax",%progbits
+ 123              		.align	1
+ 124              		.global	delay_xms
+ 125              		.syntax unified
+ 126              		.thumb
+ 127              		.thumb_func
+ 128              		.fpu fpv4-sp-d16
+ 130              	delay_xms:
+ 131              	.LFB114:
+ 120:./SYSTEM/delay.c **** //延时nms
+ 121:./SYSTEM/delay.c **** //注意nms的范围
+ 122:./SYSTEM/delay.c **** //SysTick->LOAD为24位寄存器,所以,最大延时为:
+ 123:./SYSTEM/delay.c **** //nms<=0xffffff*8*1000/SYSCLK
+ 124:./SYSTEM/delay.c **** //SYSCLK单位为Hz,nms单位为ms
+ 125:./SYSTEM/delay.c **** //对168M条件下,nms<=798ms 
+ 126:./SYSTEM/delay.c **** void delay_xms(u16 nms)
+ 127:./SYSTEM/delay.c **** {	 		  	  
+ 132              		.loc 1 127 0
+ 133              		.cfi_startproc
+ 134              		@ args = 0, pretend = 0, frame = 0
+ 135              		@ frame_needed = 0, uses_anonymous_args = 0
+ 136              		@ link register save eliminated.
+ 137              	.LVL7:
+ 128:./SYSTEM/delay.c **** 	u32 temp;		   
+ 129:./SYSTEM/delay.c **** 	SysTick->LOAD=(u32)nms*fac_ms;//时间加载(SysTick->LOAD为24bit)
+ 138              		.loc 1 129 0
+ 139 0000 0C4B     		ldr	r3, .L11
+ 140 0002 1B88     		ldrh	r3, [r3]
+ 141 0004 00FB03F0 		mul	r0, r0, r3
+ 142              	.LVL8:
+ 143 0008 0B4B     		ldr	r3, .L11+4
+ 144 000a 5860     		str	r0, [r3, #4]
+ 130:./SYSTEM/delay.c **** 	SysTick->VAL =0x00;           //清空计数器
+ 145              		.loc 1 130 0
+ 146 000c 0022     		movs	r2, #0
+ 147 000e 9A60     		str	r2, [r3, #8]
+ 131:./SYSTEM/delay.c **** 	SysTick->CTRL|=SysTick_CTRL_ENABLE_Msk ;          //开始倒数  
+ 148              		.loc 1 131 0
+ 149 0010 1A68     		ldr	r2, [r3]
+ 150 0012 42F00102 		orr	r2, r2, #1
+ 151 0016 1A60     		str	r2, [r3]
+ 152              	.L10:
+ 132:./SYSTEM/delay.c **** 	do
+ 133:./SYSTEM/delay.c **** 	{
+ 134:./SYSTEM/delay.c **** 		temp=SysTick->CTRL;
+ 153              		.loc 1 134 0 discriminator 1
+ 154 0018 074B     		ldr	r3, .L11+4
+ 155 001a 1B68     		ldr	r3, [r3]
+ 156              	.LVL9:
+ARM GAS  /tmp/ccsfK3fz.s 			page 6
+
+
+ 135:./SYSTEM/delay.c **** 	}
+ 136:./SYSTEM/delay.c **** 	while((temp&0x01)&&!(temp&(1<<16)));//等待时间到达   
+ 157              		.loc 1 136 0 discriminator 1
+ 158 001c 03F00113 		and	r3, r3, #65537
+ 159              	.LVL10:
+ 160 0020 012B     		cmp	r3, #1
+ 161 0022 F9D0     		beq	.L10
+ 137:./SYSTEM/delay.c **** 	SysTick->CTRL&=~SysTick_CTRL_ENABLE_Msk;       //关闭计数器
+ 162              		.loc 1 137 0
+ 163 0024 044B     		ldr	r3, .L11+4
+ 164 0026 1A68     		ldr	r2, [r3]
+ 165 0028 22F00102 		bic	r2, r2, #1
+ 166 002c 1A60     		str	r2, [r3]
+ 138:./SYSTEM/delay.c **** 	SysTick->VAL =0X00;       //清空计数器	  	    
+ 167              		.loc 1 138 0
+ 168 002e 0022     		movs	r2, #0
+ 169 0030 9A60     		str	r2, [r3, #8]
+ 139:./SYSTEM/delay.c **** } 
+ 170              		.loc 1 139 0
+ 171 0032 7047     		bx	lr
+ 172              	.L12:
+ 173              		.align	2
+ 174              	.L11:
+ 175 0034 00000000 		.word	.LANCHOR1
+ 176 0038 10E000E0 		.word	-536813552
+ 177              		.cfi_endproc
+ 178              	.LFE114:
+ 180              		.section	.text.delay_ms,"ax",%progbits
+ 181              		.align	1
+ 182              		.global	delay_ms
+ 183              		.syntax unified
+ 184              		.thumb
+ 185              		.thumb_func
+ 186              		.fpu fpv4-sp-d16
+ 188              	delay_ms:
+ 189              	.LFB115:
+ 140:./SYSTEM/delay.c **** //延时nms 
+ 141:./SYSTEM/delay.c **** //nms:0~65535
+ 142:./SYSTEM/delay.c **** void delay_ms(u16 nms)
+ 143:./SYSTEM/delay.c **** {	 	 
+ 190              		.loc 1 143 0
+ 191              		.cfi_startproc
+ 192              		@ args = 0, pretend = 0, frame = 0
+ 193              		@ frame_needed = 0, uses_anonymous_args = 0
+ 194              	.LVL11:
+ 195 0000 38B5     		push	{r3, r4, r5, lr}
+ 196              	.LCFI1:
+ 197              		.cfi_def_cfa_offset 16
+ 198              		.cfi_offset 3, -16
+ 199              		.cfi_offset 4, -12
+ 200              		.cfi_offset 5, -8
+ 201              		.cfi_offset 14, -4
+ 144:./SYSTEM/delay.c **** 	u8 repeat=nms/540;	//这里用540,是考虑到某些客户可能超频使用,
+ 202              		.loc 1 144 0
+ 203 0002 0C4B     		ldr	r3, .L19
+ 204 0004 A3FB0023 		umull	r2, r3, r3, r0
+ 205 0008 5B0A     		lsrs	r3, r3, #9
+ARM GAS  /tmp/ccsfK3fz.s 			page 7
+
+
+ 206 000a DCB2     		uxtb	r4, r3
+ 207              	.LVL12:
+ 145:./SYSTEM/delay.c **** 						//比如超频到248M的时候,delay_xms最大只能延时541ms左右了
+ 146:./SYSTEM/delay.c **** 	u16 remain=nms%540;
+ 208              		.loc 1 146 0
+ 209 000c 4FF40775 		mov	r5, #540
+ 210 0010 05FB1303 		mls	r3, r5, r3, r0
+ 211 0014 9DB2     		uxth	r5, r3
+ 212              	.LVL13:
+ 147:./SYSTEM/delay.c **** 	while(repeat)
+ 213              		.loc 1 147 0
+ 214 0016 05E0     		b	.L14
+ 215              	.LVL14:
+ 216              	.L15:
+ 148:./SYSTEM/delay.c **** 	{
+ 149:./SYSTEM/delay.c **** 		delay_xms(540);
+ 217              		.loc 1 149 0
+ 218 0018 4FF40770 		mov	r0, #540
+ 219 001c FFF7FEFF 		bl	delay_xms
+ 220              	.LVL15:
+ 150:./SYSTEM/delay.c **** 		repeat--;
+ 221              		.loc 1 150 0
+ 222 0020 013C     		subs	r4, r4, #1
+ 223              	.LVL16:
+ 224 0022 E4B2     		uxtb	r4, r4
+ 225              	.LVL17:
+ 226              	.L14:
+ 147:./SYSTEM/delay.c **** 	while(repeat)
+ 227              		.loc 1 147 0
+ 228 0024 002C     		cmp	r4, #0
+ 229 0026 F7D1     		bne	.L15
+ 151:./SYSTEM/delay.c **** 	}
+ 152:./SYSTEM/delay.c **** 	if(remain)delay_xms(remain);
+ 230              		.loc 1 152 0
+ 231 0028 05B9     		cbnz	r5, .L18
+ 232              	.L13:
+ 153:./SYSTEM/delay.c **** 	
+ 154:./SYSTEM/delay.c **** } 
+ 233              		.loc 1 154 0
+ 234 002a 38BD     		pop	{r3, r4, r5, pc}
+ 235              	.LVL18:
+ 236              	.L18:
+ 152:./SYSTEM/delay.c **** 	
+ 237              		.loc 1 152 0 discriminator 1
+ 238 002c 2846     		mov	r0, r5
+ 239 002e FFF7FEFF 		bl	delay_xms
+ 240              	.LVL19:
+ 241              		.loc 1 154 0 discriminator 1
+ 242 0032 FAE7     		b	.L13
+ 243              	.L20:
+ 244              		.align	2
+ 245              	.L19:
+ 246 0034 49D6B9F2 		.word	-222702007
+ 247              		.cfi_endproc
+ 248              	.LFE115:
+ 250              		.section	.bss.fac_ms,"aw",%nobits
+ 251              		.align	1
+ARM GAS  /tmp/ccsfK3fz.s 			page 8
+
+
+ 252              		.set	.LANCHOR1,. + 0
+ 255              	fac_ms:
+ 256 0000 0000     		.space	2
+ 257              		.section	.bss.fac_us,"aw",%nobits
+ 258              		.set	.LANCHOR0,. + 0
+ 261              	fac_us:
+ 262 0000 00       		.space	1
+ 263              		.text
+ 264              	.Letext0:
+ 265              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 266              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 267              		.file 4 "build/lnInclude/core_cm4.h"
+ 268              		.file 5 "build/lnInclude/system_stm32f4xx.h"
+ 269              		.file 6 "build/lnInclude/stm32f4xx.h"
+ 270              		.file 7 "build/lnInclude/misc.h"
+ARM GAS  /tmp/ccsfK3fz.s 			page 9
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 delay.c
+     /tmp/ccsfK3fz.s:18     .text.delay_init:0000000000000000 $t
+     /tmp/ccsfK3fz.s:25     .text.delay_init:0000000000000000 delay_init
+     /tmp/ccsfK3fz.s:59     .text.delay_init:0000000000000024 $d
+     /tmp/ccsfK3fz.s:65     .text.delay_us:0000000000000000 $t
+     /tmp/ccsfK3fz.s:72     .text.delay_us:0000000000000000 delay_us
+     /tmp/ccsfK3fz.s:117    .text.delay_us:0000000000000034 $d
+     /tmp/ccsfK3fz.s:123    .text.delay_xms:0000000000000000 $t
+     /tmp/ccsfK3fz.s:130    .text.delay_xms:0000000000000000 delay_xms
+     /tmp/ccsfK3fz.s:175    .text.delay_xms:0000000000000034 $d
+     /tmp/ccsfK3fz.s:181    .text.delay_ms:0000000000000000 $t
+     /tmp/ccsfK3fz.s:188    .text.delay_ms:0000000000000000 delay_ms
+     /tmp/ccsfK3fz.s:246    .text.delay_ms:0000000000000034 $d
+     /tmp/ccsfK3fz.s:251    .bss.fac_ms:0000000000000000 $d
+     /tmp/ccsfK3fz.s:255    .bss.fac_ms:0000000000000000 fac_ms
+     /tmp/ccsfK3fz.s:261    .bss.fac_us:0000000000000000 fac_us
+     /tmp/ccsfK3fz.s:262    .bss.fac_us:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+SysTick_CLKSourceConfig

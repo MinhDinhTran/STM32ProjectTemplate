@@ -1,0 +1,2940 @@
+ARM GAS  /tmp/ccECBl2g.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 27, 1
+   3              		.eabi_attribute 28, 1
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32f4xx_ltdc.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.LTDC_DeInit,"ax",%progbits
+  18              		.align	1
+  19              		.global	LTDC_DeInit
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  23              		.fpu fpv4-sp-d16
+  25              	LTDC_DeInit:
+  26              	.LFB112:
+  27              		.file 1 "./FWLIB/src/stm32f4xx_ltdc.c"
+   1:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+   2:./FWLIB/src/stm32f4xx_ltdc.c ****   ******************************************************************************
+   3:./FWLIB/src/stm32f4xx_ltdc.c ****   * @file    stm32f4xx_ltdc.c
+   4:./FWLIB/src/stm32f4xx_ltdc.c ****   * @author  MCD Application Team
+   5:./FWLIB/src/stm32f4xx_ltdc.c ****   * @version V1.4.0
+   6:./FWLIB/src/stm32f4xx_ltdc.c ****   * @date    04-August-2014
+   7:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief   This file provides firmware functions to manage the following 
+   8:./FWLIB/src/stm32f4xx_ltdc.c ****   *          functionalities of the LTDC controller (LTDC) peripheral:
+   9:./FWLIB/src/stm32f4xx_ltdc.c ****   *           + Initialization and configuration
+  10:./FWLIB/src/stm32f4xx_ltdc.c ****   *           + Interrupts and flags management
+  11:./FWLIB/src/stm32f4xx_ltdc.c ****   *           
+  12:./FWLIB/src/stm32f4xx_ltdc.c ****   *  @verbatim
+  13:./FWLIB/src/stm32f4xx_ltdc.c ****   
+  14:./FWLIB/src/stm32f4xx_ltdc.c ****  ===============================================================================
+  15:./FWLIB/src/stm32f4xx_ltdc.c ****                       ##### How to use this driver #####
+  16:./FWLIB/src/stm32f4xx_ltdc.c ****  ===============================================================================
+  17:./FWLIB/src/stm32f4xx_ltdc.c ****     [..]
+  18:./FWLIB/src/stm32f4xx_ltdc.c ****         (#) Enable LTDC clock using 
+  19:./FWLIB/src/stm32f4xx_ltdc.c ****             RCC_APB2PeriphResetCmd(RCC_APB2Periph_LTDC, ENABLE) function.
+  20:./FWLIB/src/stm32f4xx_ltdc.c ****         (#) Configures LTDC
+  21:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) Configure the required Pixel clock following the panel datasheet
+  22:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) Configure the Synchronous timings: VSYNC, HSYNC, Vertical and 
+  23:./FWLIB/src/stm32f4xx_ltdc.c ****               Horizontal back proch, active data area and the front proch 
+  24:./FWLIB/src/stm32f4xx_ltdc.c ****               timings 
+  25:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) Configure the synchronous signals and clock polarity in the 
+  26:./FWLIB/src/stm32f4xx_ltdc.c ****               LTDC_GCR register
+  27:./FWLIB/src/stm32f4xx_ltdc.c ****         (#) Configures Layer1/2 parameters
+  28:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) The Layer window horizontal and vertical position in the LTDC_LxWHPCR and 
+  29:./FWLIB/src/stm32f4xx_ltdc.c ****                LTDC_WVPCR registers. The layer window must be in the active data area.
+  30:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) The pixel input format in the LTDC_LxPFCR register
+  31:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) The color frame buffer start address in the LTDC_LxCFBAR register
+ARM GAS  /tmp/ccECBl2g.s 			page 2
+
+
+  32:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) The line length and pitch of the color frame buffer in the 
+  33:./FWLIB/src/stm32f4xx_ltdc.c ****                LTDC_LxCFBLR register
+  34:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) The number of lines of the color frame buffer in 
+  35:./FWLIB/src/stm32f4xx_ltdc.c ****                the LTDC_LxCFBLNR register
+  36:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) if needed, load the CLUT with the RGB values and the address 
+  37:./FWLIB/src/stm32f4xx_ltdc.c ****                in the LTDC_LxCLUTWR register
+  38:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) If needed, configure the default color and the blending factors 
+  39:./FWLIB/src/stm32f4xx_ltdc.c ****                respectively in the LTDC_LxDCCR and LTDC_LxBFCR registers 
+  40:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  41:./FWLIB/src/stm32f4xx_ltdc.c ****           (++) If needed, Dithering and color keying can be be enabled respectively 
+  42:./FWLIB/src/stm32f4xx_ltdc.c ****                in the LTDC_GCR and LTDC_LxCKCR registers. It can be also enabled 
+  43:./FWLIB/src/stm32f4xx_ltdc.c ****                on the fly.    
+  44:./FWLIB/src/stm32f4xx_ltdc.c ****         (#) Enable Layer1/2 and if needed the CLUT in the LTDC_LxCR register 
+  45:./FWLIB/src/stm32f4xx_ltdc.c ****   
+  46:./FWLIB/src/stm32f4xx_ltdc.c ****         (#) Reload the shadow registers to active register through 
+  47:./FWLIB/src/stm32f4xx_ltdc.c ****             the LTDC_SRCR register.
+  48:./FWLIB/src/stm32f4xx_ltdc.c ****           -@- All layer parameters can be be modified on the fly except the CLUT. 
+  49:./FWLIB/src/stm32f4xx_ltdc.c ****               The new configuration has to be either reloaded immediately 
+  50:./FWLIB/src/stm32f4xx_ltdc.c ****               or during vertical blanking period by configuring the LTDC_SRCR register.
+  51:./FWLIB/src/stm32f4xx_ltdc.c ****         (#) Call the LTDC_Cmd() to enable the LTDC controller.
+  52:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  53:./FWLIB/src/stm32f4xx_ltdc.c ****     @endverbatim
+  54:./FWLIB/src/stm32f4xx_ltdc.c ****   
+  55:./FWLIB/src/stm32f4xx_ltdc.c ****   ******************************************************************************
+  56:./FWLIB/src/stm32f4xx_ltdc.c ****   * @attention
+  57:./FWLIB/src/stm32f4xx_ltdc.c ****   *
+  58:./FWLIB/src/stm32f4xx_ltdc.c ****   * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+  59:./FWLIB/src/stm32f4xx_ltdc.c ****   *
+  60:./FWLIB/src/stm32f4xx_ltdc.c ****   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
+  61:./FWLIB/src/stm32f4xx_ltdc.c ****   * You may not use this file except in compliance with the License.
+  62:./FWLIB/src/stm32f4xx_ltdc.c ****   * You may obtain a copy of the License at:
+  63:./FWLIB/src/stm32f4xx_ltdc.c ****   *
+  64:./FWLIB/src/stm32f4xx_ltdc.c ****   *        http://www.st.com/software_license_agreement_liberty_v2
+  65:./FWLIB/src/stm32f4xx_ltdc.c ****   *
+  66:./FWLIB/src/stm32f4xx_ltdc.c ****   * Unless required by applicable law or agreed to in writing, software 
+  67:./FWLIB/src/stm32f4xx_ltdc.c ****   * distributed under the License is distributed on an "AS IS" BASIS, 
+  68:./FWLIB/src/stm32f4xx_ltdc.c ****   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  69:./FWLIB/src/stm32f4xx_ltdc.c ****   * See the License for the specific language governing permissions and
+  70:./FWLIB/src/stm32f4xx_ltdc.c ****   * limitations under the License.
+  71:./FWLIB/src/stm32f4xx_ltdc.c ****   *
+  72:./FWLIB/src/stm32f4xx_ltdc.c ****   ******************************************************************************
+  73:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+  74:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  75:./FWLIB/src/stm32f4xx_ltdc.c **** /* Includes ------------------------------------------------------------------*/
+  76:./FWLIB/src/stm32f4xx_ltdc.c **** #include "stm32f4xx_ltdc.h"
+  77:./FWLIB/src/stm32f4xx_ltdc.c **** #include "stm32f4xx_rcc.h"
+  78:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  79:./FWLIB/src/stm32f4xx_ltdc.c **** /** @addtogroup STM32F4xx_StdPeriph_Driver
+  80:./FWLIB/src/stm32f4xx_ltdc.c ****   * @{
+  81:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+  82:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  83:./FWLIB/src/stm32f4xx_ltdc.c **** /** @defgroup LTDC 
+  84:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief LTDC driver modules
+  85:./FWLIB/src/stm32f4xx_ltdc.c ****   * @{
+  86:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+  87:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  88:./FWLIB/src/stm32f4xx_ltdc.c **** /* Private typedef -----------------------------------------------------------*/
+ARM GAS  /tmp/ccECBl2g.s 			page 3
+
+
+  89:./FWLIB/src/stm32f4xx_ltdc.c **** /* Private define ------------------------------------------------------------*/
+  90:./FWLIB/src/stm32f4xx_ltdc.c **** /* Private macro -------------------------------------------------------------*/
+  91:./FWLIB/src/stm32f4xx_ltdc.c **** /* Private variables ---------------------------------------------------------*/
+  92:./FWLIB/src/stm32f4xx_ltdc.c **** /* Private function prototypes -----------------------------------------------*/
+  93:./FWLIB/src/stm32f4xx_ltdc.c **** /* Private functions ---------------------------------------------------------*/
+  94:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  95:./FWLIB/src/stm32f4xx_ltdc.c **** #define GCR_MASK                     ((uint32_t)0x0FFE888F)  /* LTDC GCR Mask */
+  96:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  97:./FWLIB/src/stm32f4xx_ltdc.c **** 
+  98:./FWLIB/src/stm32f4xx_ltdc.c **** /** @defgroup LTDC_Private_Functions
+  99:./FWLIB/src/stm32f4xx_ltdc.c ****   * @{
+ 100:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 101:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 102:./FWLIB/src/stm32f4xx_ltdc.c **** /** @defgroup LTDC_Group1 Initialization and Configuration functions
+ 103:./FWLIB/src/stm32f4xx_ltdc.c ****  *  @brief   Initialization and Configuration functions 
+ 104:./FWLIB/src/stm32f4xx_ltdc.c ****  *
+ 105:./FWLIB/src/stm32f4xx_ltdc.c **** @verbatim
+ 106:./FWLIB/src/stm32f4xx_ltdc.c ****  ===============================================================================
+ 107:./FWLIB/src/stm32f4xx_ltdc.c ****             ##### Initialization and Configuration functions #####
+ 108:./FWLIB/src/stm32f4xx_ltdc.c ****  ===============================================================================
+ 109:./FWLIB/src/stm32f4xx_ltdc.c ****     [..]  This section provides functions allowing to:
+ 110:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) Initialize and configure the LTDC
+ 111:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) Enable or Disable Dither
+ 112:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) Define the position of the line interrupt
+ 113:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) reload layers registers with new parameters
+ 114:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) Initialize and configure layer1 and layer2
+ 115:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) Set and configure the color keying functionality
+ 116:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) Configure and Enables or disables CLUT 
+ 117:./FWLIB/src/stm32f4xx_ltdc.c ****       
+ 118:./FWLIB/src/stm32f4xx_ltdc.c **** @endverbatim
+ 119:./FWLIB/src/stm32f4xx_ltdc.c ****   * @{
+ 120:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 121:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 122:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 123:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Deinitializes the LTDC peripheral registers to their default reset
+ 124:./FWLIB/src/stm32f4xx_ltdc.c ****   *         values.
+ 125:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  None
+ 126:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 127:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 128:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 129:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_DeInit(void)
+ 130:./FWLIB/src/stm32f4xx_ltdc.c **** {
+  28              		.loc 1 130 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+ 131:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Enable LTDC reset state */
+ 132:./FWLIB/src/stm32f4xx_ltdc.c ****   RCC_APB2PeriphResetCmd(RCC_APB2Periph_LTDC, ENABLE);
+  37              		.loc 1 132 0
+  38 0002 0121     		movs	r1, #1
+  39 0004 4FF08060 		mov	r0, #67108864
+  40 0008 FFF7FEFF 		bl	RCC_APB2PeriphResetCmd
+ARM GAS  /tmp/ccECBl2g.s 			page 4
+
+
+  41              	.LVL0:
+ 133:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Release LTDC from reset state */
+ 134:./FWLIB/src/stm32f4xx_ltdc.c ****   RCC_APB2PeriphResetCmd(RCC_APB2Periph_LTDC, DISABLE);
+  42              		.loc 1 134 0
+  43 000c 0021     		movs	r1, #0
+  44 000e 4FF08060 		mov	r0, #67108864
+  45 0012 FFF7FEFF 		bl	RCC_APB2PeriphResetCmd
+  46              	.LVL1:
+ 135:./FWLIB/src/stm32f4xx_ltdc.c **** }
+  47              		.loc 1 135 0
+  48 0016 08BD     		pop	{r3, pc}
+  49              		.cfi_endproc
+  50              	.LFE112:
+  52              		.section	.text.LTDC_Init,"ax",%progbits
+  53              		.align	1
+  54              		.global	LTDC_Init
+  55              		.syntax unified
+  56              		.thumb
+  57              		.thumb_func
+  58              		.fpu fpv4-sp-d16
+  60              	LTDC_Init:
+  61              	.LFB113:
+ 136:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 137:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 138:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Initializes the LTDC peripheral according to the specified parameters
+ 139:./FWLIB/src/stm32f4xx_ltdc.c ****   *         in the LTDC_InitStruct.
+ 140:./FWLIB/src/stm32f4xx_ltdc.c ****   * @note   This function can be used only when the LTDC is disabled.
+ 141:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_InitStruct: pointer to a LTDC_InitTypeDef structure that contains
+ 142:./FWLIB/src/stm32f4xx_ltdc.c ****   *         the configuration information for the specified LTDC peripheral.
+ 143:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 144:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 145:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 146:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_Init(LTDC_InitTypeDef* LTDC_InitStruct)
+ 147:./FWLIB/src/stm32f4xx_ltdc.c **** {
+  62              		.loc 1 147 0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66              		@ link register save eliminated.
+  67              	.LVL2:
+  68 0000 30B4     		push	{r4, r5}
+  69              	.LCFI1:
+  70              		.cfi_def_cfa_offset 8
+  71              		.cfi_offset 4, -8
+  72              		.cfi_offset 5, -4
+  73              	.LVL3:
+ 148:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t horizontalsync = 0;
+ 149:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t accumulatedHBP = 0;
+ 150:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t accumulatedactiveW = 0;
+ 151:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t totalwidth = 0;
+ 152:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t backgreen = 0;
+ 153:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t backred = 0;
+ 154:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 155:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check function parameters */
+ 156:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_HSYNC(LTDC_InitStruct->LTDC_HorizontalSync));
+ 157:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_VSYNC(LTDC_InitStruct->LTDC_VerticalSync));
+ 158:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_AHBP(LTDC_InitStruct->LTDC_AccumulatedHBP));
+ARM GAS  /tmp/ccECBl2g.s 			page 5
+
+
+ 159:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_AVBP(LTDC_InitStruct->LTDC_AccumulatedVBP));
+ 160:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_AAH(LTDC_InitStruct->LTDC_AccumulatedActiveH));
+ 161:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_AAW(LTDC_InitStruct->LTDC_AccumulatedActiveW));
+ 162:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_TOTALH(LTDC_InitStruct->LTDC_TotalHeigh));
+ 163:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_TOTALW(LTDC_InitStruct->LTDC_TotalWidth));
+ 164:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_HSPOL(LTDC_InitStruct->LTDC_HSPolarity));
+ 165:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_VSPOL(LTDC_InitStruct->LTDC_VSPolarity));
+ 166:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_DEPOL(LTDC_InitStruct->LTDC_DEPolarity));
+ 167:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_PCPOL(LTDC_InitStruct->LTDC_PCPolarity));
+ 168:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_BackBlueValue(LTDC_InitStruct->LTDC_BackgroundBlueValue));
+ 169:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_BackGreenValue(LTDC_InitStruct->LTDC_BackgroundGreenValue));
+ 170:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_BackRedValue(LTDC_InitStruct->LTDC_BackgroundRedValue));
+ 171:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 172:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Sets Synchronization size */
+ 173:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->SSCR &= ~(LTDC_SSCR_VSH | LTDC_SSCR_HSW);
+  74              		.loc 1 173 0
+  75 0002 244B     		ldr	r3, .L5
+  76 0004 9968     		ldr	r1, [r3, #8]
+  77 0006 244A     		ldr	r2, .L5+4
+  78 0008 1140     		ands	r1, r1, r2
+  79 000a 9960     		str	r1, [r3, #8]
+ 174:./FWLIB/src/stm32f4xx_ltdc.c ****   horizontalsync = (LTDC_InitStruct->LTDC_HorizontalSync << 16);
+  80              		.loc 1 174 0
+  81 000c 0569     		ldr	r5, [r0, #16]
+  82              	.LVL4:
+ 175:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->SSCR |= (horizontalsync | LTDC_InitStruct->LTDC_VerticalSync);
+  83              		.loc 1 175 0
+  84 000e 9968     		ldr	r1, [r3, #8]
+  85 0010 4469     		ldr	r4, [r0, #20]
+  86 0012 44EA0544 		orr	r4, r4, r5, lsl #16
+  87 0016 2143     		orrs	r1, r1, r4
+  88 0018 9960     		str	r1, [r3, #8]
+ 176:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 177:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Sets Accumulated Back porch */
+ 178:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->BPCR &= ~(LTDC_BPCR_AVBP | LTDC_BPCR_AHBP);
+  89              		.loc 1 178 0
+  90 001a D968     		ldr	r1, [r3, #12]
+  91 001c 1140     		ands	r1, r1, r2
+  92 001e D960     		str	r1, [r3, #12]
+ 179:./FWLIB/src/stm32f4xx_ltdc.c ****   accumulatedHBP = (LTDC_InitStruct->LTDC_AccumulatedHBP << 16);
+  93              		.loc 1 179 0
+  94 0020 8569     		ldr	r5, [r0, #24]
+  95              	.LVL5:
+ 180:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->BPCR |= (accumulatedHBP | LTDC_InitStruct->LTDC_AccumulatedVBP);
+  96              		.loc 1 180 0
+  97 0022 D968     		ldr	r1, [r3, #12]
+  98 0024 C469     		ldr	r4, [r0, #28]
+  99 0026 44EA0544 		orr	r4, r4, r5, lsl #16
+ 100 002a 2143     		orrs	r1, r1, r4
+ 101 002c D960     		str	r1, [r3, #12]
+ 181:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 182:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Sets Accumulated Active Width */
+ 183:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->AWCR &= ~(LTDC_AWCR_AAH | LTDC_AWCR_AAW);
+ 102              		.loc 1 183 0
+ 103 002e 1969     		ldr	r1, [r3, #16]
+ 104 0030 1140     		ands	r1, r1, r2
+ 105 0032 1961     		str	r1, [r3, #16]
+ARM GAS  /tmp/ccECBl2g.s 			page 6
+
+
+ 184:./FWLIB/src/stm32f4xx_ltdc.c ****   accumulatedactiveW = (LTDC_InitStruct->LTDC_AccumulatedActiveW << 16);
+ 106              		.loc 1 184 0
+ 107 0034 056A     		ldr	r5, [r0, #32]
+ 108              	.LVL6:
+ 185:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->AWCR |= (accumulatedactiveW | LTDC_InitStruct->LTDC_AccumulatedActiveH);
+ 109              		.loc 1 185 0
+ 110 0036 1969     		ldr	r1, [r3, #16]
+ 111 0038 446A     		ldr	r4, [r0, #36]
+ 112 003a 44EA0544 		orr	r4, r4, r5, lsl #16
+ 113 003e 2143     		orrs	r1, r1, r4
+ 114 0040 1961     		str	r1, [r3, #16]
+ 186:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 187:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Sets Total Width */
+ 188:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->TWCR &= ~(LTDC_TWCR_TOTALH | LTDC_TWCR_TOTALW);
+ 115              		.loc 1 188 0
+ 116 0042 5969     		ldr	r1, [r3, #20]
+ 117 0044 0A40     		ands	r2, r2, r1
+ 118 0046 5A61     		str	r2, [r3, #20]
+ 189:./FWLIB/src/stm32f4xx_ltdc.c ****   totalwidth = (LTDC_InitStruct->LTDC_TotalWidth << 16);
+ 119              		.loc 1 189 0
+ 120 0048 846A     		ldr	r4, [r0, #40]
+ 121              	.LVL7:
+ 190:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->TWCR |= (totalwidth | LTDC_InitStruct->LTDC_TotalHeigh);
+ 122              		.loc 1 190 0
+ 123 004a 5A69     		ldr	r2, [r3, #20]
+ 124 004c C16A     		ldr	r1, [r0, #44]
+ 125 004e 41EA0441 		orr	r1, r1, r4, lsl #16
+ 126 0052 0A43     		orrs	r2, r2, r1
+ 127 0054 5A61     		str	r2, [r3, #20]
+ 191:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 192:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->GCR &= (uint32_t)GCR_MASK;
+ 128              		.loc 1 192 0
+ 129 0056 9969     		ldr	r1, [r3, #24]
+ 130 0058 104A     		ldr	r2, .L5+8
+ 131 005a 0A40     		ands	r2, r2, r1
+ 132 005c 9A61     		str	r2, [r3, #24]
+ 193:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->GCR |=  (uint32_t)(LTDC_InitStruct->LTDC_HSPolarity | LTDC_InitStruct->LTDC_VSPolarity | \
+ 133              		.loc 1 193 0
+ 134 005e 9969     		ldr	r1, [r3, #24]
+ 135 0060 0268     		ldr	r2, [r0]
+ 136 0062 4468     		ldr	r4, [r0, #4]
+ 137              	.LVL8:
+ 138 0064 2243     		orrs	r2, r2, r4
+ 194:./FWLIB/src/stm32f4xx_ltdc.c ****                            LTDC_InitStruct->LTDC_DEPolarity | LTDC_InitStruct->LTDC_PCPolarity);
+ 139              		.loc 1 194 0
+ 140 0066 8468     		ldr	r4, [r0, #8]
+ 193:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->GCR |=  (uint32_t)(LTDC_InitStruct->LTDC_HSPolarity | LTDC_InitStruct->LTDC_VSPolarity | \
+ 141              		.loc 1 193 0
+ 142 0068 2243     		orrs	r2, r2, r4
+ 143              		.loc 1 194 0
+ 144 006a C468     		ldr	r4, [r0, #12]
+ 145 006c 2243     		orrs	r2, r2, r4
+ 193:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->GCR |=  (uint32_t)(LTDC_InitStruct->LTDC_HSPolarity | LTDC_InitStruct->LTDC_VSPolarity | \
+ 146              		.loc 1 193 0
+ 147 006e 0A43     		orrs	r2, r2, r1
+ 148 0070 9A61     		str	r2, [r3, #24]
+ 195:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ARM GAS  /tmp/ccECBl2g.s 			page 7
+
+
+ 196:./FWLIB/src/stm32f4xx_ltdc.c ****   /* sets the background color value */
+ 197:./FWLIB/src/stm32f4xx_ltdc.c ****   backgreen = (LTDC_InitStruct->LTDC_BackgroundGreenValue << 8);
+ 149              		.loc 1 197 0
+ 150 0072 446B     		ldr	r4, [r0, #52]
+ 151              	.LVL9:
+ 198:./FWLIB/src/stm32f4xx_ltdc.c ****   backred = (LTDC_InitStruct->LTDC_BackgroundRedValue << 16);
+ 152              		.loc 1 198 0
+ 153 0074 026B     		ldr	r2, [r0, #48]
+ 154 0076 1204     		lsls	r2, r2, #16
+ 155              	.LVL10:
+ 199:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 200:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->BCCR &= ~(LTDC_BCCR_BCBLUE | LTDC_BCCR_BCGREEN | LTDC_BCCR_BCRED);
+ 156              		.loc 1 200 0
+ 157 0078 D96A     		ldr	r1, [r3, #44]
+ 158 007a 01F07F41 		and	r1, r1, #-16777216
+ 159 007e D962     		str	r1, [r3, #44]
+ 201:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->BCCR |= (backred | backgreen | LTDC_InitStruct->LTDC_BackgroundBlueValue);
+ 160              		.loc 1 201 0
+ 161 0080 D96A     		ldr	r1, [r3, #44]
+ 162 0082 42EA0422 		orr	r2, r2, r4, lsl #8
+ 163              	.LVL11:
+ 164 0086 806B     		ldr	r0, [r0, #56]
+ 165              	.LVL12:
+ 166 0088 0243     		orrs	r2, r2, r0
+ 167 008a 0A43     		orrs	r2, r2, r1
+ 168 008c DA62     		str	r2, [r3, #44]
+ 202:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 169              		.loc 1 202 0
+ 170 008e 30BC     		pop	{r4, r5}
+ 171              	.LCFI2:
+ 172              		.cfi_restore 5
+ 173              		.cfi_restore 4
+ 174              		.cfi_def_cfa_offset 0
+ 175              	.LVL13:
+ 176 0090 7047     		bx	lr
+ 177              	.L6:
+ 178 0092 00BF     		.align	2
+ 179              	.L5:
+ 180 0094 00680140 		.word	1073833984
+ 181 0098 00F800F0 		.word	-268371968
+ 182 009c 8F88FE0F 		.word	268339343
+ 183              		.cfi_endproc
+ 184              	.LFE113:
+ 186              		.section	.text.LTDC_StructInit,"ax",%progbits
+ 187              		.align	1
+ 188              		.global	LTDC_StructInit
+ 189              		.syntax unified
+ 190              		.thumb
+ 191              		.thumb_func
+ 192              		.fpu fpv4-sp-d16
+ 194              	LTDC_StructInit:
+ 195              	.LFB114:
+ 203:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 204:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 205:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Fills each LTDC_InitStruct member with its default value.
+ 206:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_InitStruct: pointer to a LTDC_InitTypeDef structure which will
+ 207:./FWLIB/src/stm32f4xx_ltdc.c ****   *         be initialized.
+ARM GAS  /tmp/ccECBl2g.s 			page 8
+
+
+ 208:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 209:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 210:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 211:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_StructInit(LTDC_InitTypeDef* LTDC_InitStruct)
+ 212:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 196              		.loc 1 212 0
+ 197              		.cfi_startproc
+ 198              		@ args = 0, pretend = 0, frame = 0
+ 199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 200              		@ link register save eliminated.
+ 201              	.LVL14:
+ 213:./FWLIB/src/stm32f4xx_ltdc.c ****   /*--------------- Reset LTDC init structure parameters values ----------------*/
+ 214:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_HSPolarity = LTDC_HSPolarity_AL;      /*!< Initialize the LTDC_HSPolarity m
+ 202              		.loc 1 214 0
+ 203 0000 0023     		movs	r3, #0
+ 204 0002 0360     		str	r3, [r0]
+ 215:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_VSPolarity = LTDC_VSPolarity_AL;      /*!< Initialize the LTDC_VSPolarity m
+ 205              		.loc 1 215 0
+ 206 0004 4360     		str	r3, [r0, #4]
+ 216:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_DEPolarity = LTDC_DEPolarity_AL;      /*!< Initialize the LTDC_DEPolarity m
+ 207              		.loc 1 216 0
+ 208 0006 8360     		str	r3, [r0, #8]
+ 217:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_PCPolarity = LTDC_PCPolarity_IPC;     /*!< Initialize the LTDC_PCPolarity m
+ 209              		.loc 1 217 0
+ 210 0008 C360     		str	r3, [r0, #12]
+ 218:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_HorizontalSync = 0x00;                /*!< Initialize the LTDC_HorizontalSy
+ 211              		.loc 1 218 0
+ 212 000a 0361     		str	r3, [r0, #16]
+ 219:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_VerticalSync = 0x00;                  /*!< Initialize the LTDC_VerticalSync
+ 213              		.loc 1 219 0
+ 214 000c 4361     		str	r3, [r0, #20]
+ 220:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_AccumulatedHBP = 0x00;                /*!< Initialize the LTDC_AccumulatedH
+ 215              		.loc 1 220 0
+ 216 000e 8361     		str	r3, [r0, #24]
+ 221:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_AccumulatedVBP = 0x00;                /*!< Initialize the LTDC_AccumulatedV
+ 217              		.loc 1 221 0
+ 218 0010 C361     		str	r3, [r0, #28]
+ 222:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_AccumulatedActiveW = 0x00;            /*!< Initialize the LTDC_AccumulatedA
+ 219              		.loc 1 222 0
+ 220 0012 0362     		str	r3, [r0, #32]
+ 223:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_AccumulatedActiveH = 0x00;            /*!< Initialize the LTDC_AccumulatedA
+ 221              		.loc 1 223 0
+ 222 0014 4362     		str	r3, [r0, #36]
+ 224:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_TotalWidth = 0x00;                    /*!< Initialize the LTDC_TotalWidth m
+ 223              		.loc 1 224 0
+ 224 0016 8362     		str	r3, [r0, #40]
+ 225:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_TotalHeigh = 0x00;                    /*!< Initialize the LTDC_TotalHeigh m
+ 225              		.loc 1 225 0
+ 226 0018 C362     		str	r3, [r0, #44]
+ 226:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_BackgroundRedValue = 0x00;            /*!< Initialize the LTDC_BackgroundRe
+ 227              		.loc 1 226 0
+ 228 001a 0363     		str	r3, [r0, #48]
+ 227:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_BackgroundGreenValue = 0x00;          /*!< Initialize the LTDC_BackgroundGr
+ 229              		.loc 1 227 0
+ 230 001c 4363     		str	r3, [r0, #52]
+ 228:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_InitStruct->LTDC_BackgroundBlueValue = 0x00;           /*!< Initialize the LTDC_BackgroundBl
+ 231              		.loc 1 228 0
+ARM GAS  /tmp/ccECBl2g.s 			page 9
+
+
+ 232 001e 8363     		str	r3, [r0, #56]
+ 229:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 233              		.loc 1 229 0
+ 234 0020 7047     		bx	lr
+ 235              		.cfi_endproc
+ 236              	.LFE114:
+ 238              		.section	.text.LTDC_Cmd,"ax",%progbits
+ 239              		.align	1
+ 240              		.global	LTDC_Cmd
+ 241              		.syntax unified
+ 242              		.thumb
+ 243              		.thumb_func
+ 244              		.fpu fpv4-sp-d16
+ 246              	LTDC_Cmd:
+ 247              	.LFB115:
+ 230:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 231:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 232:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Enables or disables the LTDC Controller.
+ 233:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  NewState: new state of the LTDC peripheral.
+ 234:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 235:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 236:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 237:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 238:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_Cmd(FunctionalState NewState)
+ 239:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 248              		.loc 1 239 0
+ 249              		.cfi_startproc
+ 250              		@ args = 0, pretend = 0, frame = 0
+ 251              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252              		@ link register save eliminated.
+ 253              	.LVL15:
+ 240:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 241:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 242:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 243:./FWLIB/src/stm32f4xx_ltdc.c ****   if (NewState != DISABLE)
+ 254              		.loc 1 243 0
+ 255 0000 28B9     		cbnz	r0, .L11
+ 244:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 245:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Enable LTDC by setting LTDCEN bit */
+ 246:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC->GCR |= (uint32_t)LTDC_GCR_LTDCEN;
+ 247:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 248:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 249:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 250:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Disable LTDC by clearing LTDCEN bit */
+ 251:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC->GCR &= ~(uint32_t)LTDC_GCR_LTDCEN;
+ 256              		.loc 1 251 0
+ 257 0002 064A     		ldr	r2, .L12
+ 258 0004 9369     		ldr	r3, [r2, #24]
+ 259 0006 23F00103 		bic	r3, r3, #1
+ 260 000a 9361     		str	r3, [r2, #24]
+ 252:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 253:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 261              		.loc 1 253 0
+ 262 000c 7047     		bx	lr
+ 263              	.L11:
+ 246:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 264              		.loc 1 246 0
+ARM GAS  /tmp/ccECBl2g.s 			page 10
+
+
+ 265 000e 034A     		ldr	r2, .L12
+ 266 0010 9369     		ldr	r3, [r2, #24]
+ 267 0012 43F00103 		orr	r3, r3, #1
+ 268 0016 9361     		str	r3, [r2, #24]
+ 269 0018 7047     		bx	lr
+ 270              	.L13:
+ 271 001a 00BF     		.align	2
+ 272              	.L12:
+ 273 001c 00680140 		.word	1073833984
+ 274              		.cfi_endproc
+ 275              	.LFE115:
+ 277              		.section	.text.LTDC_DitherCmd,"ax",%progbits
+ 278              		.align	1
+ 279              		.global	LTDC_DitherCmd
+ 280              		.syntax unified
+ 281              		.thumb
+ 282              		.thumb_func
+ 283              		.fpu fpv4-sp-d16
+ 285              	LTDC_DitherCmd:
+ 286              	.LFB116:
+ 254:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 255:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 256:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Enables or disables Dither.
+ 257:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  NewState: new state of the Dither.
+ 258:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 259:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 260:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 261:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 262:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_DitherCmd(FunctionalState NewState)
+ 263:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 287              		.loc 1 263 0
+ 288              		.cfi_startproc
+ 289              		@ args = 0, pretend = 0, frame = 0
+ 290              		@ frame_needed = 0, uses_anonymous_args = 0
+ 291              		@ link register save eliminated.
+ 292              	.LVL16:
+ 264:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 265:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 266:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 267:./FWLIB/src/stm32f4xx_ltdc.c ****   if (NewState != DISABLE)
+ 293              		.loc 1 267 0
+ 294 0000 28B9     		cbnz	r0, .L17
+ 268:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 269:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Enable Dither by setting DTEN bit */
+ 270:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC->GCR |= (uint32_t)LTDC_GCR_DTEN;
+ 271:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 272:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 273:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 274:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Disable Dither by clearing DTEN bit */
+ 275:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC->GCR &= ~(uint32_t)LTDC_GCR_DTEN;
+ 295              		.loc 1 275 0
+ 296 0002 064A     		ldr	r2, .L18
+ 297 0004 9369     		ldr	r3, [r2, #24]
+ 298 0006 23F48033 		bic	r3, r3, #65536
+ 299 000a 9361     		str	r3, [r2, #24]
+ 276:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 277:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ARM GAS  /tmp/ccECBl2g.s 			page 11
+
+
+ 300              		.loc 1 277 0
+ 301 000c 7047     		bx	lr
+ 302              	.L17:
+ 270:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 303              		.loc 1 270 0
+ 304 000e 034A     		ldr	r2, .L18
+ 305 0010 9369     		ldr	r3, [r2, #24]
+ 306 0012 43F48033 		orr	r3, r3, #65536
+ 307 0016 9361     		str	r3, [r2, #24]
+ 308 0018 7047     		bx	lr
+ 309              	.L19:
+ 310 001a 00BF     		.align	2
+ 311              	.L18:
+ 312 001c 00680140 		.word	1073833984
+ 313              		.cfi_endproc
+ 314              	.LFE116:
+ 316              		.section	.text.LTDC_GetRGBWidth,"ax",%progbits
+ 317              		.align	1
+ 318              		.global	LTDC_GetRGBWidth
+ 319              		.syntax unified
+ 320              		.thumb
+ 321              		.thumb_func
+ 322              		.fpu fpv4-sp-d16
+ 324              	LTDC_GetRGBWidth:
+ 325              	.LFB117:
+ 278:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 279:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 280:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Get the dither RGB width.
+ 281:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_RGB_InitStruct: pointer to a LTDC_RGBTypeDef structure that contains
+ 282:./FWLIB/src/stm32f4xx_ltdc.c ****   *         the Dither RGB width.
+ 283:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 284:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 285:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 286:./FWLIB/src/stm32f4xx_ltdc.c **** LTDC_RGBTypeDef LTDC_GetRGBWidth(void)
+ 287:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 326              		.loc 1 287 0
+ 327              		.cfi_startproc
+ 328              		@ args = 0, pretend = 0, frame = 0
+ 329              		@ frame_needed = 0, uses_anonymous_args = 0
+ 330              		@ link register save eliminated.
+ 331              	.LVL17:
+ 332 0000 10B4     		push	{r4}
+ 333              	.LCFI3:
+ 334              		.cfi_def_cfa_offset 4
+ 335              		.cfi_offset 4, -4
+ 288:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_RGBTypeDef LTDC_RGB_InitStruct;
+ 289:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 290:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->GCR &= (uint32_t)GCR_MASK;
+ 336              		.loc 1 290 0
+ 337 0002 0A4B     		ldr	r3, .L22
+ 338 0004 9C69     		ldr	r4, [r3, #24]
+ 339 0006 0A49     		ldr	r1, .L22+4
+ 340 0008 2140     		ands	r1, r1, r4
+ 341 000a 9961     		str	r1, [r3, #24]
+ 291:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 292:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_RGB_InitStruct.LTDC_BlueWidth = (uint32_t)((LTDC->GCR >> 4) & 0x7);
+ 342              		.loc 1 292 0
+ARM GAS  /tmp/ccECBl2g.s 			page 12
+
+
+ 343 000c 9969     		ldr	r1, [r3, #24]
+ 344 000e C1F30211 		ubfx	r1, r1, #4, #3
+ 345 0012 0160     		str	r1, [r0]
+ 293:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_RGB_InitStruct.LTDC_GreenWidth = (uint32_t)((LTDC->GCR >> 8) & 0x7);
+ 346              		.loc 1 293 0
+ 347 0014 9969     		ldr	r1, [r3, #24]
+ 348 0016 C1F30221 		ubfx	r1, r1, #8, #3
+ 349 001a 4160     		str	r1, [r0, #4]
+ 294:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_RGB_InitStruct.LTDC_RedWidth = (uint32_t)((LTDC->GCR >> 12) & 0x7);
+ 350              		.loc 1 294 0
+ 351 001c 9B69     		ldr	r3, [r3, #24]
+ 352 001e C3F30233 		ubfx	r3, r3, #12, #3
+ 353 0022 8360     		str	r3, [r0, #8]
+ 295:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 296:./FWLIB/src/stm32f4xx_ltdc.c ****   return LTDC_RGB_InitStruct;
+ 297:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 354              		.loc 1 297 0
+ 355 0024 5DF8044B 		ldr	r4, [sp], #4
+ 356              	.LCFI4:
+ 357              		.cfi_restore 4
+ 358              		.cfi_def_cfa_offset 0
+ 359 0028 7047     		bx	lr
+ 360              	.L23:
+ 361 002a 00BF     		.align	2
+ 362              	.L22:
+ 363 002c 00680140 		.word	1073833984
+ 364 0030 8F88FE0F 		.word	268339343
+ 365              		.cfi_endproc
+ 366              	.LFE117:
+ 368              		.section	.text.LTDC_RGBStructInit,"ax",%progbits
+ 369              		.align	1
+ 370              		.global	LTDC_RGBStructInit
+ 371              		.syntax unified
+ 372              		.thumb
+ 373              		.thumb_func
+ 374              		.fpu fpv4-sp-d16
+ 376              	LTDC_RGBStructInit:
+ 377              	.LFB118:
+ 298:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 299:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 300:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Fills each LTDC_RGBStruct member with its default value.
+ 301:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_RGB_InitStruct: pointer to a LTDC_RGBTypeDef structure which will
+ 302:./FWLIB/src/stm32f4xx_ltdc.c ****   *         be initialized.
+ 303:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 304:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 305:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 306:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_RGBStructInit(LTDC_RGBTypeDef* LTDC_RGB_InitStruct)
+ 307:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 378              		.loc 1 307 0
+ 379              		.cfi_startproc
+ 380              		@ args = 0, pretend = 0, frame = 0
+ 381              		@ frame_needed = 0, uses_anonymous_args = 0
+ 382              		@ link register save eliminated.
+ 383              	.LVL18:
+ 308:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_RGB_InitStruct->LTDC_BlueWidth = 0x02;
+ 384              		.loc 1 308 0
+ 385 0000 0223     		movs	r3, #2
+ARM GAS  /tmp/ccECBl2g.s 			page 13
+
+
+ 386 0002 0360     		str	r3, [r0]
+ 309:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_RGB_InitStruct->LTDC_GreenWidth = 0x02;
+ 387              		.loc 1 309 0
+ 388 0004 4360     		str	r3, [r0, #4]
+ 310:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_RGB_InitStruct->LTDC_RedWidth = 0x02;
+ 389              		.loc 1 310 0
+ 390 0006 8360     		str	r3, [r0, #8]
+ 311:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 391              		.loc 1 311 0
+ 392 0008 7047     		bx	lr
+ 393              		.cfi_endproc
+ 394              	.LFE118:
+ 396              		.section	.text.LTDC_LIPConfig,"ax",%progbits
+ 397              		.align	1
+ 398              		.global	LTDC_LIPConfig
+ 399              		.syntax unified
+ 400              		.thumb
+ 401              		.thumb_func
+ 402              		.fpu fpv4-sp-d16
+ 404              	LTDC_LIPConfig:
+ 405              	.LFB119:
+ 312:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 313:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 314:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 315:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Define the position of the line interrupt .
+ 316:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_LIPositionConfig: Line Interrupt Position.
+ 317:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 318:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 319:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 320:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LIPConfig(uint32_t LTDC_LIPositionConfig)
+ 321:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 406              		.loc 1 321 0
+ 407              		.cfi_startproc
+ 408              		@ args = 0, pretend = 0, frame = 0
+ 409              		@ frame_needed = 0, uses_anonymous_args = 0
+ 410              		@ link register save eliminated.
+ 411              	.LVL19:
+ 322:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 323:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_LIPOS(LTDC_LIPositionConfig));
+ 324:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 325:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Sets the Line Interrupt position */
+ 326:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->LIPCR = (uint32_t)LTDC_LIPositionConfig;
+ 412              		.loc 1 326 0
+ 413 0000 014B     		ldr	r3, .L26
+ 414 0002 1864     		str	r0, [r3, #64]
+ 327:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 415              		.loc 1 327 0
+ 416 0004 7047     		bx	lr
+ 417              	.L27:
+ 418 0006 00BF     		.align	2
+ 419              	.L26:
+ 420 0008 00680140 		.word	1073833984
+ 421              		.cfi_endproc
+ 422              	.LFE119:
+ 424              		.section	.text.LTDC_ReloadConfig,"ax",%progbits
+ 425              		.align	1
+ 426              		.global	LTDC_ReloadConfig
+ARM GAS  /tmp/ccECBl2g.s 			page 14
+
+
+ 427              		.syntax unified
+ 428              		.thumb
+ 429              		.thumb_func
+ 430              		.fpu fpv4-sp-d16
+ 432              	LTDC_ReloadConfig:
+ 433              	.LFB120:
+ 328:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 329:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 330:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  reload layers registers with new parameters 
+ 331:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_Reload: specifies the type of reload.
+ 332:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be one of the following values:
+ 333:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IMReload: Vertical blanking reload.
+ 334:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_VBReload: Immediate reload.  
+ 335:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 336:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 337:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 338:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_ReloadConfig(uint32_t LTDC_Reload)
+ 339:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 434              		.loc 1 339 0
+ 435              		.cfi_startproc
+ 436              		@ args = 0, pretend = 0, frame = 0
+ 437              		@ frame_needed = 0, uses_anonymous_args = 0
+ 438              		@ link register save eliminated.
+ 439              	.LVL20:
+ 340:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 341:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_RELOAD(LTDC_Reload));
+ 342:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 343:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Sets the Reload type */
+ 344:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->SRCR = (uint32_t)LTDC_Reload;
+ 440              		.loc 1 344 0
+ 441 0000 014B     		ldr	r3, .L29
+ 442 0002 5862     		str	r0, [r3, #36]
+ 345:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 443              		.loc 1 345 0
+ 444 0004 7047     		bx	lr
+ 445              	.L30:
+ 446 0006 00BF     		.align	2
+ 447              	.L29:
+ 448 0008 00680140 		.word	1073833984
+ 449              		.cfi_endproc
+ 450              	.LFE120:
+ 452              		.section	.text.LTDC_LayerInit,"ax",%progbits
+ 453              		.align	1
+ 454              		.global	LTDC_LayerInit
+ 455              		.syntax unified
+ 456              		.thumb
+ 457              		.thumb_func
+ 458              		.fpu fpv4-sp-d16
+ 460              	LTDC_LayerInit:
+ 461              	.LFB121:
+ 346:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 347:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 348:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 349:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Initializes the LTDC Layer according to the specified parameters
+ 350:./FWLIB/src/stm32f4xx_ltdc.c ****   *         in the LTDC_LayerStruct.
+ 351:./FWLIB/src/stm32f4xx_ltdc.c ****   * @note   This function can be used only when the LTDC is disabled.
+ 352:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ARM GAS  /tmp/ccECBl2g.s 			page 15
+
+
+ 353:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2    
+ 354:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_LayerStruct: pointer to a LTDC_LayerTypeDef structure that contains
+ 355:./FWLIB/src/stm32f4xx_ltdc.c ****   *         the configuration information for the specified LTDC peripheral.
+ 356:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 357:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 358:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 359:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LayerInit(LTDC_Layer_TypeDef* LTDC_Layerx, LTDC_Layer_InitTypeDef* LTDC_Layer_InitStruct)
+ 360:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 462              		.loc 1 360 0
+ 463              		.cfi_startproc
+ 464              		@ args = 0, pretend = 0, frame = 0
+ 465              		@ frame_needed = 0, uses_anonymous_args = 0
+ 466              		@ link register save eliminated.
+ 467              	.LVL21:
+ 468 0000 70B4     		push	{r4, r5, r6}
+ 469              	.LCFI5:
+ 470              		.cfi_def_cfa_offset 12
+ 471              		.cfi_offset 4, -12
+ 472              		.cfi_offset 5, -8
+ 473              		.cfi_offset 6, -4
+ 474              	.LVL22:
+ 361:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 362:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t whsppos = 0;
+ 363:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t wvsppos = 0;
+ 364:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t dcgreen = 0;
+ 365:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t dcred = 0;
+ 366:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t dcalpha = 0;
+ 367:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t cfbp = 0;
+ 368:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 369:./FWLIB/src/stm32f4xx_ltdc.c **** /* Check the parameters */
+ 370:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_Pixelformat(LTDC_Layer_InitStruct->LTDC_PixelFormat));
+ 371:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_BlendingFactor1(LTDC_Layer_InitStruct->LTDC_BlendingFactor_1));
+ 372:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_BlendingFactor2(LTDC_Layer_InitStruct->LTDC_BlendingFactor_2));
+ 373:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_HCONFIGST(LTDC_Layer_InitStruct->LTDC_HorizontalStart));
+ 374:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_HCONFIGSP(LTDC_Layer_InitStruct->LTDC_HorizontalStop));
+ 375:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_VCONFIGST(LTDC_Layer_InitStruct->LTDC_VerticalStart));
+ 376:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_VCONFIGSP(LTDC_Layer_InitStruct->LTDC_VerticalStop));  
+ 377:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_DEFAULTCOLOR(LTDC_Layer_InitStruct->LTDC_DefaultColorBlue));
+ 378:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_DEFAULTCOLOR(LTDC_Layer_InitStruct->LTDC_DefaultColorGreen));
+ 379:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_DEFAULTCOLOR(LTDC_Layer_InitStruct->LTDC_DefaultColorRed));
+ 380:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_DEFAULTCOLOR(LTDC_Layer_InitStruct->LTDC_DefaultColorAlpha));
+ 381:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CFBP(LTDC_Layer_InitStruct->LTDC_CFBPitch));
+ 382:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CFBLL(LTDC_Layer_InitStruct->LTDC_CFBLineLength));
+ 383:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CFBLNBR(LTDC_Layer_InitStruct->LTDC_CFBLineNumber));
+ 384:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 385:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Configures the horizontal start and stop position */
+ 386:./FWLIB/src/stm32f4xx_ltdc.c ****   whsppos = LTDC_Layer_InitStruct->LTDC_HorizontalStop << 16;
+ 475              		.loc 1 386 0
+ 476 0002 4C68     		ldr	r4, [r1, #4]
+ 477              	.LVL23:
+ 387:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WHPCR &= ~(LTDC_LxWHPCR_WHSTPOS | LTDC_LxWHPCR_WHSPPOS);
+ 478              		.loc 1 387 0
+ 479 0004 4268     		ldr	r2, [r0, #4]
+ 480 0006 02F47042 		and	r2, r2, #61440
+ 481 000a 4260     		str	r2, [r0, #4]
+ 388:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WHPCR = (LTDC_Layer_InitStruct->LTDC_HorizontalStart | whsppos);
+ 482              		.loc 1 388 0
+ARM GAS  /tmp/ccECBl2g.s 			page 16
+
+
+ 483 000c 0B68     		ldr	r3, [r1]
+ 484 000e 43EA0443 		orr	r3, r3, r4, lsl #16
+ 485 0012 4360     		str	r3, [r0, #4]
+ 389:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 390:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Configures the vertical start and stop position */
+ 391:./FWLIB/src/stm32f4xx_ltdc.c ****   wvsppos = LTDC_Layer_InitStruct->LTDC_VerticalStop << 16;
+ 486              		.loc 1 391 0
+ 487 0014 CC68     		ldr	r4, [r1, #12]
+ 488              	.LVL24:
+ 392:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WVPCR &= ~(LTDC_LxWVPCR_WVSTPOS | LTDC_LxWVPCR_WVSPPOS);
+ 489              		.loc 1 392 0
+ 490 0016 8268     		ldr	r2, [r0, #8]
+ 491 0018 02F47042 		and	r2, r2, #61440
+ 492 001c 8260     		str	r2, [r0, #8]
+ 393:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WVPCR  = (LTDC_Layer_InitStruct->LTDC_VerticalStart | wvsppos);
+ 493              		.loc 1 393 0
+ 494 001e 8B68     		ldr	r3, [r1, #8]
+ 495 0020 43EA0443 		orr	r3, r3, r4, lsl #16
+ 496 0024 8360     		str	r3, [r0, #8]
+ 394:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 395:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Specifies the pixel format */
+ 396:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->PFCR &= ~(LTDC_LxPFCR_PF);
+ 497              		.loc 1 396 0
+ 498 0026 0369     		ldr	r3, [r0, #16]
+ 499 0028 23F00703 		bic	r3, r3, #7
+ 500 002c 0361     		str	r3, [r0, #16]
+ 397:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->PFCR = (LTDC_Layer_InitStruct->LTDC_PixelFormat);
+ 501              		.loc 1 397 0
+ 502 002e 0B69     		ldr	r3, [r1, #16]
+ 503 0030 0361     		str	r3, [r0, #16]
+ 398:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 399:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Configures the default color values */
+ 400:./FWLIB/src/stm32f4xx_ltdc.c ****   dcgreen = (LTDC_Layer_InitStruct->LTDC_DefaultColorGreen << 8);
+ 504              		.loc 1 400 0
+ 505 0032 CE69     		ldr	r6, [r1, #28]
+ 506              	.LVL25:
+ 401:./FWLIB/src/stm32f4xx_ltdc.c ****   dcred = (LTDC_Layer_InitStruct->LTDC_DefaultColorRed << 16);
+ 507              		.loc 1 401 0
+ 508 0034 0D6A     		ldr	r5, [r1, #32]
+ 509              	.LVL26:
+ 402:./FWLIB/src/stm32f4xx_ltdc.c ****   dcalpha = (LTDC_Layer_InitStruct->LTDC_DefaultColorAlpha << 24);
+ 510              		.loc 1 402 0
+ 511 0036 4C6A     		ldr	r4, [r1, #36]
+ 512              	.LVL27:
+ 403:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->DCCR &=  ~(LTDC_LxDCCR_DCBLUE | LTDC_LxDCCR_DCGREEN | LTDC_LxDCCR_DCRED | LTDC_LxDCC
+ 513              		.loc 1 403 0
+ 514 0038 8369     		ldr	r3, [r0, #24]
+ 515 003a 0022     		movs	r2, #0
+ 516 003c 8261     		str	r2, [r0, #24]
+ 404:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->DCCR = (LTDC_Layer_InitStruct->LTDC_DefaultColorBlue | dcgreen | \
+ 517              		.loc 1 404 0
+ 518 003e 8B69     		ldr	r3, [r1, #24]
+ 519 0040 43EA0623 		orr	r3, r3, r6, lsl #8
+ 520 0044 43EA0543 		orr	r3, r3, r5, lsl #16
+ 405:./FWLIB/src/stm32f4xx_ltdc.c ****                         dcred | dcalpha);
+ 521              		.loc 1 405 0
+ 522 0048 43EA0463 		orr	r3, r3, r4, lsl #24
+ARM GAS  /tmp/ccECBl2g.s 			page 17
+
+
+ 404:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->DCCR = (LTDC_Layer_InitStruct->LTDC_DefaultColorBlue | dcgreen | \
+ 523              		.loc 1 404 0
+ 524 004c 8361     		str	r3, [r0, #24]
+ 406:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 407:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Specifies the constant alpha value */      
+ 408:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CACR &= ~(LTDC_LxCACR_CONSTA);
+ 525              		.loc 1 408 0
+ 526 004e 4369     		ldr	r3, [r0, #20]
+ 527 0050 23F0FF03 		bic	r3, r3, #255
+ 528 0054 4361     		str	r3, [r0, #20]
+ 409:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CACR = (LTDC_Layer_InitStruct->LTDC_ConstantAlpha);
+ 529              		.loc 1 409 0
+ 530 0056 4B69     		ldr	r3, [r1, #20]
+ 531 0058 4361     		str	r3, [r0, #20]
+ 410:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 411:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Specifies the blending factors */
+ 412:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->BFCR &= ~(LTDC_LxBFCR_BF2 | LTDC_LxBFCR_BF1);
+ 532              		.loc 1 412 0
+ 533 005a C369     		ldr	r3, [r0, #28]
+ 534 005c 23F4E063 		bic	r3, r3, #1792
+ 535 0060 23F00703 		bic	r3, r3, #7
+ 536 0064 C361     		str	r3, [r0, #28]
+ 413:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->BFCR = (LTDC_Layer_InitStruct->LTDC_BlendingFactor_1 | LTDC_Layer_InitStruct->LTDC_B
+ 537              		.loc 1 413 0
+ 538 0066 8B6A     		ldr	r3, [r1, #40]
+ 539 0068 CC6A     		ldr	r4, [r1, #44]
+ 540              	.LVL28:
+ 541 006a 2343     		orrs	r3, r3, r4
+ 542 006c C361     		str	r3, [r0, #28]
+ 414:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 415:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Configures the color frame buffer start address */
+ 416:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBAR &= ~(LTDC_LxCFBAR_CFBADD);
+ 543              		.loc 1 416 0
+ 544 006e 836A     		ldr	r3, [r0, #40]
+ 545 0070 8262     		str	r2, [r0, #40]
+ 417:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBAR = (LTDC_Layer_InitStruct->LTDC_CFBStartAdress);
+ 546              		.loc 1 417 0
+ 547 0072 0B6B     		ldr	r3, [r1, #48]
+ 548 0074 8362     		str	r3, [r0, #40]
+ 418:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 419:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Configures the color frame buffer pitch in byte */
+ 420:./FWLIB/src/stm32f4xx_ltdc.c ****   cfbp = (LTDC_Layer_InitStruct->LTDC_CFBPitch << 16);
+ 549              		.loc 1 420 0
+ 550 0076 8C6B     		ldr	r4, [r1, #56]
+ 551              	.LVL29:
+ 421:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBLR  &= ~(LTDC_LxCFBLR_CFBLL | LTDC_LxCFBLR_CFBP);
+ 552              		.loc 1 421 0
+ 553 0078 C26A     		ldr	r2, [r0, #44]
+ 554 007a 02F0E022 		and	r2, r2, #-536813568
+ 555 007e C262     		str	r2, [r0, #44]
+ 422:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBLR  = (LTDC_Layer_InitStruct->LTDC_CFBLineLength | cfbp);
+ 556              		.loc 1 422 0
+ 557 0080 4B6B     		ldr	r3, [r1, #52]
+ 558 0082 43EA0443 		orr	r3, r3, r4, lsl #16
+ 559 0086 C362     		str	r3, [r0, #44]
+ 423:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 424:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Configures the frame buffer line number */
+ARM GAS  /tmp/ccECBl2g.s 			page 18
+
+
+ 425:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBLNR  &= ~(LTDC_LxCFBLNR_CFBLNBR);
+ 560              		.loc 1 425 0
+ 561 0088 036B     		ldr	r3, [r0, #48]
+ 562 008a 23F4FF63 		bic	r3, r3, #2040
+ 563 008e 23F00703 		bic	r3, r3, #7
+ 564 0092 0363     		str	r3, [r0, #48]
+ 426:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBLNR  = (LTDC_Layer_InitStruct->LTDC_CFBLineNumber);
+ 565              		.loc 1 426 0
+ 566 0094 CB6B     		ldr	r3, [r1, #60]
+ 567 0096 0363     		str	r3, [r0, #48]
+ 427:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 428:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 568              		.loc 1 428 0
+ 569 0098 70BC     		pop	{r4, r5, r6}
+ 570              	.LCFI6:
+ 571              		.cfi_restore 6
+ 572              		.cfi_restore 5
+ 573              		.cfi_restore 4
+ 574              		.cfi_def_cfa_offset 0
+ 575              	.LVL30:
+ 576 009a 7047     		bx	lr
+ 577              		.cfi_endproc
+ 578              	.LFE121:
+ 580              		.section	.text.LTDC_LayerStructInit,"ax",%progbits
+ 581              		.align	1
+ 582              		.global	LTDC_LayerStructInit
+ 583              		.syntax unified
+ 584              		.thumb
+ 585              		.thumb_func
+ 586              		.fpu fpv4-sp-d16
+ 588              	LTDC_LayerStructInit:
+ 589              	.LFB122:
+ 429:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 430:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 431:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Fills each LTDC_Layer_InitStruct member with its default value.
+ 432:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_Layer_InitStruct: pointer to a LTDC_LayerTypeDef structure which will
+ 433:./FWLIB/src/stm32f4xx_ltdc.c ****   *         be initialized.
+ 434:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 435:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 436:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 437:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LayerStructInit(LTDC_Layer_InitTypeDef * LTDC_Layer_InitStruct)
+ 438:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 590              		.loc 1 438 0
+ 591              		.cfi_startproc
+ 592              		@ args = 0, pretend = 0, frame = 0
+ 593              		@ frame_needed = 0, uses_anonymous_args = 0
+ 594              		@ link register save eliminated.
+ 595              	.LVL31:
+ 439:./FWLIB/src/stm32f4xx_ltdc.c ****   /*--------------- Reset Layer structure parameters values -------------------*/
+ 440:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 441:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the horizontal limit member */
+ 442:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_HorizontalStart = 0x00;
+ 596              		.loc 1 442 0
+ 597 0000 0023     		movs	r3, #0
+ 598 0002 0360     		str	r3, [r0]
+ 443:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_HorizontalStop = 0x00;
+ 599              		.loc 1 443 0
+ARM GAS  /tmp/ccECBl2g.s 			page 19
+
+
+ 600 0004 4360     		str	r3, [r0, #4]
+ 444:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 445:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the vertical limit member */
+ 446:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_VerticalStart = 0x00;
+ 601              		.loc 1 446 0
+ 602 0006 8360     		str	r3, [r0, #8]
+ 447:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_VerticalStop = 0x00;
+ 603              		.loc 1 447 0
+ 604 0008 C360     		str	r3, [r0, #12]
+ 448:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 449:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the pixel format member */
+ 450:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_PixelFormat = LTDC_Pixelformat_ARGB8888;
+ 605              		.loc 1 450 0
+ 606 000a 0361     		str	r3, [r0, #16]
+ 451:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 452:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the constant alpha value */
+ 453:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_ConstantAlpha = 0xFF;
+ 607              		.loc 1 453 0
+ 608 000c FF22     		movs	r2, #255
+ 609 000e 4261     		str	r2, [r0, #20]
+ 454:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 455:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the default color values */
+ 456:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_DefaultColorBlue = 0x00;
+ 610              		.loc 1 456 0
+ 611 0010 8361     		str	r3, [r0, #24]
+ 457:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_DefaultColorGreen = 0x00;
+ 612              		.loc 1 457 0
+ 613 0012 C361     		str	r3, [r0, #28]
+ 458:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_DefaultColorRed = 0x00;
+ 614              		.loc 1 458 0
+ 615 0014 0362     		str	r3, [r0, #32]
+ 459:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_DefaultColorAlpha = 0x00;
+ 616              		.loc 1 459 0
+ 617 0016 4362     		str	r3, [r0, #36]
+ 460:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 461:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the blending factors */
+ 462:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_BlendingFactor_1 = LTDC_BlendingFactor1_PAxCA;
+ 618              		.loc 1 462 0
+ 619 0018 4FF4C062 		mov	r2, #1536
+ 620 001c 8262     		str	r2, [r0, #40]
+ 463:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_PAxCA;
+ 621              		.loc 1 463 0
+ 622 001e 0722     		movs	r2, #7
+ 623 0020 C262     		str	r2, [r0, #44]
+ 464:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 465:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the frame buffer start address */
+ 466:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_CFBStartAdress = 0x00;
+ 624              		.loc 1 466 0
+ 625 0022 0363     		str	r3, [r0, #48]
+ 467:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 468:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the frame buffer pitch and line length */
+ 469:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_CFBLineLength = 0x00;
+ 626              		.loc 1 469 0
+ 627 0024 4363     		str	r3, [r0, #52]
+ 470:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_CFBPitch = 0x00;
+ 628              		.loc 1 470 0
+ 629 0026 8363     		str	r3, [r0, #56]
+ARM GAS  /tmp/ccECBl2g.s 			page 20
+
+
+ 471:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 472:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the frame buffer line number */
+ 473:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layer_InitStruct->LTDC_CFBLineNumber = 0x00;
+ 630              		.loc 1 473 0
+ 631 0028 C363     		str	r3, [r0, #60]
+ 474:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 632              		.loc 1 474 0
+ 633 002a 7047     		bx	lr
+ 634              		.cfi_endproc
+ 635              	.LFE122:
+ 637              		.section	.text.LTDC_LayerCmd,"ax",%progbits
+ 638              		.align	1
+ 639              		.global	LTDC_LayerCmd
+ 640              		.syntax unified
+ 641              		.thumb
+ 642              		.thumb_func
+ 643              		.fpu fpv4-sp-d16
+ 645              	LTDC_LayerCmd:
+ 646              	.LFB123:
+ 475:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 476:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 477:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 478:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Enables or disables the LTDC_Layer Controller.
+ 479:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 480:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2
+ 481:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  NewState: new state of the LTDC_Layer peripheral.
+ 482:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 483:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 484:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 485:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 486:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LayerCmd(LTDC_Layer_TypeDef* LTDC_Layerx, FunctionalState NewState)
+ 487:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 647              		.loc 1 487 0
+ 648              		.cfi_startproc
+ 649              		@ args = 0, pretend = 0, frame = 0
+ 650              		@ frame_needed = 0, uses_anonymous_args = 0
+ 651              		@ link register save eliminated.
+ 652              	.LVL32:
+ 488:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 489:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 490:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 491:./FWLIB/src/stm32f4xx_ltdc.c ****   if (NewState != DISABLE)
+ 653              		.loc 1 491 0
+ 654 0000 21B9     		cbnz	r1, .L37
+ 492:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 493:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Enable LTDC_Layer by setting LEN bit */
+ 494:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CR |= (uint32_t)LTDC_LxCR_LEN;
+ 495:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 496:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 497:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 498:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Disable LTDC_Layer by clearing LEN bit */
+ 499:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CR &= ~(uint32_t)LTDC_LxCR_LEN;
+ 655              		.loc 1 499 0
+ 656 0002 0368     		ldr	r3, [r0]
+ 657 0004 23F00103 		bic	r3, r3, #1
+ 658 0008 0360     		str	r3, [r0]
+ 500:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ARM GAS  /tmp/ccECBl2g.s 			page 21
+
+
+ 501:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 659              		.loc 1 501 0
+ 660 000a 7047     		bx	lr
+ 661              	.L37:
+ 494:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 662              		.loc 1 494 0
+ 663 000c 0368     		ldr	r3, [r0]
+ 664 000e 43F00103 		orr	r3, r3, #1
+ 665 0012 0360     		str	r3, [r0]
+ 666 0014 7047     		bx	lr
+ 667              		.cfi_endproc
+ 668              	.LFE123:
+ 670              		.section	.text.LTDC_GetPosStatus,"ax",%progbits
+ 671              		.align	1
+ 672              		.global	LTDC_GetPosStatus
+ 673              		.syntax unified
+ 674              		.thumb
+ 675              		.thumb_func
+ 676              		.fpu fpv4-sp-d16
+ 678              	LTDC_GetPosStatus:
+ 679              	.LFB124:
+ 502:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 503:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 504:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 505:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Get the current position.
+ 506:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_Pos_InitStruct: pointer to a LTDC_PosTypeDef structure that contains
+ 507:./FWLIB/src/stm32f4xx_ltdc.c ****   *         the current position.
+ 508:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 509:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 510:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 511:./FWLIB/src/stm32f4xx_ltdc.c **** LTDC_PosTypeDef LTDC_GetPosStatus(void)
+ 512:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 680              		.loc 1 512 0
+ 681              		.cfi_startproc
+ 682              		@ args = 0, pretend = 0, frame = 0
+ 683              		@ frame_needed = 0, uses_anonymous_args = 0
+ 684              		@ link register save eliminated.
+ 685              	.LVL33:
+ 513:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_PosTypeDef LTDC_Pos_InitStruct;
+ 514:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 515:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->CPSR &= ~(LTDC_CPSR_CYPOS | LTDC_CPSR_CXPOS);
+ 686              		.loc 1 515 0
+ 687 0000 054B     		ldr	r3, .L39
+ 688 0002 5A6C     		ldr	r2, [r3, #68]
+ 689 0004 0022     		movs	r2, #0
+ 690 0006 5A64     		str	r2, [r3, #68]
+ 516:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 517:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Pos_InitStruct.LTDC_POSX = (uint32_t)(LTDC->CPSR >> 16);
+ 691              		.loc 1 517 0
+ 692 0008 5A6C     		ldr	r2, [r3, #68]
+ 693 000a 120C     		lsrs	r2, r2, #16
+ 694 000c 0260     		str	r2, [r0]
+ 518:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Pos_InitStruct.LTDC_POSY = (uint32_t)(LTDC->CPSR & 0xFFFF);
+ 695              		.loc 1 518 0
+ 696 000e 5B6C     		ldr	r3, [r3, #68]
+ 697 0010 9BB2     		uxth	r3, r3
+ 698 0012 4360     		str	r3, [r0, #4]
+ARM GAS  /tmp/ccECBl2g.s 			page 22
+
+
+ 519:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 520:./FWLIB/src/stm32f4xx_ltdc.c ****   return LTDC_Pos_InitStruct;
+ 521:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 699              		.loc 1 521 0
+ 700 0014 7047     		bx	lr
+ 701              	.L40:
+ 702 0016 00BF     		.align	2
+ 703              	.L39:
+ 704 0018 00680140 		.word	1073833984
+ 705              		.cfi_endproc
+ 706              	.LFE124:
+ 708              		.section	.text.LTDC_PosStructInit,"ax",%progbits
+ 709              		.align	1
+ 710              		.global	LTDC_PosStructInit
+ 711              		.syntax unified
+ 712              		.thumb
+ 713              		.thumb_func
+ 714              		.fpu fpv4-sp-d16
+ 716              	LTDC_PosStructInit:
+ 717              	.LFB125:
+ 522:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 523:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 524:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Fills each LTDC_Pos_InitStruct member with its default value.
+ 525:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_Pos_InitStruct: pointer to a LTDC_PosTypeDef structure which will
+ 526:./FWLIB/src/stm32f4xx_ltdc.c ****   *         be initialized.
+ 527:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 528:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 529:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 530:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_PosStructInit(LTDC_PosTypeDef* LTDC_Pos_InitStruct)
+ 531:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 718              		.loc 1 531 0
+ 719              		.cfi_startproc
+ 720              		@ args = 0, pretend = 0, frame = 0
+ 721              		@ frame_needed = 0, uses_anonymous_args = 0
+ 722              		@ link register save eliminated.
+ 723              	.LVL34:
+ 532:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Pos_InitStruct->LTDC_POSX = 0x00;
+ 724              		.loc 1 532 0
+ 725 0000 0023     		movs	r3, #0
+ 726 0002 0360     		str	r3, [r0]
+ 533:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Pos_InitStruct->LTDC_POSY = 0x00;
+ 727              		.loc 1 533 0
+ 728 0004 4360     		str	r3, [r0, #4]
+ 534:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 729              		.loc 1 534 0
+ 730 0006 7047     		bx	lr
+ 731              		.cfi_endproc
+ 732              	.LFE125:
+ 734              		.section	.text.LTDC_GetCDStatus,"ax",%progbits
+ 735              		.align	1
+ 736              		.global	LTDC_GetCDStatus
+ 737              		.syntax unified
+ 738              		.thumb
+ 739              		.thumb_func
+ 740              		.fpu fpv4-sp-d16
+ 742              	LTDC_GetCDStatus:
+ 743              	.LFB126:
+ARM GAS  /tmp/ccECBl2g.s 			page 23
+
+
+ 535:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 536:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 537:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Checks whether the specified LTDC's flag is set or not.
+ 538:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_CD: specifies the flag to check.
+ 539:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be one of the following values:
+ 540:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_CD_VDES: vertical data enable current status.
+ 541:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_CD_HDES: horizontal data enable current status.
+ 542:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_CD_VSYNC:  Vertical Synchronization current status.
+ 543:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_CD_HSYNC:  Horizontal Synchronization current status.
+ 544:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval The new state of LTDC_CD (SET or RESET).
+ 545:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 546:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 547:./FWLIB/src/stm32f4xx_ltdc.c **** FlagStatus LTDC_GetCDStatus(uint32_t LTDC_CD)
+ 548:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 744              		.loc 1 548 0
+ 745              		.cfi_startproc
+ 746              		@ args = 0, pretend = 0, frame = 0
+ 747              		@ frame_needed = 0, uses_anonymous_args = 0
+ 748              		@ link register save eliminated.
+ 749              	.LVL35:
+ 549:./FWLIB/src/stm32f4xx_ltdc.c ****   FlagStatus bitstatus;
+ 550:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 551:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 552:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_GET_CD(LTDC_CD));
+ 553:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 554:./FWLIB/src/stm32f4xx_ltdc.c ****   if ((LTDC->CDSR & LTDC_CD) != (uint32_t)RESET)
+ 750              		.loc 1 554 0
+ 751 0000 034B     		ldr	r3, .L46
+ 752 0002 9B6C     		ldr	r3, [r3, #72]
+ 753 0004 0342     		tst	r3, r0
+ 754 0006 01D1     		bne	.L45
+ 555:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 556:./FWLIB/src/stm32f4xx_ltdc.c ****     bitstatus = SET;
+ 557:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 558:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 559:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 560:./FWLIB/src/stm32f4xx_ltdc.c ****     bitstatus = RESET;
+ 755              		.loc 1 560 0
+ 756 0008 0020     		movs	r0, #0
+ 757              	.LVL36:
+ 561:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 562:./FWLIB/src/stm32f4xx_ltdc.c ****   return bitstatus;
+ 563:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 758              		.loc 1 563 0
+ 759 000a 7047     		bx	lr
+ 760              	.LVL37:
+ 761              	.L45:
+ 556:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 762              		.loc 1 556 0
+ 763 000c 0120     		movs	r0, #1
+ 764              	.LVL38:
+ 765 000e 7047     		bx	lr
+ 766              	.L47:
+ 767              		.align	2
+ 768              	.L46:
+ 769 0010 00680140 		.word	1073833984
+ 770              		.cfi_endproc
+ARM GAS  /tmp/ccECBl2g.s 			page 24
+
+
+ 771              	.LFE126:
+ 773              		.section	.text.LTDC_ColorKeyingConfig,"ax",%progbits
+ 774              		.align	1
+ 775              		.global	LTDC_ColorKeyingConfig
+ 776              		.syntax unified
+ 777              		.thumb
+ 778              		.thumb_func
+ 779              		.fpu fpv4-sp-d16
+ 781              	LTDC_ColorKeyingConfig:
+ 782              	.LFB127:
+ 564:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 565:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 566:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Set and configure the color keying.
+ 567:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_colorkeying_InitStruct: pointer to a LTDC_ColorKeying_InitTypeDef 
+ 568:./FWLIB/src/stm32f4xx_ltdc.c ****   *         structure that contains the color keying configuration.
+ 569:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 570:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2   
+ 571:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 572:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 573:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 574:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_ColorKeyingConfig(LTDC_Layer_TypeDef* LTDC_Layerx, LTDC_ColorKeying_InitTypeDef* LTDC_col
+ 575:./FWLIB/src/stm32f4xx_ltdc.c **** { 
+ 783              		.loc 1 575 0
+ 784              		.cfi_startproc
+ 785              		@ args = 0, pretend = 0, frame = 0
+ 786              		@ frame_needed = 0, uses_anonymous_args = 0
+ 787              		@ link register save eliminated.
+ 788              	.LVL39:
+ 576:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t ckgreen = 0;
+ 577:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t ckred = 0;
+ 578:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 579:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 580:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 581:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CKEYING(LTDC_colorkeying_InitStruct->LTDC_ColorKeyBlue));
+ 582:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CKEYING(LTDC_colorkeying_InitStruct->LTDC_ColorKeyGreen));
+ 583:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CKEYING(LTDC_colorkeying_InitStruct->LTDC_ColorKeyRed));
+ 584:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 585:./FWLIB/src/stm32f4xx_ltdc.c ****   if (NewState != DISABLE)
+ 789              		.loc 1 585 0
+ 790 0000 3AB9     		cbnz	r2, .L55
+ 586:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 587:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Enable LTDC color keying by setting COLKEN bit */
+ 588:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CR |= (uint32_t)LTDC_LxCR_COLKEN;
+ 589:./FWLIB/src/stm32f4xx_ltdc.c ****     
+ 590:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Sets the color keying values */
+ 591:./FWLIB/src/stm32f4xx_ltdc.c ****     ckgreen = (LTDC_colorkeying_InitStruct->LTDC_ColorKeyGreen << 8);
+ 592:./FWLIB/src/stm32f4xx_ltdc.c ****     ckred = (LTDC_colorkeying_InitStruct->LTDC_ColorKeyRed << 16);
+ 593:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CKCR  &= ~(LTDC_LxCKCR_CKBLUE | LTDC_LxCKCR_CKGREEN | LTDC_LxCKCR_CKRED);
+ 594:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CKCR |= (LTDC_colorkeying_InitStruct->LTDC_ColorKeyBlue | ckgreen | ckred);
+ 595:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 596:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 597:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 598:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Disable LTDC color keying by clearing COLKEN bit */
+ 599:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CR &= ~(uint32_t)LTDC_LxCR_COLKEN;
+ 791              		.loc 1 599 0
+ 792 0002 0368     		ldr	r3, [r0]
+ 793 0004 23F00203 		bic	r3, r3, #2
+ARM GAS  /tmp/ccECBl2g.s 			page 25
+
+
+ 794 0008 0360     		str	r3, [r0]
+ 600:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 601:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 602:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reload shadow register */
+ 603:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->SRCR = LTDC_IMReload;
+ 795              		.loc 1 603 0
+ 796 000a 0E4B     		ldr	r3, .L56
+ 797 000c 0122     		movs	r2, #1
+ 798              	.LVL40:
+ 799 000e 5A62     		str	r2, [r3, #36]
+ 800 0010 7047     		bx	lr
+ 801              	.LVL41:
+ 802              	.L55:
+ 575:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t ckgreen = 0;
+ 803              		.loc 1 575 0
+ 804 0012 30B4     		push	{r4, r5}
+ 805              	.LCFI7:
+ 806              		.cfi_def_cfa_offset 8
+ 807              		.cfi_offset 4, -8
+ 808              		.cfi_offset 5, -4
+ 588:./FWLIB/src/stm32f4xx_ltdc.c ****     
+ 809              		.loc 1 588 0
+ 810 0014 0368     		ldr	r3, [r0]
+ 811 0016 43F00203 		orr	r3, r3, #2
+ 812 001a 0360     		str	r3, [r0]
+ 591:./FWLIB/src/stm32f4xx_ltdc.c ****     ckred = (LTDC_colorkeying_InitStruct->LTDC_ColorKeyRed << 16);
+ 813              		.loc 1 591 0
+ 814 001c 4D68     		ldr	r5, [r1, #4]
+ 815              	.LVL42:
+ 592:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CKCR  &= ~(LTDC_LxCKCR_CKBLUE | LTDC_LxCKCR_CKGREEN | LTDC_LxCKCR_CKRED);
+ 816              		.loc 1 592 0
+ 817 001e 8C68     		ldr	r4, [r1, #8]
+ 818              	.LVL43:
+ 593:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CKCR |= (LTDC_colorkeying_InitStruct->LTDC_ColorKeyBlue | ckgreen | ckred);
+ 819              		.loc 1 593 0
+ 820 0020 C268     		ldr	r2, [r0, #12]
+ 821              	.LVL44:
+ 822 0022 02F07F42 		and	r2, r2, #-16777216
+ 823 0026 C260     		str	r2, [r0, #12]
+ 594:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 824              		.loc 1 594 0
+ 825 0028 C268     		ldr	r2, [r0, #12]
+ 826 002a 0B68     		ldr	r3, [r1]
+ 827 002c 43EA0523 		orr	r3, r3, r5, lsl #8
+ 828 0030 43EA0443 		orr	r3, r3, r4, lsl #16
+ 829 0034 1343     		orrs	r3, r3, r2
+ 830 0036 C360     		str	r3, [r0, #12]
+ 831              		.loc 1 603 0
+ 832 0038 024B     		ldr	r3, .L56
+ 833 003a 0122     		movs	r2, #1
+ 834 003c 5A62     		str	r2, [r3, #36]
+ 604:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 835              		.loc 1 604 0
+ 836 003e 30BC     		pop	{r4, r5}
+ 837              	.LCFI8:
+ 838              		.cfi_restore 5
+ 839              		.cfi_restore 4
+ARM GAS  /tmp/ccECBl2g.s 			page 26
+
+
+ 840              		.cfi_def_cfa_offset 0
+ 841              	.LVL45:
+ 842 0040 7047     		bx	lr
+ 843              	.L57:
+ 844 0042 00BF     		.align	2
+ 845              	.L56:
+ 846 0044 00680140 		.word	1073833984
+ 847              		.cfi_endproc
+ 848              	.LFE127:
+ 850              		.section	.text.LTDC_ColorKeyingStructInit,"ax",%progbits
+ 851              		.align	1
+ 852              		.global	LTDC_ColorKeyingStructInit
+ 853              		.syntax unified
+ 854              		.thumb
+ 855              		.thumb_func
+ 856              		.fpu fpv4-sp-d16
+ 858              	LTDC_ColorKeyingStructInit:
+ 859              	.LFB128:
+ 605:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 606:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 607:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Fills each LTDC_colorkeying_InitStruct member with its default value.
+ 608:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_colorkeying_InitStruct: pointer to a LTDC_ColorKeying_InitTypeDef structure which 
+ 609:./FWLIB/src/stm32f4xx_ltdc.c ****   *         be initialized.
+ 610:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 611:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 612:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 613:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_ColorKeyingStructInit(LTDC_ColorKeying_InitTypeDef* LTDC_colorkeying_InitStruct)
+ 614:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 860              		.loc 1 614 0
+ 861              		.cfi_startproc
+ 862              		@ args = 0, pretend = 0, frame = 0
+ 863              		@ frame_needed = 0, uses_anonymous_args = 0
+ 864              		@ link register save eliminated.
+ 865              	.LVL46:
+ 615:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the color keying values */
+ 616:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_colorkeying_InitStruct->LTDC_ColorKeyBlue = 0x00;
+ 866              		.loc 1 616 0
+ 867 0000 0023     		movs	r3, #0
+ 868 0002 0360     		str	r3, [r0]
+ 617:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_colorkeying_InitStruct->LTDC_ColorKeyGreen = 0x00;
+ 869              		.loc 1 617 0
+ 870 0004 4360     		str	r3, [r0, #4]
+ 618:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_colorkeying_InitStruct->LTDC_ColorKeyRed = 0x00;
+ 871              		.loc 1 618 0
+ 872 0006 8360     		str	r3, [r0, #8]
+ 619:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 873              		.loc 1 619 0
+ 874 0008 7047     		bx	lr
+ 875              		.cfi_endproc
+ 876              	.LFE128:
+ 878              		.section	.text.LTDC_CLUTCmd,"ax",%progbits
+ 879              		.align	1
+ 880              		.global	LTDC_CLUTCmd
+ 881              		.syntax unified
+ 882              		.thumb
+ 883              		.thumb_func
+ 884              		.fpu fpv4-sp-d16
+ARM GAS  /tmp/ccECBl2g.s 			page 27
+
+
+ 886              	LTDC_CLUTCmd:
+ 887              	.LFB129:
+ 620:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 621:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 622:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 623:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Enables or disables CLUT.
+ 624:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  NewState: new state of CLUT.
+ 625:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 626:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2  
+ 627:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 628:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 629:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 630:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 631:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_CLUTCmd(LTDC_Layer_TypeDef* LTDC_Layerx, FunctionalState NewState)
+ 632:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 888              		.loc 1 632 0
+ 889              		.cfi_startproc
+ 890              		@ args = 0, pretend = 0, frame = 0
+ 891              		@ frame_needed = 0, uses_anonymous_args = 0
+ 892              		@ link register save eliminated.
+ 893              	.LVL47:
+ 633:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 634:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 635:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 636:./FWLIB/src/stm32f4xx_ltdc.c ****   if (NewState != DISABLE)
+ 894              		.loc 1 636 0
+ 895 0000 39B9     		cbnz	r1, .L62
+ 637:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 638:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Enable CLUT by setting CLUTEN bit */
+ 639:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CR |= (uint32_t)LTDC_LxCR_CLUTEN;
+ 640:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 641:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 642:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 643:./FWLIB/src/stm32f4xx_ltdc.c ****     /* Disable CLUT by clearing CLUTEN bit */
+ 644:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC_Layerx->CR &= ~(uint32_t)LTDC_LxCR_CLUTEN;
+ 896              		.loc 1 644 0
+ 897 0002 0368     		ldr	r3, [r0]
+ 898 0004 23F01003 		bic	r3, r3, #16
+ 899 0008 0360     		str	r3, [r0]
+ 900              	.L61:
+ 645:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 646:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 647:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reload shadow register */
+ 648:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->SRCR = LTDC_IMReload;
+ 901              		.loc 1 648 0
+ 902 000a 044B     		ldr	r3, .L63
+ 903 000c 0122     		movs	r2, #1
+ 904 000e 5A62     		str	r2, [r3, #36]
+ 649:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 905              		.loc 1 649 0
+ 906 0010 7047     		bx	lr
+ 907              	.L62:
+ 639:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 908              		.loc 1 639 0
+ 909 0012 0368     		ldr	r3, [r0]
+ 910 0014 43F01003 		orr	r3, r3, #16
+ 911 0018 0360     		str	r3, [r0]
+ARM GAS  /tmp/ccECBl2g.s 			page 28
+
+
+ 912 001a F6E7     		b	.L61
+ 913              	.L64:
+ 914              		.align	2
+ 915              	.L63:
+ 916 001c 00680140 		.word	1073833984
+ 917              		.cfi_endproc
+ 918              	.LFE129:
+ 920              		.section	.text.LTDC_CLUTInit,"ax",%progbits
+ 921              		.align	1
+ 922              		.global	LTDC_CLUTInit
+ 923              		.syntax unified
+ 924              		.thumb
+ 925              		.thumb_func
+ 926              		.fpu fpv4-sp-d16
+ 928              	LTDC_CLUTInit:
+ 929              	.LFB130:
+ 650:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 651:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 652:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  configure the CLUT.
+ 653:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_CLUT_InitStruct: pointer to a LTDC_CLUT_InitTypeDef structure that contains
+ 654:./FWLIB/src/stm32f4xx_ltdc.c ****   *         the CLUT configuration.
+ 655:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 656:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2   
+ 657:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 658:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 659:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 660:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_CLUTInit(LTDC_Layer_TypeDef* LTDC_Layerx, LTDC_CLUT_InitTypeDef* LTDC_CLUT_InitStruct)
+ 661:./FWLIB/src/stm32f4xx_ltdc.c **** {  
+ 930              		.loc 1 661 0
+ 931              		.cfi_startproc
+ 932              		@ args = 0, pretend = 0, frame = 0
+ 933              		@ frame_needed = 0, uses_anonymous_args = 0
+ 934              		@ link register save eliminated.
+ 935              	.LVL48:
+ 936 0000 30B4     		push	{r4, r5}
+ 937              	.LCFI9:
+ 938              		.cfi_def_cfa_offset 8
+ 939              		.cfi_offset 4, -8
+ 940              		.cfi_offset 5, -4
+ 941              	.LVL49:
+ 662:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t green = 0;
+ 663:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t red = 0;
+ 664:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t clutadd = 0;
+ 665:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 666:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 667:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CLUTWR(LTDC_CLUT_InitStruct->LTDC_CLUTAdress));
+ 668:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CLUTWR(LTDC_CLUT_InitStruct->LTDC_RedValue));
+ 669:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CLUTWR(LTDC_CLUT_InitStruct->LTDC_GreenValue));
+ 670:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_CLUTWR(LTDC_CLUT_InitStruct->LTDC_BlueValue));
+ 671:./FWLIB/src/stm32f4xx_ltdc.c ****     
+ 672:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Specifies the CLUT address and RGB value */
+ 673:./FWLIB/src/stm32f4xx_ltdc.c ****   green = (LTDC_CLUT_InitStruct->LTDC_GreenValue << 8);
+ 942              		.loc 1 673 0
+ 943 0002 8C68     		ldr	r4, [r1, #8]
+ 944              	.LVL50:
+ 674:./FWLIB/src/stm32f4xx_ltdc.c ****   red = (LTDC_CLUT_InitStruct->LTDC_RedValue << 16);
+ 945              		.loc 1 674 0
+ARM GAS  /tmp/ccECBl2g.s 			page 29
+
+
+ 946 0004 CA68     		ldr	r2, [r1, #12]
+ 947              	.LVL51:
+ 675:./FWLIB/src/stm32f4xx_ltdc.c ****   clutadd = (LTDC_CLUT_InitStruct->LTDC_CLUTAdress << 24);
+ 948              		.loc 1 675 0
+ 949 0006 0D68     		ldr	r5, [r1]
+ 950              	.LVL52:
+ 676:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CLUTWR  = (clutadd | LTDC_CLUT_InitStruct->LTDC_BlueValue | \
+ 951              		.loc 1 676 0
+ 952 0008 4B68     		ldr	r3, [r1, #4]
+ 953 000a 43EA0563 		orr	r3, r3, r5, lsl #24
+ 954 000e 43EA0423 		orr	r3, r3, r4, lsl #8
+ 677:./FWLIB/src/stm32f4xx_ltdc.c ****                               green | red);
+ 955              		.loc 1 677 0
+ 956 0012 43EA0243 		orr	r3, r3, r2, lsl #16
+ 676:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CLUTWR  = (clutadd | LTDC_CLUT_InitStruct->LTDC_BlueValue | \
+ 957              		.loc 1 676 0
+ 958 0016 0364     		str	r3, [r0, #64]
+ 678:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 959              		.loc 1 678 0
+ 960 0018 30BC     		pop	{r4, r5}
+ 961              	.LCFI10:
+ 962              		.cfi_restore 5
+ 963              		.cfi_restore 4
+ 964              		.cfi_def_cfa_offset 0
+ 965              	.LVL53:
+ 966 001a 7047     		bx	lr
+ 967              		.cfi_endproc
+ 968              	.LFE130:
+ 970              		.section	.text.LTDC_CLUTStructInit,"ax",%progbits
+ 971              		.align	1
+ 972              		.global	LTDC_CLUTStructInit
+ 973              		.syntax unified
+ 974              		.thumb
+ 975              		.thumb_func
+ 976              		.fpu fpv4-sp-d16
+ 978              	LTDC_CLUTStructInit:
+ 979              	.LFB131:
+ 679:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 680:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 681:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Fills each LTDC_CLUT_InitStruct member with its default value.
+ 682:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_CLUT_InitStruct: pointer to a LTDC_CLUT_InitTypeDef structure which will
+ 683:./FWLIB/src/stm32f4xx_ltdc.c ****   *         be initialized.
+ 684:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 685:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 686:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 687:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_CLUTStructInit(LTDC_CLUT_InitTypeDef* LTDC_CLUT_InitStruct)
+ 688:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 980              		.loc 1 688 0
+ 981              		.cfi_startproc
+ 982              		@ args = 0, pretend = 0, frame = 0
+ 983              		@ frame_needed = 0, uses_anonymous_args = 0
+ 984              		@ link register save eliminated.
+ 985              	.LVL54:
+ 689:./FWLIB/src/stm32f4xx_ltdc.c ****   /*!< Initialize the CLUT adress and RGB values */
+ 690:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_CLUT_InitStruct->LTDC_CLUTAdress = 0x00;
+ 986              		.loc 1 690 0
+ 987 0000 0023     		movs	r3, #0
+ARM GAS  /tmp/ccECBl2g.s 			page 30
+
+
+ 988 0002 0360     		str	r3, [r0]
+ 691:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_CLUT_InitStruct->LTDC_BlueValue = 0x00;
+ 989              		.loc 1 691 0
+ 990 0004 4360     		str	r3, [r0, #4]
+ 692:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_CLUT_InitStruct->LTDC_GreenValue = 0x00;
+ 991              		.loc 1 692 0
+ 992 0006 8360     		str	r3, [r0, #8]
+ 693:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_CLUT_InitStruct->LTDC_RedValue = 0x00;
+ 993              		.loc 1 693 0
+ 994 0008 C360     		str	r3, [r0, #12]
+ 694:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 995              		.loc 1 694 0
+ 996 000a 7047     		bx	lr
+ 997              		.cfi_endproc
+ 998              	.LFE131:
+ 1000              		.section	.text.LTDC_LayerPosition,"ax",%progbits
+ 1001              		.align	1
+ 1002              		.global	LTDC_LayerPosition
+ 1003              		.syntax unified
+ 1004              		.thumb
+ 1005              		.thumb_func
+ 1006              		.fpu fpv4-sp-d16
+ 1008              	LTDC_LayerPosition:
+ 1009              	.LFB132:
+ 695:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 696:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 697:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 698:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  reconfigure the layer position.
+ 699:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  OffsetX: horizontal offset from start active width .
+ 700:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  OffsetY: vertical offset from start active height.   
+ 701:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 702:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2   
+ 703:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval Reload of the shadow registers values must be applied after layer 
+ 704:./FWLIB/src/stm32f4xx_ltdc.c ****   *         position reconfiguration.
+ 705:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 706:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 707:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LayerPosition(LTDC_Layer_TypeDef* LTDC_Layerx, uint16_t OffsetX, uint16_t OffsetY)
+ 708:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1010              		.loc 1 708 0
+ 1011              		.cfi_startproc
+ 1012              		@ args = 0, pretend = 0, frame = 0
+ 1013              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1014              		@ link register save eliminated.
+ 1015              	.LVL55:
+ 1016 0000 10B4     		push	{r4}
+ 1017              	.LCFI11:
+ 1018              		.cfi_def_cfa_offset 4
+ 1019              		.cfi_offset 4, -4
+ 709:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 710:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t tempreg, temp;
+ 711:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t horizontal_start;
+ 712:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t horizontal_stop;
+ 713:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t vertical_start;
+ 714:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t vertical_stop;
+ 715:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 716:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WHPCR &= ~(LTDC_LxWHPCR_WHSTPOS | LTDC_LxWHPCR_WHSPPOS);
+ 1020              		.loc 1 716 0
+ARM GAS  /tmp/ccECBl2g.s 			page 31
+
+
+ 1021 0002 4368     		ldr	r3, [r0, #4]
+ 1022 0004 03F47043 		and	r3, r3, #61440
+ 1023 0008 4360     		str	r3, [r0, #4]
+ 717:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WVPCR &= ~(LTDC_LxWVPCR_WVSTPOS | LTDC_LxWVPCR_WVSPPOS);
+ 1024              		.loc 1 717 0
+ 1025 000a 8368     		ldr	r3, [r0, #8]
+ 1026 000c 03F47043 		and	r3, r3, #61440
+ 1027 0010 8360     		str	r3, [r0, #8]
+ 718:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 719:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reconfigures the horizontal and vertical start position */
+ 720:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = LTDC->BPCR;
+ 1028              		.loc 1 720 0
+ 1029 0012 1A4B     		ldr	r3, .L77
+ 1030 0014 DC68     		ldr	r4, [r3, #12]
+ 1031              	.LVL56:
+ 721:./FWLIB/src/stm32f4xx_ltdc.c ****   horizontal_start = (tempreg >> 16) + 1 + OffsetX;
+ 1032              		.loc 1 721 0
+ 1033 0016 01EB1441 		add	r1, r1, r4, lsr #16
+ 1034              	.LVL57:
+ 1035 001a 0131     		adds	r1, r1, #1
+ 1036              	.LVL58:
+ 722:./FWLIB/src/stm32f4xx_ltdc.c ****   vertical_start = (tempreg & 0xFFFF) + 1 + OffsetY;
+ 1037              		.loc 1 722 0
+ 1038 001c 12FA84F2 		uxtah	r2, r2, r4
+ 1039              	.LVL59:
+ 1040 0020 0132     		adds	r2, r2, #1
+ 1041              	.LVL60:
+ 723:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 724:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reconfigures the horizontal and vertical stop position */
+ 725:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Get the number of byte per pixel */
+ 726:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 727:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = LTDC_Layerx->PFCR;
+ 1042              		.loc 1 727 0
+ 1043 0022 0469     		ldr	r4, [r0, #16]
+ 1044              	.LVL61:
+ 728:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 729:./FWLIB/src/stm32f4xx_ltdc.c ****   if (tempreg == LTDC_Pixelformat_ARGB8888)
+ 1045              		.loc 1 729 0
+ 1046 0024 6CB1     		cbz	r4, .L70
+ 730:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 731:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 4;
+ 732:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 733:./FWLIB/src/stm32f4xx_ltdc.c ****   else if (tempreg == LTDC_Pixelformat_RGB888)
+ 1047              		.loc 1 733 0
+ 1048 0026 012C     		cmp	r4, #1
+ 1049 0028 22D0     		beq	.L71
+ 734:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 735:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 3;
+ 736:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 737:./FWLIB/src/stm32f4xx_ltdc.c ****   else if ((tempreg == LTDC_Pixelformat_ARGB4444) || 
+ 1050              		.loc 1 737 0
+ 1051 002a 042C     		cmp	r4, #4
+ 1052 002c 22D0     		beq	.L72
+ 1053              		.loc 1 737 0 is_stmt 0 discriminator 1
+ 1054 002e 022C     		cmp	r4, #2
+ 1055 0030 08D0     		beq	.L69
+ 738:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_RGB565)    ||  
+ARM GAS  /tmp/ccECBl2g.s 			page 32
+
+
+ 1056              		.loc 1 738 0 is_stmt 1
+ 1057 0032 032C     		cmp	r4, #3
+ 1058 0034 20D0     		beq	.L73
+ 739:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_ARGB1555)  ||
+ 1059              		.loc 1 739 0
+ 1060 0036 072C     		cmp	r4, #7
+ 1061 0038 01D0     		beq	.L76
+ 740:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_AL88))
+ 741:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 742:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 2;  
+ 743:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 744:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 745:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 746:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 1;
+ 1062              		.loc 1 746 0
+ 1063 003a 0124     		movs	r4, #1
+ 1064              	.LVL62:
+ 1065 003c 02E0     		b	.L69
+ 1066              	.LVL63:
+ 1067              	.L76:
+ 742:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1068              		.loc 1 742 0
+ 1069 003e 0224     		movs	r4, #2
+ 1070              	.LVL64:
+ 1071 0040 00E0     		b	.L69
+ 1072              	.LVL65:
+ 1073              	.L70:
+ 731:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1074              		.loc 1 731 0
+ 1075 0042 0424     		movs	r4, #4
+ 1076              	.LVL66:
+ 1077              	.L69:
+ 747:./FWLIB/src/stm32f4xx_ltdc.c ****   }  
+ 748:./FWLIB/src/stm32f4xx_ltdc.c ****     
+ 749:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = LTDC_Layerx->CFBLR;
+ 1078              		.loc 1 749 0
+ 1079 0044 C36A     		ldr	r3, [r0, #44]
+ 1080              	.LVL67:
+ 750:./FWLIB/src/stm32f4xx_ltdc.c ****   horizontal_stop = (((tempreg & 0x1FFF) - 3)/temp) + horizontal_start - 1;
+ 1081              		.loc 1 750 0
+ 1082 0046 C3F30C03 		ubfx	r3, r3, #0, #13
+ 1083              	.LVL68:
+ 1084 004a 033B     		subs	r3, r3, #3
+ 1085 004c B3FBF4F3 		udiv	r3, r3, r4
+ 1086 0050 0B44     		add	r3, r3, r1
+ 1087 0052 013B     		subs	r3, r3, #1
+ 1088              	.LVL69:
+ 751:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 752:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = LTDC_Layerx->CFBLNR;
+ 1089              		.loc 1 752 0
+ 1090 0054 046B     		ldr	r4, [r0, #48]
+ 1091              	.LVL70:
+ 753:./FWLIB/src/stm32f4xx_ltdc.c ****   vertical_stop = (tempreg & 0x7FF) + vertical_start - 1;  
+ 1092              		.loc 1 753 0
+ 1093 0056 C4F30A04 		ubfx	r4, r4, #0, #11
+ 1094              	.LVL71:
+ 1095 005a 1444     		add	r4, r4, r2
+ARM GAS  /tmp/ccECBl2g.s 			page 33
+
+
+ 1096 005c 013C     		subs	r4, r4, #1
+ 1097              	.LVL72:
+ 754:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 755:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WHPCR = horizontal_start | (horizontal_stop << 16);
+ 1098              		.loc 1 755 0
+ 1099 005e 41EA0341 		orr	r1, r1, r3, lsl #16
+ 1100              	.LVL73:
+ 1101 0062 4160     		str	r1, [r0, #4]
+ 756:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WVPCR = vertical_start | (vertical_stop << 16);  
+ 1102              		.loc 1 756 0
+ 1103 0064 42EA0442 		orr	r2, r2, r4, lsl #16
+ 1104              	.LVL74:
+ 1105 0068 8260     		str	r2, [r0, #8]
+ 757:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1106              		.loc 1 757 0
+ 1107 006a 5DF8044B 		ldr	r4, [sp], #4
+ 1108              	.LCFI12:
+ 1109              		.cfi_remember_state
+ 1110              		.cfi_restore 4
+ 1111              		.cfi_def_cfa_offset 0
+ 1112              	.LVL75:
+ 1113 006e 7047     		bx	lr
+ 1114              	.LVL76:
+ 1115              	.L71:
+ 1116              	.LCFI13:
+ 1117              		.cfi_restore_state
+ 735:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1118              		.loc 1 735 0
+ 1119 0070 0324     		movs	r4, #3
+ 1120              	.LVL77:
+ 1121 0072 E7E7     		b	.L69
+ 1122              	.LVL78:
+ 1123              	.L72:
+ 742:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1124              		.loc 1 742 0
+ 1125 0074 0224     		movs	r4, #2
+ 1126              	.LVL79:
+ 1127 0076 E5E7     		b	.L69
+ 1128              	.LVL80:
+ 1129              	.L73:
+ 1130 0078 0224     		movs	r4, #2
+ 1131              	.LVL81:
+ 1132 007a E3E7     		b	.L69
+ 1133              	.L78:
+ 1134              		.align	2
+ 1135              	.L77:
+ 1136 007c 00680140 		.word	1073833984
+ 1137              		.cfi_endproc
+ 1138              	.LFE132:
+ 1140              		.section	.text.LTDC_LayerAlpha,"ax",%progbits
+ 1141              		.align	1
+ 1142              		.global	LTDC_LayerAlpha
+ 1143              		.syntax unified
+ 1144              		.thumb
+ 1145              		.thumb_func
+ 1146              		.fpu fpv4-sp-d16
+ 1148              	LTDC_LayerAlpha:
+ARM GAS  /tmp/ccECBl2g.s 			page 34
+
+
+ 1149              	.LFB133:
+ 758:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 759:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 760:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  reconfigure constant alpha.
+ 761:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  ConstantAlpha: constant alpha value.
+ 762:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 763:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2    
+ 764:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval Reload of the shadow registers values must be applied after constant 
+ 765:./FWLIB/src/stm32f4xx_ltdc.c ****   *         alpha reconfiguration.         
+ 766:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 767:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 768:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LayerAlpha(LTDC_Layer_TypeDef* LTDC_Layerx, uint8_t ConstantAlpha)
+ 769:./FWLIB/src/stm32f4xx_ltdc.c **** {  
+ 1150              		.loc 1 769 0
+ 1151              		.cfi_startproc
+ 1152              		@ args = 0, pretend = 0, frame = 0
+ 1153              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1154              		@ link register save eliminated.
+ 1155              	.LVL82:
+ 770:./FWLIB/src/stm32f4xx_ltdc.c ****   /* reconfigure the constant alpha value */      
+ 771:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CACR = ConstantAlpha;
+ 1156              		.loc 1 771 0
+ 1157 0000 4161     		str	r1, [r0, #20]
+ 772:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1158              		.loc 1 772 0
+ 1159 0002 7047     		bx	lr
+ 1160              		.cfi_endproc
+ 1161              	.LFE133:
+ 1163              		.section	.text.LTDC_LayerAddress,"ax",%progbits
+ 1164              		.align	1
+ 1165              		.global	LTDC_LayerAddress
+ 1166              		.syntax unified
+ 1167              		.thumb
+ 1168              		.thumb_func
+ 1169              		.fpu fpv4-sp-d16
+ 1171              	LTDC_LayerAddress:
+ 1172              	.LFB134:
+ 773:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 774:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 775:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  reconfigure layer address.
+ 776:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  Address: The color frame buffer start address.
+ 777:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 778:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2     
+ 779:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval Reload of the shadow registers values must be applied after layer 
+ 780:./FWLIB/src/stm32f4xx_ltdc.c ****   *         address reconfiguration.
+ 781:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 782:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 783:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LayerAddress(LTDC_Layer_TypeDef* LTDC_Layerx, uint32_t Address)
+ 784:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1173              		.loc 1 784 0
+ 1174              		.cfi_startproc
+ 1175              		@ args = 0, pretend = 0, frame = 0
+ 1176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1177              		@ link register save eliminated.
+ 1178              	.LVL83:
+ 785:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reconfigures the color frame buffer start address */
+ 786:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBAR = Address;
+ARM GAS  /tmp/ccECBl2g.s 			page 35
+
+
+ 1179              		.loc 1 786 0
+ 1180 0000 8162     		str	r1, [r0, #40]
+ 787:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1181              		.loc 1 787 0
+ 1182 0002 7047     		bx	lr
+ 1183              		.cfi_endproc
+ 1184              	.LFE134:
+ 1186              		.section	.text.LTDC_LayerSize,"ax",%progbits
+ 1187              		.align	1
+ 1188              		.global	LTDC_LayerSize
+ 1189              		.syntax unified
+ 1190              		.thumb
+ 1191              		.thumb_func
+ 1192              		.fpu fpv4-sp-d16
+ 1194              	LTDC_LayerSize:
+ 1195              	.LFB135:
+ 788:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 789:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 790:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  reconfigure layer size.
+ 791:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  Width: layer window width.
+ 792:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  Height: layer window height.   
+ 793:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 794:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2   
+ 795:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval Reload of the shadow registers values must be applied after layer 
+ 796:./FWLIB/src/stm32f4xx_ltdc.c ****   *         size reconfiguration.
+ 797:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 798:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 799:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LayerSize(LTDC_Layer_TypeDef* LTDC_Layerx, uint32_t Width, uint32_t Height)
+ 800:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1196              		.loc 1 800 0
+ 1197              		.cfi_startproc
+ 1198              		@ args = 0, pretend = 0, frame = 0
+ 1199              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1200              		@ link register save eliminated.
+ 1201              	.LVL84:
+ 1202 0000 F0B4     		push	{r4, r5, r6, r7}
+ 1203              	.LCFI14:
+ 1204              		.cfi_def_cfa_offset 16
+ 1205              		.cfi_offset 4, -16
+ 1206              		.cfi_offset 5, -12
+ 1207              		.cfi_offset 6, -8
+ 1208              		.cfi_offset 7, -4
+ 801:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 802:./FWLIB/src/stm32f4xx_ltdc.c ****   uint8_t temp;
+ 803:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t tempreg;
+ 804:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t horizontal_start;
+ 805:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t horizontal_stop;
+ 806:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t vertical_start;
+ 807:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t vertical_stop;  
+ 808:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 809:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = LTDC_Layerx->PFCR;
+ 1209              		.loc 1 809 0
+ 1210 0002 0369     		ldr	r3, [r0, #16]
+ 1211              	.LVL85:
+ 810:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 811:./FWLIB/src/stm32f4xx_ltdc.c ****   if (tempreg == LTDC_Pixelformat_ARGB8888)
+ 1212              		.loc 1 811 0
+ARM GAS  /tmp/ccECBl2g.s 			page 36
+
+
+ 1213 0004 6BB1     		cbz	r3, .L83
+ 812:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 813:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 4;
+ 814:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 815:./FWLIB/src/stm32f4xx_ltdc.c ****   else if (tempreg == LTDC_Pixelformat_RGB888)
+ 1214              		.loc 1 815 0
+ 1215 0006 012B     		cmp	r3, #1
+ 1216 0008 25D0     		beq	.L84
+ 816:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 817:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 3;
+ 818:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 819:./FWLIB/src/stm32f4xx_ltdc.c ****   else if ((tempreg == LTDC_Pixelformat_ARGB4444) || \
+ 1217              		.loc 1 819 0
+ 1218 000a 042B     		cmp	r3, #4
+ 1219 000c 25D0     		beq	.L85
+ 1220              		.loc 1 819 0 is_stmt 0 discriminator 1
+ 1221 000e 022B     		cmp	r3, #2
+ 1222 0010 25D0     		beq	.L86
+ 820:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_RGB565)    || \
+ 1223              		.loc 1 820 0 is_stmt 1
+ 1224 0012 032B     		cmp	r3, #3
+ 1225 0014 25D0     		beq	.L87
+ 821:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_ARGB1555)  || \
+ 1226              		.loc 1 821 0
+ 1227 0016 072B     		cmp	r3, #7
+ 1228 0018 01D0     		beq	.L90
+ 822:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_AL88))
+ 823:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 824:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 2;  
+ 825:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 826:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 827:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 828:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 1;
+ 1229              		.loc 1 828 0
+ 1230 001a 0127     		movs	r7, #1
+ 1231 001c 02E0     		b	.L82
+ 1232              	.L90:
+ 824:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1233              		.loc 1 824 0
+ 1234 001e 0227     		movs	r7, #2
+ 1235 0020 00E0     		b	.L82
+ 1236              	.L83:
+ 813:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1237              		.loc 1 813 0
+ 1238 0022 0427     		movs	r7, #4
+ 1239              	.L82:
+ 1240              	.LVL86:
+ 829:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 830:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 831:./FWLIB/src/stm32f4xx_ltdc.c ****   /* update horizontal and vertical stop */
+ 832:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = LTDC_Layerx->WHPCR;
+ 1241              		.loc 1 832 0
+ 1242 0024 4468     		ldr	r4, [r0, #4]
+ 1243              	.LVL87:
+ 833:./FWLIB/src/stm32f4xx_ltdc.c ****   horizontal_start = (tempreg & 0x1FFF);
+ 1244              		.loc 1 833 0
+ 1245 0026 C4F30C04 		ubfx	r4, r4, #0, #13
+ARM GAS  /tmp/ccECBl2g.s 			page 37
+
+
+ 1246              	.LVL88:
+ 834:./FWLIB/src/stm32f4xx_ltdc.c ****   horizontal_stop = Width + horizontal_start - 1;  
+ 1247              		.loc 1 834 0
+ 1248 002a 6618     		adds	r6, r4, r1
+ 1249 002c 013E     		subs	r6, r6, #1
+ 1250              	.LVL89:
+ 835:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 836:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = LTDC_Layerx->WVPCR;
+ 1251              		.loc 1 836 0
+ 1252 002e 8368     		ldr	r3, [r0, #8]
+ 1253              	.LVL90:
+ 837:./FWLIB/src/stm32f4xx_ltdc.c ****   vertical_start = (tempreg & 0x1FFF);
+ 1254              		.loc 1 837 0
+ 1255 0030 C3F30C03 		ubfx	r3, r3, #0, #13
+ 1256              	.LVL91:
+ 838:./FWLIB/src/stm32f4xx_ltdc.c ****   vertical_stop = Height + vertical_start - 1;  
+ 1257              		.loc 1 838 0
+ 1258 0034 9D18     		adds	r5, r3, r2
+ 1259 0036 013D     		subs	r5, r5, #1
+ 1260              	.LVL92:
+ 839:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 840:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WHPCR = horizontal_start | (horizontal_stop << 16);
+ 1261              		.loc 1 840 0
+ 1262 0038 44EA0644 		orr	r4, r4, r6, lsl #16
+ 1263              	.LVL93:
+ 1264 003c 4460     		str	r4, [r0, #4]
+ 841:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->WVPCR = vertical_start | (vertical_stop << 16);  
+ 1265              		.loc 1 841 0
+ 1266 003e 43EA0543 		orr	r3, r3, r5, lsl #16
+ 1267              	.LVL94:
+ 1268 0042 8360     		str	r3, [r0, #8]
+ 842:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 843:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reconfigures the color frame buffer pitch in byte */
+ 844:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBLR  = ((Width * temp) << 16) | ((Width * temp) + 3);  
+ 1269              		.loc 1 844 0
+ 1270 0044 01FB07F1 		mul	r1, r1, r7
+ 1271              	.LVL95:
+ 1272 0048 CB1C     		adds	r3, r1, #3
+ 1273 004a 43EA0141 		orr	r1, r3, r1, lsl #16
+ 1274 004e C162     		str	r1, [r0, #44]
+ 845:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 846:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reconfigures the frame buffer line number */
+ 847:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBLNR  = Height;  
+ 1275              		.loc 1 847 0
+ 1276 0050 0263     		str	r2, [r0, #48]
+ 848:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 849:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1277              		.loc 1 849 0
+ 1278 0052 F0BC     		pop	{r4, r5, r6, r7}
+ 1279              	.LCFI15:
+ 1280              		.cfi_remember_state
+ 1281              		.cfi_restore 7
+ 1282              		.cfi_restore 6
+ 1283              		.cfi_restore 5
+ 1284              		.cfi_restore 4
+ 1285              		.cfi_def_cfa_offset 0
+ 1286              	.LVL96:
+ARM GAS  /tmp/ccECBl2g.s 			page 38
+
+
+ 1287 0054 7047     		bx	lr
+ 1288              	.LVL97:
+ 1289              	.L84:
+ 1290              	.LCFI16:
+ 1291              		.cfi_restore_state
+ 817:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1292              		.loc 1 817 0
+ 1293 0056 0327     		movs	r7, #3
+ 1294 0058 E4E7     		b	.L82
+ 1295              	.L85:
+ 824:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1296              		.loc 1 824 0
+ 1297 005a 0227     		movs	r7, #2
+ 1298 005c E2E7     		b	.L82
+ 1299              	.L86:
+ 1300 005e 0227     		movs	r7, #2
+ 1301 0060 E0E7     		b	.L82
+ 1302              	.L87:
+ 1303 0062 0227     		movs	r7, #2
+ 1304 0064 DEE7     		b	.L82
+ 1305              		.cfi_endproc
+ 1306              	.LFE135:
+ 1308              		.section	.text.LTDC_LayerPixelFormat,"ax",%progbits
+ 1309              		.align	1
+ 1310              		.global	LTDC_LayerPixelFormat
+ 1311              		.syntax unified
+ 1312              		.thumb
+ 1313              		.thumb_func
+ 1314              		.fpu fpv4-sp-d16
+ 1316              	LTDC_LayerPixelFormat:
+ 1317              	.LFB136:
+ 850:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 851:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 852:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  reconfigure layer pixel format.
+ 853:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  PixelFormat: reconfigure the pixel format, this parameter can be 
+ 854:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values:@ref LTDC_Pixelformat.   
+ 855:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_layerx: Select the layer to be configured, this parameter can be 
+ 856:./FWLIB/src/stm32f4xx_ltdc.c ****   *         one of the following values: LTDC_Layer1, LTDC_Layer2   
+ 857:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval Reload of the shadow registers values must be applied after layer 
+ 858:./FWLIB/src/stm32f4xx_ltdc.c ****   *         pixel format reconfiguration.
+ 859:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 860:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 861:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_LayerPixelFormat(LTDC_Layer_TypeDef* LTDC_Layerx, uint32_t PixelFormat)
+ 862:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1318              		.loc 1 862 0
+ 1319              		.cfi_startproc
+ 1320              		@ args = 0, pretend = 0, frame = 0
+ 1321              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1322              		@ link register save eliminated.
+ 1323              	.LVL98:
+ 863:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 864:./FWLIB/src/stm32f4xx_ltdc.c ****   uint8_t temp;
+ 865:./FWLIB/src/stm32f4xx_ltdc.c ****   uint32_t tempreg;
+ 866:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 867:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = LTDC_Layerx->PFCR;
+ 1324              		.loc 1 867 0
+ 1325 0000 0369     		ldr	r3, [r0, #16]
+ARM GAS  /tmp/ccECBl2g.s 			page 39
+
+
+ 1326              	.LVL99:
+ 868:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 869:./FWLIB/src/stm32f4xx_ltdc.c ****   if (tempreg == LTDC_Pixelformat_ARGB8888)
+ 1327              		.loc 1 869 0
+ 1328 0002 6BB1     		cbz	r3, .L94
+ 870:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 871:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 4;
+ 872:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 873:./FWLIB/src/stm32f4xx_ltdc.c ****   else if (tempreg == LTDC_Pixelformat_RGB888)
+ 1329              		.loc 1 873 0
+ 1330 0004 012B     		cmp	r3, #1
+ 1331 0006 1DD0     		beq	.L95
+ 874:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 875:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 3;
+ 876:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 877:./FWLIB/src/stm32f4xx_ltdc.c ****   else if ((tempreg == LTDC_Pixelformat_ARGB4444) || \
+ 1332              		.loc 1 877 0
+ 1333 0008 042B     		cmp	r3, #4
+ 1334 000a 1DD0     		beq	.L96
+ 1335              		.loc 1 877 0 is_stmt 0 discriminator 1
+ 1336 000c 022B     		cmp	r3, #2
+ 1337 000e 1DD0     		beq	.L97
+ 878:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_RGB565)    || \
+ 1338              		.loc 1 878 0 is_stmt 1
+ 1339 0010 032B     		cmp	r3, #3
+ 1340 0012 1DD0     		beq	.L98
+ 879:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_ARGB1555)  || \
+ 1341              		.loc 1 879 0
+ 1342 0014 072B     		cmp	r3, #7
+ 1343 0016 01D0     		beq	.L106
+ 880:./FWLIB/src/stm32f4xx_ltdc.c ****           (tempreg == LTDC_Pixelformat_AL88))  
+ 881:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 882:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 2;  
+ 883:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 884:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 885:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 886:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 1;
+ 1344              		.loc 1 886 0
+ 1345 0018 0122     		movs	r2, #1
+ 1346 001a 02E0     		b	.L92
+ 1347              	.L106:
+ 882:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1348              		.loc 1 882 0
+ 1349 001c 0222     		movs	r2, #2
+ 1350 001e 00E0     		b	.L92
+ 1351              	.L94:
+ 871:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1352              		.loc 1 871 0
+ 1353 0020 0422     		movs	r2, #4
+ 1354              	.L92:
+ 1355              	.LVL100:
+ 887:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 888:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 889:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = (LTDC_Layerx->CFBLR >> 16);
+ 1356              		.loc 1 889 0
+ 1357 0022 C36A     		ldr	r3, [r0, #44]
+ 1358              	.LVL101:
+ARM GAS  /tmp/ccECBl2g.s 			page 40
+
+
+ 1359 0024 1B0C     		lsrs	r3, r3, #16
+ 1360              	.LVL102:
+ 890:./FWLIB/src/stm32f4xx_ltdc.c ****   tempreg = (tempreg / temp); 
+ 1361              		.loc 1 890 0
+ 1362 0026 B3FBF2F3 		udiv	r3, r3, r2
+ 1363              	.LVL103:
+ 891:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 892:./FWLIB/src/stm32f4xx_ltdc.c ****   if (PixelFormat == LTDC_Pixelformat_ARGB8888)
+ 1364              		.loc 1 892 0
+ 1365 002a A9B1     		cbz	r1, .L100
+ 893:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 894:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 4;
+ 895:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 896:./FWLIB/src/stm32f4xx_ltdc.c ****   else if (PixelFormat == LTDC_Pixelformat_RGB888)
+ 1366              		.loc 1 896 0
+ 1367 002c 0129     		cmp	r1, #1
+ 1368 002e 1CD0     		beq	.L101
+ 897:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 898:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 3;
+ 899:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 900:./FWLIB/src/stm32f4xx_ltdc.c ****   else if ((PixelFormat == LTDC_Pixelformat_ARGB4444) || \
+ 1369              		.loc 1 900 0
+ 1370 0030 0429     		cmp	r1, #4
+ 1371 0032 1CD0     		beq	.L102
+ 1372              		.loc 1 900 0 is_stmt 0 discriminator 1
+ 1373 0034 0229     		cmp	r1, #2
+ 1374 0036 1CD0     		beq	.L103
+ 901:./FWLIB/src/stm32f4xx_ltdc.c ****           (PixelFormat == LTDC_Pixelformat_RGB565)    || \
+ 1375              		.loc 1 901 0 is_stmt 1
+ 1376 0038 0329     		cmp	r1, #3
+ 1377 003a 1CD0     		beq	.L104
+ 902:./FWLIB/src/stm32f4xx_ltdc.c ****           (PixelFormat == LTDC_Pixelformat_ARGB1555)  || \
+ 1378              		.loc 1 902 0
+ 1379 003c 0729     		cmp	r1, #7
+ 1380 003e 09D0     		beq	.L107
+ 903:./FWLIB/src/stm32f4xx_ltdc.c ****           (PixelFormat == LTDC_Pixelformat_AL88))
+ 904:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 905:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 2;  
+ 906:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 907:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 908:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 909:./FWLIB/src/stm32f4xx_ltdc.c ****     temp = 1;
+ 1381              		.loc 1 909 0
+ 1382 0040 0122     		movs	r2, #1
+ 1383              	.LVL104:
+ 1384 0042 0AE0     		b	.L93
+ 1385              	.L95:
+ 875:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1386              		.loc 1 875 0
+ 1387 0044 0322     		movs	r2, #3
+ 1388 0046 ECE7     		b	.L92
+ 1389              	.L96:
+ 882:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1390              		.loc 1 882 0
+ 1391 0048 0222     		movs	r2, #2
+ 1392 004a EAE7     		b	.L92
+ 1393              	.L97:
+ARM GAS  /tmp/ccECBl2g.s 			page 41
+
+
+ 1394 004c 0222     		movs	r2, #2
+ 1395 004e E8E7     		b	.L92
+ 1396              	.L98:
+ 1397 0050 0222     		movs	r2, #2
+ 1398 0052 E6E7     		b	.L92
+ 1399              	.LVL105:
+ 1400              	.L107:
+ 905:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1401              		.loc 1 905 0
+ 1402 0054 0222     		movs	r2, #2
+ 1403              	.LVL106:
+ 1404 0056 00E0     		b	.L93
+ 1405              	.LVL107:
+ 1406              	.L100:
+ 894:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1407              		.loc 1 894 0
+ 1408 0058 0422     		movs	r2, #4
+ 1409              	.LVL108:
+ 1410              	.L93:
+ 910:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 911:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 912:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reconfigures the color frame buffer pitch in byte */
+ 913:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->CFBLR  = ((tempreg * temp) << 16) | ((tempreg * temp) + 3);  
+ 1411              		.loc 1 913 0
+ 1412 005a 03FB02F3 		mul	r3, r3, r2
+ 1413              	.LVL109:
+ 1414 005e DA1C     		adds	r2, r3, #3
+ 1415              	.LVL110:
+ 1416 0060 42EA0343 		orr	r3, r2, r3, lsl #16
+ 1417 0064 C362     		str	r3, [r0, #44]
+ 914:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 915:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Reconfigures the color frame buffer start address */
+ 916:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC_Layerx->PFCR = PixelFormat;
+ 1418              		.loc 1 916 0
+ 1419 0066 0161     		str	r1, [r0, #16]
+ 917:./FWLIB/src/stm32f4xx_ltdc.c ****     
+ 918:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1420              		.loc 1 918 0
+ 1421 0068 7047     		bx	lr
+ 1422              	.LVL111:
+ 1423              	.L101:
+ 898:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1424              		.loc 1 898 0
+ 1425 006a 0322     		movs	r2, #3
+ 1426              	.LVL112:
+ 1427 006c F5E7     		b	.L93
+ 1428              	.LVL113:
+ 1429              	.L102:
+ 905:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1430              		.loc 1 905 0
+ 1431 006e 0222     		movs	r2, #2
+ 1432              	.LVL114:
+ 1433 0070 F3E7     		b	.L93
+ 1434              	.LVL115:
+ 1435              	.L103:
+ 1436 0072 0222     		movs	r2, #2
+ 1437              	.LVL116:
+ARM GAS  /tmp/ccECBl2g.s 			page 42
+
+
+ 1438 0074 F1E7     		b	.L93
+ 1439              	.LVL117:
+ 1440              	.L104:
+ 1441 0076 0222     		movs	r2, #2
+ 1442              	.LVL118:
+ 1443 0078 EFE7     		b	.L93
+ 1444              		.cfi_endproc
+ 1445              	.LFE136:
+ 1447              		.section	.text.LTDC_ITConfig,"ax",%progbits
+ 1448              		.align	1
+ 1449              		.global	LTDC_ITConfig
+ 1450              		.syntax unified
+ 1451              		.thumb
+ 1452              		.thumb_func
+ 1453              		.fpu fpv4-sp-d16
+ 1455              	LTDC_ITConfig:
+ 1456              	.LFB137:
+ 919:./FWLIB/src/stm32f4xx_ltdc.c ****     
+ 920:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 921:./FWLIB/src/stm32f4xx_ltdc.c ****   * @}
+ 922:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 923:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 924:./FWLIB/src/stm32f4xx_ltdc.c **** /** @defgroup LTDC_Group2 Interrupts and flags management functions
+ 925:./FWLIB/src/stm32f4xx_ltdc.c ****  *  @brief   Interrupts and flags management functions
+ 926:./FWLIB/src/stm32f4xx_ltdc.c ****  *
+ 927:./FWLIB/src/stm32f4xx_ltdc.c **** @verbatim
+ 928:./FWLIB/src/stm32f4xx_ltdc.c ****  ===============================================================================
+ 929:./FWLIB/src/stm32f4xx_ltdc.c ****             ##### Interrupts and flags management functions #####
+ 930:./FWLIB/src/stm32f4xx_ltdc.c ****  ===============================================================================
+ 931:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 932:./FWLIB/src/stm32f4xx_ltdc.c ****     [..] This section provides functions allowing to configure the LTDC Interrupts 
+ 933:./FWLIB/src/stm32f4xx_ltdc.c ****          and to get the status and clear flags and Interrupts pending bits.
+ 934:./FWLIB/src/stm32f4xx_ltdc.c ****   
+ 935:./FWLIB/src/stm32f4xx_ltdc.c ****     [..] The LTDC provides 4 Interrupts sources and 4 Flags
+ 936:./FWLIB/src/stm32f4xx_ltdc.c ****     
+ 937:./FWLIB/src/stm32f4xx_ltdc.c ****     *** Flags ***
+ 938:./FWLIB/src/stm32f4xx_ltdc.c ****     =============
+ 939:./FWLIB/src/stm32f4xx_ltdc.c ****     [..]
+ 940:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) LTDC_FLAG_LI:   Line Interrupt flag.
+ 941:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) LTDC_FLAG_FU:   FIFO Underrun Interrupt flag.
+ 942:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) LTDC_FLAG_TERR: Transfer Error Interrupt flag.
+ 943:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) LTDC_FLAG_RR:   Register Reload interrupt flag.
+ 944:./FWLIB/src/stm32f4xx_ltdc.c ****       
+ 945:./FWLIB/src/stm32f4xx_ltdc.c ****     *** Interrupts ***
+ 946:./FWLIB/src/stm32f4xx_ltdc.c ****     ==================
+ 947:./FWLIB/src/stm32f4xx_ltdc.c ****     [..]
+ 948:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) LTDC_IT_LI: Line Interrupt is generated when a programmed line 
+ 949:./FWLIB/src/stm32f4xx_ltdc.c ****                       is reached. The line interrupt position is programmed in 
+ 950:./FWLIB/src/stm32f4xx_ltdc.c ****                       the LTDC_LIPR register.
+ 951:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) LTDC_IT_FU: FIFO Underrun interrupt is generated when a pixel is requested 
+ 952:./FWLIB/src/stm32f4xx_ltdc.c ****                       from an empty layer FIFO
+ 953:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) LTDC_IT_TERR: Transfer Error interrupt is generated when an AHB bus 
+ 954:./FWLIB/src/stm32f4xx_ltdc.c ****                         error occurs during data transfer.
+ 955:./FWLIB/src/stm32f4xx_ltdc.c ****       (+) LTDC_IT_RR: Register Reload interrupt is generated when the shadow 
+ 956:./FWLIB/src/stm32f4xx_ltdc.c ****                       registers reload was performed during the vertical blanking 
+ 957:./FWLIB/src/stm32f4xx_ltdc.c ****                       period.
+ 958:./FWLIB/src/stm32f4xx_ltdc.c ****                
+ARM GAS  /tmp/ccECBl2g.s 			page 43
+
+
+ 959:./FWLIB/src/stm32f4xx_ltdc.c **** @endverbatim
+ 960:./FWLIB/src/stm32f4xx_ltdc.c ****   * @{
+ 961:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 962:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 963:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 964:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Enables or disables the specified LTDC's interrupts.
+ 965:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_IT: specifies the LTDC interrupts sources to be enabled or disabled.
+ 966:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be any combination of the following values:
+ 967:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_LI: Line Interrupt Enable.
+ 968:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_FU: FIFO Underrun Interrupt Enable.
+ 969:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_TERR: Transfer Error Interrupt Enable.
+ 970:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_RR: Register Reload interrupt enable.  
+ 971:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param NewState: new state of the specified LTDC interrupts.
+ 972:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be: ENABLE or DISABLE.
+ 973:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+ 974:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+ 975:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_ITConfig(uint32_t LTDC_IT, FunctionalState NewState)
+ 976:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1457              		.loc 1 976 0
+ 1458              		.cfi_startproc
+ 1459              		@ args = 0, pretend = 0, frame = 0
+ 1460              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1461              		@ link register save eliminated.
+ 1462              	.LVL119:
+ 977:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+ 978:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_IT(LTDC_IT));
+ 979:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_FUNCTIONAL_STATE(NewState));
+ 980:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 981:./FWLIB/src/stm32f4xx_ltdc.c ****   if (NewState != DISABLE)
+ 1463              		.loc 1 981 0
+ 1464 0000 29B9     		cbnz	r1, .L111
+ 982:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 983:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC->IER |= LTDC_IT;
+ 984:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 985:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+ 986:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+ 987:./FWLIB/src/stm32f4xx_ltdc.c ****     LTDC->IER &= (uint32_t)~LTDC_IT;
+ 1465              		.loc 1 987 0
+ 1466 0002 054A     		ldr	r2, .L112
+ 1467 0004 536B     		ldr	r3, [r2, #52]
+ 1468 0006 23EA0000 		bic	r0, r3, r0
+ 1469              	.LVL120:
+ 1470 000a 5063     		str	r0, [r2, #52]
+ 988:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 989:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1471              		.loc 1 989 0
+ 1472 000c 7047     		bx	lr
+ 1473              	.LVL121:
+ 1474              	.L111:
+ 983:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1475              		.loc 1 983 0
+ 1476 000e 024A     		ldr	r2, .L112
+ 1477 0010 536B     		ldr	r3, [r2, #52]
+ 1478 0012 1843     		orrs	r0, r0, r3
+ 1479              	.LVL122:
+ 1480 0014 5063     		str	r0, [r2, #52]
+ 1481 0016 7047     		bx	lr
+ARM GAS  /tmp/ccECBl2g.s 			page 44
+
+
+ 1482              	.L113:
+ 1483              		.align	2
+ 1484              	.L112:
+ 1485 0018 00680140 		.word	1073833984
+ 1486              		.cfi_endproc
+ 1487              	.LFE137:
+ 1489              		.section	.text.LTDC_GetFlagStatus,"ax",%progbits
+ 1490              		.align	1
+ 1491              		.global	LTDC_GetFlagStatus
+ 1492              		.syntax unified
+ 1493              		.thumb
+ 1494              		.thumb_func
+ 1495              		.fpu fpv4-sp-d16
+ 1497              	LTDC_GetFlagStatus:
+ 1498              	.LFB138:
+ 990:./FWLIB/src/stm32f4xx_ltdc.c **** 
+ 991:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+ 992:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Checks whether the specified LTDC's flag is set or not.
+ 993:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_FLAG: specifies the flag to check.
+ 994:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be one of the following values:
+ 995:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_FLAG_LI:    Line Interrupt flag.
+ 996:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_FLAG_FU:   FIFO Underrun Interrupt flag.
+ 997:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_FLAG_TERR: Transfer Error Interrupt flag.
+ 998:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_FLAG_RR:   Register Reload interrupt flag.
+ 999:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval The new state of LTDC_FLAG (SET or RESET).
+1000:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+1001:./FWLIB/src/stm32f4xx_ltdc.c **** FlagStatus LTDC_GetFlagStatus(uint32_t LTDC_FLAG)
+1002:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1499              		.loc 1 1002 0
+ 1500              		.cfi_startproc
+ 1501              		@ args = 0, pretend = 0, frame = 0
+ 1502              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1503              		@ link register save eliminated.
+ 1504              	.LVL123:
+1003:./FWLIB/src/stm32f4xx_ltdc.c ****   FlagStatus bitstatus = RESET;
+1004:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1005:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+1006:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_FLAG(LTDC_FLAG));
+1007:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1008:./FWLIB/src/stm32f4xx_ltdc.c ****   if ((LTDC->ISR & LTDC_FLAG) != (uint32_t)RESET)
+ 1505              		.loc 1 1008 0
+ 1506 0000 034B     		ldr	r3, .L118
+ 1507 0002 9B6B     		ldr	r3, [r3, #56]
+ 1508 0004 0342     		tst	r3, r0
+ 1509 0006 01D1     		bne	.L117
+1009:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+1010:./FWLIB/src/stm32f4xx_ltdc.c ****     bitstatus = SET;
+1011:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+1012:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+1013:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+1014:./FWLIB/src/stm32f4xx_ltdc.c ****     bitstatus = RESET;
+ 1510              		.loc 1 1014 0
+ 1511 0008 0020     		movs	r0, #0
+ 1512              	.LVL124:
+1015:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+1016:./FWLIB/src/stm32f4xx_ltdc.c ****   return bitstatus;
+1017:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ARM GAS  /tmp/ccECBl2g.s 			page 45
+
+
+ 1513              		.loc 1 1017 0
+ 1514 000a 7047     		bx	lr
+ 1515              	.LVL125:
+ 1516              	.L117:
+1010:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1517              		.loc 1 1010 0
+ 1518 000c 0120     		movs	r0, #1
+ 1519              	.LVL126:
+ 1520 000e 7047     		bx	lr
+ 1521              	.L119:
+ 1522              		.align	2
+ 1523              	.L118:
+ 1524 0010 00680140 		.word	1073833984
+ 1525              		.cfi_endproc
+ 1526              	.LFE138:
+ 1528              		.section	.text.LTDC_ClearFlag,"ax",%progbits
+ 1529              		.align	1
+ 1530              		.global	LTDC_ClearFlag
+ 1531              		.syntax unified
+ 1532              		.thumb
+ 1533              		.thumb_func
+ 1534              		.fpu fpv4-sp-d16
+ 1536              	LTDC_ClearFlag:
+ 1537              	.LFB139:
+1018:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1019:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+1020:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Clears the LTDC's pending flags.
+1021:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_FLAG: specifies the flag to clear.
+1022:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be any combination of the following values:
+1023:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_FLAG_LI:    Line Interrupt flag.
+1024:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_FLAG_FU:   FIFO Underrun Interrupt flag.
+1025:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_FLAG_TERR: Transfer Error Interrupt flag.
+1026:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_FLAG_RR:   Register Reload interrupt flag.  
+1027:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+1028:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+1029:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_ClearFlag(uint32_t LTDC_FLAG)
+1030:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1538              		.loc 1 1030 0
+ 1539              		.cfi_startproc
+ 1540              		@ args = 0, pretend = 0, frame = 0
+ 1541              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1542              		@ link register save eliminated.
+ 1543              	.LVL127:
+1031:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+1032:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_FLAG(LTDC_FLAG));
+1033:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1034:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Clear the corresponding LTDC flag */
+1035:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->ICR = (uint32_t)LTDC_FLAG;
+ 1544              		.loc 1 1035 0
+ 1545 0000 014B     		ldr	r3, .L121
+ 1546 0002 D863     		str	r0, [r3, #60]
+1036:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1547              		.loc 1 1036 0
+ 1548 0004 7047     		bx	lr
+ 1549              	.L122:
+ 1550 0006 00BF     		.align	2
+ 1551              	.L121:
+ARM GAS  /tmp/ccECBl2g.s 			page 46
+
+
+ 1552 0008 00680140 		.word	1073833984
+ 1553              		.cfi_endproc
+ 1554              	.LFE139:
+ 1556              		.section	.text.LTDC_GetITStatus,"ax",%progbits
+ 1557              		.align	1
+ 1558              		.global	LTDC_GetITStatus
+ 1559              		.syntax unified
+ 1560              		.thumb
+ 1561              		.thumb_func
+ 1562              		.fpu fpv4-sp-d16
+ 1564              	LTDC_GetITStatus:
+ 1565              	.LFB140:
+1037:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1038:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+1039:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Checks whether the specified LTDC's interrupt has occurred or not.
+1040:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_IT: specifies the LTDC interrupts sources to check.
+1041:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be one of the following values:
+1042:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_LI:    Line Interrupt Enable.
+1043:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_FU:   FIFO Underrun Interrupt Enable.
+1044:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_TERR: Transfer Error Interrupt Enable.
+1045:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_RR:   Register Reload interrupt Enable.
+1046:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval The new state of the LTDC_IT (SET or RESET).
+1047:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+1048:./FWLIB/src/stm32f4xx_ltdc.c **** ITStatus LTDC_GetITStatus(uint32_t LTDC_IT)
+1049:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1566              		.loc 1 1049 0
+ 1567              		.cfi_startproc
+ 1568              		@ args = 0, pretend = 0, frame = 0
+ 1569              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1570              		@ link register save eliminated.
+ 1571              	.LVL128:
+1050:./FWLIB/src/stm32f4xx_ltdc.c ****   ITStatus bitstatus = RESET;
+1051:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1052:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+1053:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_IT(LTDC_IT));
+1054:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1055:./FWLIB/src/stm32f4xx_ltdc.c ****   if ((LTDC->ISR & LTDC_IT) != (uint32_t)RESET)
+ 1572              		.loc 1 1055 0
+ 1573 0000 064B     		ldr	r3, .L128
+ 1574 0002 9B6B     		ldr	r3, [r3, #56]
+ 1575 0004 0342     		tst	r3, r0
+ 1576 0006 07D0     		beq	.L126
+1056:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+1057:./FWLIB/src/stm32f4xx_ltdc.c ****     bitstatus = SET;
+ 1577              		.loc 1 1057 0
+ 1578 0008 0123     		movs	r3, #1
+ 1579              	.L124:
+ 1580              	.LVL129:
+1058:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+1059:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+1060:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+1061:./FWLIB/src/stm32f4xx_ltdc.c ****     bitstatus = RESET;
+1062:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+1063:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1064:./FWLIB/src/stm32f4xx_ltdc.c ****   if (((LTDC->IER & LTDC_IT) != (uint32_t)RESET) && (bitstatus != (uint32_t)RESET))
+ 1581              		.loc 1 1064 0
+ 1582 000a 044A     		ldr	r2, .L128
+ARM GAS  /tmp/ccECBl2g.s 			page 47
+
+
+ 1583 000c 526B     		ldr	r2, [r2, #52]
+ 1584 000e 0242     		tst	r2, r0
+ 1585 0010 00D1     		bne	.L125
+1065:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+1066:./FWLIB/src/stm32f4xx_ltdc.c ****     bitstatus = SET;
+1067:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+1068:./FWLIB/src/stm32f4xx_ltdc.c ****   else
+1069:./FWLIB/src/stm32f4xx_ltdc.c ****   {
+1070:./FWLIB/src/stm32f4xx_ltdc.c ****     bitstatus = RESET;
+ 1586              		.loc 1 1070 0
+ 1587 0012 0023     		movs	r3, #0
+ 1588              	.LVL130:
+ 1589              	.L125:
+1071:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+1072:./FWLIB/src/stm32f4xx_ltdc.c ****   return bitstatus;
+1073:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1590              		.loc 1 1073 0
+ 1591 0014 1846     		mov	r0, r3
+ 1592              	.LVL131:
+ 1593 0016 7047     		bx	lr
+ 1594              	.LVL132:
+ 1595              	.L126:
+1061:./FWLIB/src/stm32f4xx_ltdc.c ****   }
+ 1596              		.loc 1 1061 0
+ 1597 0018 0023     		movs	r3, #0
+ 1598 001a F6E7     		b	.L124
+ 1599              	.L129:
+ 1600              		.align	2
+ 1601              	.L128:
+ 1602 001c 00680140 		.word	1073833984
+ 1603              		.cfi_endproc
+ 1604              	.LFE140:
+ 1606              		.section	.text.LTDC_ClearITPendingBit,"ax",%progbits
+ 1607              		.align	1
+ 1608              		.global	LTDC_ClearITPendingBit
+ 1609              		.syntax unified
+ 1610              		.thumb
+ 1611              		.thumb_func
+ 1612              		.fpu fpv4-sp-d16
+ 1614              	LTDC_ClearITPendingBit:
+ 1615              	.LFB141:
+1074:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1075:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1076:./FWLIB/src/stm32f4xx_ltdc.c **** /**
+1077:./FWLIB/src/stm32f4xx_ltdc.c ****   * @brief  Clears the LTDC's interrupt pending bits.
+1078:./FWLIB/src/stm32f4xx_ltdc.c ****   * @param  LTDC_IT: specifies the interrupt pending bit to clear.
+1079:./FWLIB/src/stm32f4xx_ltdc.c ****   *   This parameter can be any combination of the following values:
+1080:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_LIE:    Line Interrupt.
+1081:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_FUIE:   FIFO Underrun Interrupt.
+1082:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_TERRIE: Transfer Error Interrupt.
+1083:./FWLIB/src/stm32f4xx_ltdc.c ****   *     @arg LTDC_IT_RRIE:   Register Reload interrupt.
+1084:./FWLIB/src/stm32f4xx_ltdc.c ****   * @retval None
+1085:./FWLIB/src/stm32f4xx_ltdc.c ****   */
+1086:./FWLIB/src/stm32f4xx_ltdc.c **** void LTDC_ClearITPendingBit(uint32_t LTDC_IT)
+1087:./FWLIB/src/stm32f4xx_ltdc.c **** {
+ 1616              		.loc 1 1087 0
+ 1617              		.cfi_startproc
+ARM GAS  /tmp/ccECBl2g.s 			page 48
+
+
+ 1618              		@ args = 0, pretend = 0, frame = 0
+ 1619              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1620              		@ link register save eliminated.
+ 1621              	.LVL133:
+1088:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Check the parameters */
+1089:./FWLIB/src/stm32f4xx_ltdc.c ****   assert_param(IS_LTDC_IT(LTDC_IT));
+1090:./FWLIB/src/stm32f4xx_ltdc.c **** 
+1091:./FWLIB/src/stm32f4xx_ltdc.c ****   /* Clear the corresponding LTDC Interrupt */
+1092:./FWLIB/src/stm32f4xx_ltdc.c ****   LTDC->ICR = (uint32_t)LTDC_IT;
+ 1622              		.loc 1 1092 0
+ 1623 0000 014B     		ldr	r3, .L131
+ 1624 0002 D863     		str	r0, [r3, #60]
+1093:./FWLIB/src/stm32f4xx_ltdc.c **** }
+ 1625              		.loc 1 1093 0
+ 1626 0004 7047     		bx	lr
+ 1627              	.L132:
+ 1628 0006 00BF     		.align	2
+ 1629              	.L131:
+ 1630 0008 00680140 		.word	1073833984
+ 1631              		.cfi_endproc
+ 1632              	.LFE141:
+ 1634              		.text
+ 1635              	.Letext0:
+ 1636              		.file 2 "/usr/arm-none-eabi/include/machine/_default_types.h"
+ 1637              		.file 3 "/usr/arm-none-eabi/include/sys/_stdint.h"
+ 1638              		.file 4 "build/lnInclude/core_cm4.h"
+ 1639              		.file 5 "build/lnInclude/system_stm32f4xx.h"
+ 1640              		.file 6 "build/lnInclude/stm32f4xx.h"
+ 1641              		.file 7 "build/lnInclude/stm32f4xx_ltdc.h"
+ 1642              		.file 8 "build/lnInclude/stm32f4xx_rcc.h"
+ARM GAS  /tmp/ccECBl2g.s 			page 49
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32f4xx_ltdc.c
+     /tmp/ccECBl2g.s:18     .text.LTDC_DeInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:25     .text.LTDC_DeInit:0000000000000000 LTDC_DeInit
+     /tmp/ccECBl2g.s:53     .text.LTDC_Init:0000000000000000 $t
+     /tmp/ccECBl2g.s:60     .text.LTDC_Init:0000000000000000 LTDC_Init
+     /tmp/ccECBl2g.s:180    .text.LTDC_Init:0000000000000094 $d
+     /tmp/ccECBl2g.s:187    .text.LTDC_StructInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:194    .text.LTDC_StructInit:0000000000000000 LTDC_StructInit
+     /tmp/ccECBl2g.s:239    .text.LTDC_Cmd:0000000000000000 $t
+     /tmp/ccECBl2g.s:246    .text.LTDC_Cmd:0000000000000000 LTDC_Cmd
+     /tmp/ccECBl2g.s:273    .text.LTDC_Cmd:000000000000001c $d
+     /tmp/ccECBl2g.s:278    .text.LTDC_DitherCmd:0000000000000000 $t
+     /tmp/ccECBl2g.s:285    .text.LTDC_DitherCmd:0000000000000000 LTDC_DitherCmd
+     /tmp/ccECBl2g.s:312    .text.LTDC_DitherCmd:000000000000001c $d
+     /tmp/ccECBl2g.s:317    .text.LTDC_GetRGBWidth:0000000000000000 $t
+     /tmp/ccECBl2g.s:324    .text.LTDC_GetRGBWidth:0000000000000000 LTDC_GetRGBWidth
+     /tmp/ccECBl2g.s:363    .text.LTDC_GetRGBWidth:000000000000002c $d
+     /tmp/ccECBl2g.s:369    .text.LTDC_RGBStructInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:376    .text.LTDC_RGBStructInit:0000000000000000 LTDC_RGBStructInit
+     /tmp/ccECBl2g.s:397    .text.LTDC_LIPConfig:0000000000000000 $t
+     /tmp/ccECBl2g.s:404    .text.LTDC_LIPConfig:0000000000000000 LTDC_LIPConfig
+     /tmp/ccECBl2g.s:420    .text.LTDC_LIPConfig:0000000000000008 $d
+     /tmp/ccECBl2g.s:425    .text.LTDC_ReloadConfig:0000000000000000 $t
+     /tmp/ccECBl2g.s:432    .text.LTDC_ReloadConfig:0000000000000000 LTDC_ReloadConfig
+     /tmp/ccECBl2g.s:448    .text.LTDC_ReloadConfig:0000000000000008 $d
+     /tmp/ccECBl2g.s:453    .text.LTDC_LayerInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:460    .text.LTDC_LayerInit:0000000000000000 LTDC_LayerInit
+     /tmp/ccECBl2g.s:581    .text.LTDC_LayerStructInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:588    .text.LTDC_LayerStructInit:0000000000000000 LTDC_LayerStructInit
+     /tmp/ccECBl2g.s:638    .text.LTDC_LayerCmd:0000000000000000 $t
+     /tmp/ccECBl2g.s:645    .text.LTDC_LayerCmd:0000000000000000 LTDC_LayerCmd
+     /tmp/ccECBl2g.s:671    .text.LTDC_GetPosStatus:0000000000000000 $t
+     /tmp/ccECBl2g.s:678    .text.LTDC_GetPosStatus:0000000000000000 LTDC_GetPosStatus
+     /tmp/ccECBl2g.s:704    .text.LTDC_GetPosStatus:0000000000000018 $d
+     /tmp/ccECBl2g.s:709    .text.LTDC_PosStructInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:716    .text.LTDC_PosStructInit:0000000000000000 LTDC_PosStructInit
+     /tmp/ccECBl2g.s:735    .text.LTDC_GetCDStatus:0000000000000000 $t
+     /tmp/ccECBl2g.s:742    .text.LTDC_GetCDStatus:0000000000000000 LTDC_GetCDStatus
+     /tmp/ccECBl2g.s:769    .text.LTDC_GetCDStatus:0000000000000010 $d
+     /tmp/ccECBl2g.s:774    .text.LTDC_ColorKeyingConfig:0000000000000000 $t
+     /tmp/ccECBl2g.s:781    .text.LTDC_ColorKeyingConfig:0000000000000000 LTDC_ColorKeyingConfig
+     /tmp/ccECBl2g.s:846    .text.LTDC_ColorKeyingConfig:0000000000000044 $d
+     /tmp/ccECBl2g.s:851    .text.LTDC_ColorKeyingStructInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:858    .text.LTDC_ColorKeyingStructInit:0000000000000000 LTDC_ColorKeyingStructInit
+     /tmp/ccECBl2g.s:879    .text.LTDC_CLUTCmd:0000000000000000 $t
+     /tmp/ccECBl2g.s:886    .text.LTDC_CLUTCmd:0000000000000000 LTDC_CLUTCmd
+     /tmp/ccECBl2g.s:916    .text.LTDC_CLUTCmd:000000000000001c $d
+     /tmp/ccECBl2g.s:921    .text.LTDC_CLUTInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:928    .text.LTDC_CLUTInit:0000000000000000 LTDC_CLUTInit
+     /tmp/ccECBl2g.s:971    .text.LTDC_CLUTStructInit:0000000000000000 $t
+     /tmp/ccECBl2g.s:978    .text.LTDC_CLUTStructInit:0000000000000000 LTDC_CLUTStructInit
+     /tmp/ccECBl2g.s:1001   .text.LTDC_LayerPosition:0000000000000000 $t
+     /tmp/ccECBl2g.s:1008   .text.LTDC_LayerPosition:0000000000000000 LTDC_LayerPosition
+     /tmp/ccECBl2g.s:1136   .text.LTDC_LayerPosition:000000000000007c $d
+     /tmp/ccECBl2g.s:1141   .text.LTDC_LayerAlpha:0000000000000000 $t
+     /tmp/ccECBl2g.s:1148   .text.LTDC_LayerAlpha:0000000000000000 LTDC_LayerAlpha
+ARM GAS  /tmp/ccECBl2g.s 			page 50
+
+
+     /tmp/ccECBl2g.s:1164   .text.LTDC_LayerAddress:0000000000000000 $t
+     /tmp/ccECBl2g.s:1171   .text.LTDC_LayerAddress:0000000000000000 LTDC_LayerAddress
+     /tmp/ccECBl2g.s:1187   .text.LTDC_LayerSize:0000000000000000 $t
+     /tmp/ccECBl2g.s:1194   .text.LTDC_LayerSize:0000000000000000 LTDC_LayerSize
+     /tmp/ccECBl2g.s:1309   .text.LTDC_LayerPixelFormat:0000000000000000 $t
+     /tmp/ccECBl2g.s:1316   .text.LTDC_LayerPixelFormat:0000000000000000 LTDC_LayerPixelFormat
+     /tmp/ccECBl2g.s:1448   .text.LTDC_ITConfig:0000000000000000 $t
+     /tmp/ccECBl2g.s:1455   .text.LTDC_ITConfig:0000000000000000 LTDC_ITConfig
+     /tmp/ccECBl2g.s:1485   .text.LTDC_ITConfig:0000000000000018 $d
+     /tmp/ccECBl2g.s:1490   .text.LTDC_GetFlagStatus:0000000000000000 $t
+     /tmp/ccECBl2g.s:1497   .text.LTDC_GetFlagStatus:0000000000000000 LTDC_GetFlagStatus
+     /tmp/ccECBl2g.s:1524   .text.LTDC_GetFlagStatus:0000000000000010 $d
+     /tmp/ccECBl2g.s:1529   .text.LTDC_ClearFlag:0000000000000000 $t
+     /tmp/ccECBl2g.s:1536   .text.LTDC_ClearFlag:0000000000000000 LTDC_ClearFlag
+     /tmp/ccECBl2g.s:1552   .text.LTDC_ClearFlag:0000000000000008 $d
+     /tmp/ccECBl2g.s:1557   .text.LTDC_GetITStatus:0000000000000000 $t
+     /tmp/ccECBl2g.s:1564   .text.LTDC_GetITStatus:0000000000000000 LTDC_GetITStatus
+     /tmp/ccECBl2g.s:1602   .text.LTDC_GetITStatus:000000000000001c $d
+     /tmp/ccECBl2g.s:1607   .text.LTDC_ClearITPendingBit:0000000000000000 $t
+     /tmp/ccECBl2g.s:1614   .text.LTDC_ClearITPendingBit:0000000000000000 LTDC_ClearITPendingBit
+     /tmp/ccECBl2g.s:1630   .text.LTDC_ClearITPendingBit:0000000000000008 $d
+
+UNDEFINED SYMBOLS
+RCC_APB2PeriphResetCmd
